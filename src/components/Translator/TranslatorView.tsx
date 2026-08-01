@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LanguageTrack, ReviewItem } from '../../types';
+import { LoadingScreen } from '../Common/LoadingScreen';
 
 interface TranslatorViewProps {
   onSaveToReview: (item: Omit<ReviewItem, 'id' | 'interval' | 'easeFactor' | 'nextReviewAt'>) => void;
@@ -21,6 +22,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
   const [translatedText, setTranslatedText] = useState('抹茶ラテをお願いします。');
   const [phoneticText, setPhoneticText] = useState('Matcha rate o onegaishimasu.');
   const [isListening, setIsListening] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
   const [history, setHistory] = useState<TranslationRecord[]>([
@@ -51,17 +53,21 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
   ]);
 
   const handleTranslate = () => {
-    if (toLang === 'Japanese') {
-      setTranslatedText('抹茶ラテをお願いします。');
-      setPhoneticText('Matcha rate o onegaishimasu.');
-    } else if (toLang === 'Korean') {
-      setTranslatedText('말차 라떼 한 잔 주세요.');
-      setPhoneticText('Malcha latte han jan juseyo.');
-    } else {
-      setTranslatedText('I would like a matcha latte, please.');
-      setPhoneticText('I would like a mat-cha lat-te, please.');
-    }
-    setIsSaved(false);
+    setIsLoading(true);
+    setTimeout(() => {
+      if (toLang === 'Japanese') {
+        setTranslatedText('抹茶ラテをお願いします。');
+        setPhoneticText('Matcha rate o onegaishimasu.');
+      } else if (toLang === 'Korean') {
+        setTranslatedText('말차 라떼 한 잔 주세요.');
+        setPhoneticText('Malcha latte han jan juseyo.');
+      } else {
+        setTranslatedText('I would like a matcha latte, please.');
+        setPhoneticText('I would like a mat-cha lat-te, please.');
+      }
+      setIsSaved(false);
+      setIsLoading(false);
+    }, 600);
   };
 
   const startVoiceInput = () => {
@@ -69,7 +75,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
     setTimeout(() => {
       setIsListening(false);
       handleTranslate();
-    }, 1500);
+    }, 1200);
   };
 
   const speakAudio = () => {
@@ -91,167 +97,144 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
   };
 
   return (
-    <div className="pt-20 px-4 md:px-8 pb-16 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 items-start">
-      {/* Center Translator Canvas */}
-      <section className="flex-1 w-full space-y-6">
-        {/* Language Selection Capsule */}
-        <div className="flex items-center justify-center">
-          <div className="bg-[#161b2b] border border-[#5affff]/20 rounded-full px-6 py-2 flex items-center gap-6 shadow-lg">
-            <button className="text-xs font-bold text-white flex items-center gap-2">
-              <span>{fromLang}</span>
-              <span className="material-symbols-outlined text-sm">expand_more</span>
+    <div className="p-6 md:p-8 max-w-5xl mx-auto space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold font-display tracking-tight">AI Context Translator</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Translate phrase structures with native audio pronunciation & grammar breakdown.
+        </p>
+      </div>
+
+      {/* Language Selector Selector Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-3 bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs">
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-semibold text-slate-400 uppercase">From:</label>
+          <select
+            value={fromLang}
+            onChange={(e) => setFromLang(e.target.value as any)}
+            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#f97316]"
+          >
+            <option value="English">English 🇺🇸</option>
+            <option value="Japanese">Japanese 🇯🇵</option>
+            <option value="Korean">Korean 🇰🇷</option>
+          </select>
+        </div>
+
+        <button
+          onClick={() => {
+            const temp = fromLang;
+            setFromLang(toLang);
+            setToLang(temp);
+          }}
+          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"
+          title="Swap Languages"
+        >
+          <span className="material-symbols-outlined text-sm">swap_horiz</span>
+        </button>
+
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-semibold text-slate-400 uppercase">To:</label>
+          <select
+            value={toLang}
+            onChange={(e) => setToLang(e.target.value as any)}
+            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#f97316]"
+          >
+            <option value="Japanese">Japanese 🇯🇵</option>
+            <option value="Korean">Korean 🇰🇷</option>
+            <option value="English">English 🇺🇸</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Main Translation Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Input Card */}
+        <div className="p-5 rounded-xl border bg-white dark:bg-[#111827] border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-4 shadow-2xs">
+          <div className="space-y-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{fromLang} Input</span>
+            <textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              rows={4}
+              placeholder="Type phrase to translate..."
+              className="w-full bg-transparent resize-none focus:outline-none text-base font-medium placeholder-slate-400"
+            />
+          </div>
+
+          <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+            <button
+              onClick={startVoiceInput}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors cursor-pointer ${
+                isListening
+                  ? 'bg-rose-500 text-white border-rose-600 animate-pulse'
+                  : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <span className="material-symbols-outlined text-sm">mic</span>
+              <span>{isListening ? 'Listening...' : 'Voice Input'}</span>
             </button>
 
             <button
-              onClick={() => {
-                const temp = fromLang;
-                setFromLang(toLang);
-                setToLang(temp);
-              }}
-              className="text-[#5affff] hover:rotate-180 transition-transform"
+              onClick={handleTranslate}
+              className="btn-primary-saas px-4 py-2 text-xs font-bold rounded-lg cursor-pointer"
             >
-              <span className="material-symbols-outlined text-base">swap_horiz</span>
-            </button>
-
-            <button className="text-xs font-bold text-white flex items-center gap-2">
-              <span>{toLang}</span>
-              <span className="material-symbols-outlined text-sm">expand_more</span>
+              Translate
             </button>
           </div>
         </div>
 
-        {/* Input Text Box Card */}
-        <div className="glass-card rounded-3xl p-8 min-h-56 relative flex flex-col justify-between border border-[#5affff]/20 shadow-2xl">
-          <button
-            onClick={() => setInputText('')}
-            className="absolute top-6 right-6 text-[#bacac9] hover:text-white"
-          >
-            <span className="material-symbols-outlined text-lg">close</span>
-          </button>
+        {/* Output Card with Lottie Loading Screen */}
+        <div className="p-5 rounded-xl border bg-white dark:bg-[#111827] border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-4 shadow-2xs relative min-h-[220px]">
+          {isLoading ? (
+            <LoadingScreen message="Kleo is translating your phrase..." size={140} />
+          ) : (
+            <>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#f97316] uppercase tracking-wider">{toLang} Result</span>
+                  <button
+                    onClick={speakAudio}
+                    className="p-1.5 rounded-lg bg-orange-50 dark:bg-slate-800 text-[#f97316] hover:bg-orange-100 transition-colors cursor-pointer"
+                    title="Play Audio"
+                  >
+                    <span className="material-symbols-outlined text-base">volume_up</span>
+                  </button>
+                </div>
 
-          <textarea
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Type phrase or tap mic below to speak..."
-            className="w-full bg-transparent border-none text-2xl font-display font-bold text-white focus:outline-none resize-none font-sans"
-            rows={3}
-          />
-
-          {/* Animated Audio Equalizer Waveform Divider */}
-          <div className="flex items-center justify-center gap-1 py-2 opacity-60">
-            <span className="w-1 h-6 bg-[#5affff] rounded-full animate-pulse" />
-            <span className="w-1 h-9 bg-[#5affff] rounded-full animate-pulse delay-75" />
-            <span className="w-1 h-4 bg-[#5affff] rounded-full animate-pulse delay-150" />
-            <span className="w-1 h-8 bg-[#5affff] rounded-full animate-pulse" />
-            <span className="w-1 h-5 bg-[#5affff] rounded-full animate-pulse delay-100" />
-          </div>
-        </div>
-
-        {/* Translation Output Card */}
-        {translatedText && (
-          <div className="glass-card rounded-3xl p-8 border border-[#5affff]/40 space-y-6 shadow-2xl relative">
-            <div className="flex items-start justify-between">
-              <div className="space-y-2">
-                <span className="text-[10px] font-bold text-[#5affff] uppercase tracking-widest block">TRANSLATION</span>
-                <div className="text-3xl font-bold text-white font-jp font-kr">{translatedText}</div>
-                <div className="text-xs text-[#bacac9] font-mono">{phoneticText}</div>
+                <div className="space-y-1">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white leading-snug">
+                    {translatedText}
+                  </h2>
+                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    Phonetic: {phoneticText}
+                  </p>
+                </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={speakAudio}
-                  className="w-12 h-12 rounded-full bg-[#cebdff]/20 text-[#cebdff] hover:bg-[#cebdff]/30 flex items-center justify-center border border-[#cebdff]/30 transition-transform active:scale-95"
-                  title="Listen Pronunciation"
-                >
-                  <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    play_arrow
-                  </span>
-                </button>
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  <span className="material-symbols-outlined text-xs">verified</span>
+                  Context-Verified by Kleo LLM
+                </span>
 
                 <button
                   onClick={handleSaveCard}
                   disabled={isSaved}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center border transition-all active:scale-95 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                     isSaved
-                      ? 'bg-[#5affff] border-[#5affff] text-[#003737]'
-                      : 'bg-[#161b2b] border-[#5affff]/30 text-[#5affff] hover:bg-[#25293a]'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border-emerald-300'
+                      : 'bg-[#f97316] text-white border-[#f97316] hover:bg-[#ea580c]'
                   }`}
-                  title="Save to Flashcard Deck"
                 >
-                  <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: isSaved ? "'FILL' 1" : "'FILL' 0" }}>
-                    bookmark
-                  </span>
+                  <span className="material-symbols-outlined text-sm">{isSaved ? 'check' : 'bookmark_add'}</span>
+                  <span>{isSaved ? 'Saved to Review Deck' : 'Save to Deck'}</span>
                 </button>
               </div>
-            </div>
-
-            {/* Topic Pills */}
-            <div className="flex flex-wrap gap-2 pt-2">
-              <span className="px-3 py-1 rounded-full bg-[#161b2b] border border-[#5affff]/20 text-[11px] text-[#bacac9] font-medium">
-                Formal (Polite)
-              </span>
-              <span className="px-3 py-1 rounded-full bg-[#161b2b] border border-[#5affff]/20 text-[11px] text-[#bacac9] font-medium">
-                Ordering
-              </span>
-              <span className="px-3 py-1 rounded-full bg-[#161b2b] border border-[#5affff]/20 text-[11px] text-[#bacac9] font-medium">
-                Food & Drink
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Large Floating Mic Record Button */}
-        <div className="flex flex-col items-center justify-center pt-4">
-          <button
-            onClick={startVoiceInput}
-            className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
-              isListening
-                ? 'bg-[#ffb4ab] text-[#690005] animate-ping'
-                : 'bg-[#5affff] text-[#003737] shadow-[0_0_30px_rgba(90,255,255,0.5)] hover:scale-110 active:scale-95'
-            }`}
-          >
-            <span className="material-symbols-outlined text-3xl font-bold">mic</span>
-          </button>
-          <span className="text-xs font-bold text-[#5affff] mt-3 tracking-wide">Tap to Speak</span>
+            </>
+          )}
         </div>
-      </section>
-
-      {/* Right Side History & Sync Panel */}
-      <aside className="w-full lg:w-80 space-y-6 shrink-0">
-        <div className="flex items-center justify-between">
-          <h3 className="font-display text-lg font-bold text-white">History</h3>
-          <button onClick={() => setHistory([])} className="text-xs text-[#5affff] font-bold hover:underline">
-            Clear all
-          </button>
-        </div>
-
-        {/* History List */}
-        <div className="space-y-3">
-          {history.map((item) => (
-            <div key={item.id} className="glass-card p-4 rounded-2xl border border-white/5 space-y-1.5 hover:border-[#5affff]/30">
-              <div className="flex items-center justify-between text-[11px] text-[#bacac9]">
-                <span>{item.from} → {item.to}</span>
-              </div>
-              <div className="text-xs font-bold text-white truncate">{item.original}</div>
-              <div className="text-xs text-[#5affff] font-jp font-kr">{item.translated}</div>
-              <div className="text-[10px] text-[#bacac9]/60 flex items-center gap-1 pt-1">
-                <span className="material-symbols-outlined text-xs">schedule</span>
-                <span>{item.timeAgo}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Sync Anywhere Banner */}
-        <div className="glass-card p-6 rounded-2xl border border-[#5affff]/20 text-center space-y-3">
-          <h4 className="font-display text-lg font-bold text-white">Sync Anywhere</h4>
-          <p className="text-xs text-[#bacac9]">Unlock cross-device history and vocabulary building.</p>
-          <button className="w-full py-2.5 bg-[#5affff] text-[#003737] font-extrabold text-xs rounded-xl shadow-lg hover:scale-105 transition-transform">
-            Go Pro
-          </button>
-        </div>
-      </aside>
+      </div>
     </div>
   );
 };

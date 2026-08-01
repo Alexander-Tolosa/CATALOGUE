@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AppView } from '../../types';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useAppStore } from '../../store/useAppStore';
 import { LogoutModal } from './LogoutModal';
 import { GoogleAuthModal } from '../Auth/GoogleAuthModal';
+import { Badge } from '../ui/badge';
 
 interface SidebarNavProps {
   activeView: AppView;
@@ -48,11 +50,14 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
       >
         {/* Brand Header & Logo */}
         <div className="mb-6 px-2 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6B35] to-[#ff7849] flex items-center justify-center text-white shadow-md font-bold shrink-0">
+          <motion.div
+            whileHover={{ scale: 1.08, rotate: 5 }}
+            className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6B35] to-[#ff7849] flex items-center justify-center text-white shadow-md font-bold shrink-0 cursor-pointer"
+          >
             <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
               language
             </span>
-          </div>
+          </motion.div>
           <div>
             <h1 className={`font-display font-black text-xl tracking-tight leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
               CATalouge
@@ -63,52 +68,92 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           </div>
         </div>
 
-        {/* Navigation Items */}
-        <nav className="flex-1 space-y-1 overflow-y-auto">
+        {/* Navigation Items with Framer Motion Spring Animations */}
+        <nav className="flex-1 space-y-2 overflow-y-visible pt-1 px-1">
           {navItems.map((item) => {
             const isActive = activeView === item.id;
             return (
-              <button
+              <motion.button
                 key={item.id}
                 onClick={() => onSelectView(item.id)}
-                className={`w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 text-xs font-bold ${
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className={`relative overflow-visible w-full flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 text-xs font-extrabold cursor-pointer ${
                   isActive
-                    ? 'text-[#FF6B35] border-l-4 border-[#FF6B35] bg-[#fff7ed] dark:bg-[#FF6B35]/15 font-extrabold shadow-2xs'
+                    ? 'text-[#FF6B35] border-l-4 border-[#FF6B35] bg-[#fff7ed] dark:bg-[#FF6B35]/20 shadow-xs'
                     : isDarkMode
                     ? 'text-slate-300 hover:bg-[#131b2e] hover:text-white'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
+                {/* Framer Motion Bouncing Standalone Cat Paw Badge */}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0, y: 5 }}
+                      animate={{ scale: 1, opacity: 1, y: [0, -4, 0] }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{
+                        y: { repeat: Infinity, duration: 1.5, ease: 'easeInOut' },
+                        scale: { type: 'spring', stiffness: 400, damping: 25 }
+                      }}
+                      className="absolute -top-2.5 -right-1 z-30 pointer-events-none flex items-center justify-center text-[#FF6B35] drop-shadow-md"
+                    >
+                      <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                        pets
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 <div className="flex items-center gap-3">
                   <span
-                    className="material-symbols-outlined text-xl"
+                    className={`material-symbols-outlined text-xl ${isActive ? 'text-[#FF6B35]' : ''}`}
                     style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                   >
                     {item.icon}
                   </span>
-                  <span>{item.label}</span>
+                  <span className={isActive ? 'text-[#FF6B35] font-black' : ''}>{item.label}</span>
                 </div>
 
                 {item.id === 'review' && reviewItemsDueCount > 0 && (
-                  <span className="bg-[#FF6B35] text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-2xs">
+                  <Badge variant="default" className="text-[9px] px-2 py-0.5">
                     {reviewItemsDueCount} DUE
-                  </span>
+                  </Badge>
                 )}
-              </button>
+              </motion.button>
             );
           })}
         </nav>
 
-        {/* Sidebar Feature Card: AI TUTOR & GRAMMAR COACH */}
+        {/* Sidebar AI Tutor & Coach Feature Card */}
         <div className="my-3 px-1">
-          <button
+          <motion.button
             onClick={() => onSelectView('kleo')}
-            className={`w-full p-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all duration-200 shadow-md group ${
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className={`relative overflow-visible w-full p-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all duration-200 shadow-md group cursor-pointer ${
               activeView === 'kleo'
                 ? 'bg-gradient-to-r from-[#FF6B35] to-[#ff7849] text-white border-transparent'
                 : 'bg-[#fff7ed] dark:bg-[#FF6B35]/15 border-[#FF6B35]/30 hover:border-[#FF6B35]'
             }`}
           >
+            <AnimatePresence>
+              {activeView === 'kleo' && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1, y: [0, -4, 0] }}
+                  exit={{ scale: 0 }}
+                  transition={{ y: { repeat: Infinity, duration: 1.5, ease: 'easeInOut' } }}
+                  className="absolute -top-2.5 -right-1 z-30 pointer-events-none flex items-center justify-center text-white drop-shadow-md"
+                >
+                  <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    pets
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-bold ${
               activeView === 'kleo'
                 ? 'bg-white/20 text-white'
@@ -128,7 +173,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 Chat with Kleo AI
               </span>
             </div>
-          </button>
+          </motion.button>
         </div>
 
         {/* Bottom User Profile Section */}
@@ -192,10 +237,15 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             <button
               key={item.id}
               onClick={() => onSelectView(item.id)}
-              className={`flex flex-col items-center p-1.5 rounded-xl text-[10px] font-bold ${
+              className={`flex flex-col items-center p-1.5 rounded-xl text-[10px] font-bold relative overflow-visible ${
                 isActive ? 'text-[#FF6B35]' : isDarkMode ? 'text-slate-300' : 'text-slate-500'
               }`}
             >
+              {isActive && (
+                <span className="material-symbols-outlined text-sm text-[#FF6B35] absolute -top-2 right-0 animate-bounce" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  pets
+                </span>
+              )}
               <span className="material-symbols-outlined text-lg">{item.icon}</span>
               <span>{item.label}</span>
             </button>

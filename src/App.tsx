@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from './store/useAppStore';
 import { useKleoStore } from './store/useKleoStore';
 import { useAuthStore } from './store/useAuthStore';
-import { AppView, LessonNode } from './types';
+import { AppView } from './types';
 import { TopAppBar } from './components/Dashboard/Header';
 import { SidebarNav } from './components/Navigation/SidebarNav';
 import { DashboardView } from './components/Dashboard/DashboardView';
@@ -49,8 +50,8 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-[#f97316]/20 transition-colors duration-300 ${
-      isDarkMode ? 'bg-[#0e1322] text-white' : 'bg-[#f8fafc] text-[#0f172a]'
+    <div className={`min-h-screen font-sans selection:bg-[#FF6B35]/20 transition-colors duration-300 ${
+      isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#f8fafc] text-slate-900'
     }`}>
       {/* 1. Persistent SideNavBar */}
       <SidebarNav
@@ -61,7 +62,7 @@ export const App: React.FC = () => {
 
       {/* 2. Main Canvas & TopAppBar */}
       <main className={`md:ml-64 min-h-screen relative transition-colors duration-300 ${
-        isDarkMode ? 'bg-[#0e1322]' : 'bg-[#f8fafc]'
+        isDarkMode ? 'bg-[#0b0f19]' : 'bg-[#f8fafc]'
       }`}>
         {/* Top Header */}
         <TopAppBar
@@ -71,81 +72,89 @@ export const App: React.FC = () => {
           onOpenPitchModal={() => setIsPitchModalOpen(true)}
         />
 
-        {/* View Stage */}
-        <div className={`min-h-screen transition-colors duration-300 ${
-          isDarkMode ? 'bg-[#0e1322]' : 'bg-[#f8fafc]'
-        }`}>
-          {activeView === 'dashboard' && (
-            <DashboardView
-              profile={profile}
-              activeNodes={activeNodes}
-              savedPhrases={profile.savedPhrases}
-              onSelectLanguage={selectLanguageTrack}
-              onSelectNode={(node) => setActiveView('learn')}
-              onNavigate={setActiveView}
-            />
-          )}
+        {/* Animated View Stage with Framer Motion AnimatePresence */}
+        <div className="min-h-screen">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeView}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+            >
+              {activeView === 'dashboard' && (
+                <DashboardView
+                  profile={profile}
+                  activeNodes={activeNodes}
+                  savedPhrases={profile.savedPhrases}
+                  onSelectLanguage={selectLanguageTrack}
+                  onSelectNode={(node) => setActiveView('learn')}
+                  onNavigate={setActiveView}
+                />
+              )}
 
-          {activeView === 'learn' && (
-            <LearnView
-              nodes={activeNodes}
-              completedNodeIds={profile.completedNodeIds}
-              userHearts={profile.hearts}
-              selectedLanguage={profile.selectedLanguage}
-              onDeductHeart={deductHeart}
-              onCompleteNode={completeLessonNode}
-              equippedCosmetics={equippedCosmetics}
-            />
-          )}
+              {activeView === 'learn' && (
+                <LearnView
+                  nodes={activeNodes}
+                  completedNodeIds={profile.completedNodeIds}
+                  userHearts={profile.hearts}
+                  selectedLanguage={profile.selectedLanguage}
+                  onDeductHeart={deductHeart}
+                  onCompleteNode={completeLessonNode}
+                  equippedCosmetics={equippedCosmetics}
+                />
+              )}
 
-          {activeView === 'letters' && (
-            <div className="pt-20 px-4 md:px-8">
-              <ScriptModuleView
-                selectedLanguage={profile.selectedLanguage}
-                onFinishFoundations={() => setActiveView('learn')}
-              />
-            </div>
-          )}
+              {activeView === 'letters' && (
+                <div className="pt-20 px-4 md:px-8">
+                  <ScriptModuleView
+                    selectedLanguage={profile.selectedLanguage}
+                    onFinishFoundations={() => setActiveView('learn')}
+                  />
+                </div>
+              )}
 
-          {activeView === 'translator' && (
-            <div className="pt-20 px-4 md:px-8">
-              <TranslatorView onSaveToReview={savePhraseToReview} />
-            </div>
-          )}
+              {activeView === 'translator' && (
+                <div className="pt-20 px-4 md:px-8">
+                  <TranslatorView onSaveToReview={savePhraseToReview} />
+                </div>
+              )}
 
-          {activeView === 'kleo' && (
-            <div className="pt-20 px-4 md:px-8">
-              <KleoHubView />
-            </div>
-          )}
+              {activeView === 'kleo' && (
+                <div className="pt-20 px-4 md:px-8">
+                  <KleoHubView />
+                </div>
+              )}
 
-          {activeView === 'gamify' && (
-            <div className="pt-20 px-4 md:px-8">
-              <GamifyHubView
-                profile={profile}
-                onRefillHearts={refillHearts}
-                onUpdateDailyGoal={handleUpdateDailyGoal}
-              />
-            </div>
-          )}
+              {activeView === 'gamify' && (
+                <div className="pt-20 px-4 md:px-8">
+                  <GamifyHubView
+                    profile={profile}
+                    onRefillHearts={refillHearts}
+                    onUpdateDailyGoal={handleUpdateDailyGoal}
+                  />
+                </div>
+              )}
 
-          {activeView === 'review' && (
-            <div className="pt-20 px-4 md:px-8">
-              <ReviewDeckView
-                items={profile.savedPhrases}
-                onRefillHearts={refillHearts}
-              />
-            </div>
-          )}
+              {activeView === 'review' && (
+                <div className="pt-20 px-4 md:px-8">
+                  <ReviewDeckView
+                    items={profile.savedPhrases}
+                    onRefillHearts={refillHearts}
+                  />
+                </div>
+              )}
 
-          {activeView === 'settings' && (
-            <div className="pt-20 px-4 md:px-8">
-              <SettingsView
-                profile={profile}
-                onSelectLanguage={selectLanguageTrack}
-              />
-            </div>
-          )}
+              {activeView === 'settings' && (
+                <div className="pt-20 px-4 md:px-8">
+                  <SettingsView
+                    profile={profile}
+                    onSelectLanguage={selectLanguageTrack}
+                  />
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
 

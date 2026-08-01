@@ -203,21 +203,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
               Pet Kleo to increase your Bond Level, unlock cosmetic hats and berets, and receive comforting purrs when learning new scripts!
             </p>
           </div>
-          <div className="md:col-span-6 md:order-1 p-8 rounded-3xl bg-[#fff7ed] border border-[#ffe4c9] shadow-xl flex items-center justify-center">
-            <div className="text-center space-y-3">
-              <div className="w-48 h-48 mx-auto flex items-center justify-center overflow-hidden rounded-full">
-                <video
-                  src={catVideo}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-contain mix-blend-multiply pointer-events-none"
-                />
-              </div>
-              <span className="inline-block px-4 py-1.5 rounded-full bg-white text-[#F97316] font-black text-xs shadow-sm">
-                "Purrrrr! Let's practice Korean today! 🐾"
-              </span>
+          <div className="md:col-span-6 md:order-1 flex items-center justify-center">
+            <div className="w-full max-w-[540px] h-[400px] sm:h-[480px] md:h-[520px] flex items-center justify-center">
+              <video
+                src={catVideo}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-contain scale-[1.35] transform mix-blend-multiply contrast-[1.05] brightness-[1.02] pointer-events-none select-none"
+              />
             </div>
           </div>
         </div>

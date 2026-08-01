@@ -1,33 +1,19 @@
 import React from 'react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { motion } from 'framer-motion';
-
-// Declare custom element for TypeScript
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'dotlottie-wc': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          src?: string;
-          autoplay?: boolean;
-          loop?: boolean;
-          style?: React.CSSProperties;
-        },
-        HTMLElement
-      >;
-    }
-  }
-}
 
 interface LoadingScreenProps {
   message?: string;
   fullScreen?: boolean;
   size?: number;
+  src?: string;
 }
 
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   message = 'Loading lesson data...',
   fullScreen = false,
-  size = 260
+  size = 260,
+  src = 'https://lottie.host/1d9b3064-7e18-43ac-8329-64175e1f6827/uQnFW5Tt64.lottie'
 }) => {
   return (
     <div
@@ -44,13 +30,12 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
         transition={{ duration: 0.3 }}
         className="flex flex-col items-center justify-center text-center space-y-3"
       >
-        {/* dotLottie Web Component Loading Animation */}
-        <div className="relative flex items-center justify-center">
-          <dotlottie-wc
-            src="https://lottie.host/1d9b3064-7e18-43ac-8329-64175e1f6827/uQnFW5Tt64.lottie"
-            style={{ width: `${size}px`, height: `${size}px` }}
-            autoplay
+        {/* Official DotLottieReact Component */}
+        <div style={{ width: `${size}px`, height: `${size}px` }} className="flex items-center justify-center">
+          <DotLottieReact
+            src={src}
             loop
+            autoplay
           />
         </div>
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { FlagIcon } from '../Common/FlagIcon';
 import { Sparkles, Globe, ShieldCheck, Heart, Award, ArrowRight, ChevronDown } from 'lucide-react';
 import catalougeLogo from '../../assets/catalouge_logo.png';
+import catVideo from '../../assets/Cat.mp4';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -22,8 +22,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#F97316]/20">
       {/* 1. Top Header Navigation (Duolingo Style) */}
-      <header className="h-20 border-b border-slate-200 px-6 md:px-12 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-md z-50">
-        {/* Brand Header & Cat Mascot Logo (Clicking logo or title refreshes site & returns to top) */}
+      <header className="h-20 border-b border-orange-400/30 px-6 md:px-12 flex items-center justify-between sticky top-0 bg-gradient-to-r from-[#F97316]/80 to-[#fb923c]/75 backdrop-blur-xl z-50 shadow-lg shadow-orange-500/10">
+        {/* Brand Header & Cat Mascot Logo */}
         <div
           onClick={handleBrandClick}
           className="flex items-center gap-3 cursor-pointer group select-none"
@@ -38,10 +38,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
             />
           </div>
           <div onClick={handleBrandClick} className="cursor-pointer">
-            <h1 className="font-display font-black text-2xl tracking-tight leading-none text-slate-900 group-hover:text-[#F97316] transition-colors">
+            <h1 className="font-display font-black text-2xl tracking-tight leading-none text-white group-hover:text-orange-100 transition-colors drop-shadow-sm">
               CATalouge
             </h1>
-            <span className="text-[10px] font-bold text-[#F97316] uppercase tracking-widest block mt-0.5">
+            <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest block mt-0.5">
               Mastering Language
             </span>
           </div>
@@ -50,8 +50,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
         {/* Right Header Actions */}
         <div className="flex items-center gap-4">
           {/* Site Language Selector Dropdown */}
-          <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 cursor-pointer px-3 py-1.5 rounded-xl border border-slate-200">
-            <Globe size={16} className="text-[#F97316]" />
+          <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-white hover:text-orange-100 cursor-pointer px-3 py-1.5 rounded-xl border border-white/30 bg-white/10">
+            <Globe size={16} className="text-white" />
             <span>SITE LANGUAGE: {selectedSiteLang}</span>
             <ChevronDown size={14} />
           </div>
@@ -59,23 +59,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
           {/* Log In Button */}
           <button
             onClick={onLogin}
-            className="px-5 py-2.5 rounded-xl border-2 border-slate-200 hover:border-[#F97316] hover:bg-orange-50 text-[#F97316] font-extrabold text-xs tracking-wider uppercase transition-all shadow-[0_3px_0_#cbd5e1] active:translate-y-0.5 active:shadow-none cursor-pointer"
+            className="px-5 py-2.5 rounded-xl border-2 border-white/40 hover:border-white hover:bg-white/20 text-white font-extrabold text-xs tracking-wider uppercase transition-all shadow-[0_3px_0_rgba(194,65,12,0.3)] active:translate-y-0.5 active:shadow-none cursor-pointer"
           >
             Log In
           </button>
         </div>
       </header>
 
-      {/* 2. Hero Section (Duolingo 2-Column Layout with Interactive Engagement Mascot) */}
-      <section className="max-w-6xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-        {/* Left Column: 2D Kleo Mascot Avatar Banner with Interactive User Engagement */}
-        <div className="md:col-span-6 flex flex-col items-center justify-center text-center space-y-4">
-          <div className="relative p-6 rounded-full bg-orange-50 border-4 border-orange-200/80 shadow-2xl flex items-center justify-center group">
-            <KleoAvatar mood="happy" size={260} interactiveEngagement={true} />
-          </div>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fff7ed] border border-[#ffe4c9] text-[#F97316] text-xs font-bold shadow-xs">
-            <span className="text-sm">🐾</span>
-            <span>Hover to pet Kleo for purrs & bond XP!</span>
+      {/* 2. Hero Section (Duolingo 2-Column Layout with Full Unclipped Cat.mp4 Video Mascot) */}
+      <section className="max-w-6xl mx-auto px-6 py-6 md:py-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        {/* Left Column: Unclipped Large Cat.mp4 Video Mascot Container */}
+        <div className="md:col-span-6 flex flex-col items-center justify-center text-center">
+          <div className="mascot-container relative flex items-center justify-center w-full max-w-[560px] h-[440px] sm:h-[500px] md:h-[540px]">
+            <video
+              src={catVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-contain scale-[1.35] transform mix-blend-multiply contrast-[1.05] brightness-[1.02] pointer-events-none select-none"
+            />
           </div>
         </div>
 
@@ -202,8 +205,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
           </div>
           <div className="md:col-span-6 md:order-1 p-8 rounded-3xl bg-[#fff7ed] border border-[#ffe4c9] shadow-xl flex items-center justify-center">
             <div className="text-center space-y-3">
-              <div className="w-32 h-32 mx-auto rounded-full bg-white border-4 border-[#F97316]/30 flex items-center justify-center p-2 shadow-inner">
-                <KleoAvatar mood="nuzzling" size={120} />
+              <div className="w-48 h-48 mx-auto flex items-center justify-center overflow-hidden rounded-full">
+                <video
+                  src={catVideo}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-contain mix-blend-multiply pointer-events-none"
+                />
               </div>
               <span className="inline-block px-4 py-1.5 rounded-full bg-white text-[#F97316] font-black text-xs shadow-sm">
                 "Purrrrr! Let's practice Korean today! 🐾"

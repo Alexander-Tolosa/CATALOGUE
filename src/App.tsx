@@ -60,9 +60,8 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-[#F97316]/20 transition-colors duration-300 ${
-      isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#fafafa] text-slate-900'
-    }`}>
+    <div className={`min-h-screen font-sans selection:bg-[#F97316]/20 transition-colors duration-300 ${isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#fafafa] text-slate-900'
+      }`}>
       {/* 1. Persistent SideNavBar */}
       <SidebarNav
         activeView={activeView}
@@ -71,9 +70,8 @@ export const App: React.FC = () => {
       />
 
       {/* 2. Main Canvas & TopAppBar */}
-      <main className={`md:ml-64 min-h-screen relative transition-colors duration-300 ${
-        isDarkMode ? 'bg-[#0b0f17]' : 'bg-[#fafafa]'
-      }`}>
+      <main className={`md:ml-64 min-h-screen relative transition-colors duration-300 ${isDarkMode ? 'bg-[#0b0f17]' : 'bg-[#fafafa]'
+        }`}>
         {/* Top Header */}
         <TopAppBar
           profile={profile}

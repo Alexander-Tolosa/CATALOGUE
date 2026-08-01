@@ -66,12 +66,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
         </div>
       </header>
 
-      {/* 2. Hero Section (Duolingo 2-Column Layout) */}
+      {/* 2. Hero Section (Duolingo 2-Column Layout with Interactive Engagement Mascot) */}
       <section className="max-w-6xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-        {/* Left Column: 2D Kleo Mascot Avatar Banner */}
+        {/* Left Column: 2D Kleo Mascot Avatar Banner with Interactive User Engagement */}
         <div className="md:col-span-6 flex flex-col items-center justify-center text-center space-y-4">
-          <div className="relative p-6 rounded-full bg-orange-50 border-4 border-orange-200/80 shadow-2xl flex items-center justify-center">
-            <KleoAvatar mood="happy" size={260} />
+          <div className="relative p-6 rounded-full bg-orange-50 border-4 border-orange-200/80 shadow-2xl flex items-center justify-center group">
+            <KleoAvatar mood="happy" size={260} interactiveEngagement={true} />
           </div>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fff7ed] border border-[#ffe4c9] text-[#F97316] text-xs font-bold shadow-xs">
             <span className="text-sm">🐾</span>
@@ -79,10 +79,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
           </div>
         </div>
 
-        {/* Right Column: Duolingo Headline & 3D Buttons */}
+        {/* Right Column: Hero Headline & 3D Action Buttons */}
         <div className="md:col-span-6 space-y-8 text-center md:text-left">
           <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-slate-900 leading-tight tracking-tight">
-            The free, fun, and effective way to learn Asian & English languages!
+            Master English and Asian languages easily & effectively
           </h2>
 
           <div className="space-y-4 max-w-md mx-auto md:mx-0">

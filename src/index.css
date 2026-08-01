@@ -1,27 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 @import "tailwindcss";
 
 @layer base {
   :root {
-    /* Primary: Soft Teal / Sky Blue */
-    --color-primary: #38bdf8;
-    --color-primary-teal: #2dd4bf;
-    --color-primary-container: #0284c7;
+    /* Main Theme Palette (Linear / Notion / Duolingo Inspired) */
+    --color-bg-light: #f8fafc;
+    --color-card-light: #ffffff;
+    --color-border-light: #e2e8f0;
 
-    /* Accent: Vibrant Orange / Coral */
-    --color-accent-orange: #f97316;
-    --color-accent-coral: #ff6b4a;
+    --color-accent-orange: #FF6B35;
+    --color-accent-orange-hover: #e85a24;
+    --color-accent-coral: #ff7849;
 
-    /* Neutral: Dark Charcoal & Off-White */
-    --color-background: #090d16;
-    --color-surface-lowest: #0e1322;
-    --color-surface-low: #161b2b;
-    --color-surface-container: #1e293b;
-    --color-text-offwhite: #f8fafc;
-    --color-offwhite: #f1f5f9;
+    --color-text-main-light: #0f172a;
+    --color-text-muted-light: #475569;
+    --color-text-subtle-light: #64748b;
+
+    /* Dark Mode Theme Tokens */
+    --color-bg-dark: #0b0f19;
+    --color-card-dark: #131b2e;
+    --color-border-dark: #1e293b;
+    --color-text-main-dark: #f8fafc;
+    --color-text-muted-dark: #94a3b8;
   }
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .material-symbols-outlined {
@@ -31,73 +39,56 @@
   line-height: 1;
 }
 
-/* Glow Effects */
-.glow-primary {
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+/* Linear/Notion Style Cards */
+.saas-card-light {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  border-radius: 1.25rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glow-orange {
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+.saas-card-light:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
 }
 
-.neon-glow {
-  box-shadow: 0 0 15px rgba(45, 212, 191, 0.35);
+.saas-card-dark {
+  background-color: #131b2e;
+  border: 1px solid #1e293b;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 1.25rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glass-panel, .glass-card {
-  background: rgba(22, 27, 43, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.saas-card-dark:hover {
+  border-color: #334155;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.glass-card:hover {
-  border-color: rgba(56, 189, 248, 0.45);
-  box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
-  transform: translateY(-2px);
-}
-
-.btn-orange {
-  background: linear-gradient(135deg, #f97316 0%, #ff6b4a 100%);
+/* Vibrant Orange Primary CTA Button */
+.btn-vibrant-orange {
+  background: linear-gradient(135deg, #FF6B35 0%, #ff7849 100%);
   color: #ffffff;
-  font-weight: 800;
-  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.35);
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(255, 107, 53, 0.35);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-orange:hover {
-  box-shadow: 0 6px 25px rgba(249, 115, 22, 0.5);
-  transform: scale(1.03);
+.btn-vibrant-orange:hover {
+  background: linear-gradient(135deg, #e85a24 0%, #FF6B35 100%);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+  transform: translateY(-1px);
 }
 
-.btn-teal {
-  background: linear-gradient(135deg, #0ea5e9 0%, #2dd4bf 100%);
-  color: #0f172a;
-  font-weight: 800;
-  box-shadow: 0 4px 20px rgba(45, 212, 191, 0.35);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-teal:hover {
-  box-shadow: 0 6px 25px rgba(45, 212, 191, 0.5);
-  transform: scale(1.03);
-}
-
-@keyframes pulse-glow {
-  0% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
-  50% { box-shadow: 0 0 25px rgba(56, 189, 248, 0.6); }
-  100% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
-}
-
-.current-node-pulse {
-  animation: pulse-glow 2s infinite ease-in-out;
+.btn-vibrant-orange:active {
+  transform: translateY(0);
 }
 
 @keyframes streak-pulse-anim {
-  0% { filter: drop-shadow(0 0 2px #f97316); }
-  50% { filter: drop-shadow(0 0 10px #f97316); }
-  100% { filter: drop-shadow(0 0 2px #f97316); }
+  0% { filter: drop-shadow(0 0 2px rgba(255, 107, 53, 0.4)); }
+  50% { filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.8)); }
+  100% { filter: drop-shadow(0 0 2px rgba(255, 107, 53, 0.4)); }
 }
 
 .streak-pulse {
@@ -109,14 +100,14 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #38bdf8;
+  background: #FF6B35;
 }
 
 .font-kr {

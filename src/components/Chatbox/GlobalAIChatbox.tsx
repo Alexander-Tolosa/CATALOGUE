@@ -65,108 +65,95 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     }, 700);
   };
 
+  if (!isOpen) return null;
+
   return (
-    <>
-      {/* Floating Trigger Button on Every Screen */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 glass-button btn-primary py-3.5 px-5 shadow-2xl rounded-full flex items-center gap-2.5 animate-bounce hover:scale-105 transition-transform"
-          title="Open Global AI Tutor Panel"
-        >
-          <Sparkles size={20} className="text-amber-300 fill-amber-300" />
-          <span className="font-black text-xs hidden sm:inline">AI TUTOR & GRAMMAR COACH</span>
-        </button>
-      )}
-
-      {/* Persistent Minimizable Sliding Panel */}
-      {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-full max-w-sm sm:max-w-md h-[540px] glass-panel border border-sky-500/40 shadow-2xl flex flex-col overflow-hidden animate-fadeIn bg-slate-950/95">
-          {/* Header */}
-          <div className="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-sky-950 border border-sky-800 flex items-center justify-center text-sky-300 text-sm">
-                🐾
-              </div>
-              <div>
-                <h3 className="font-brand font-black text-white text-sm flex items-center gap-1.5">
-                  AI Language Coach <span className="text-xs">🤖</span>
-                </h3>
-                <span className="text-[10px] text-emerald-400 font-bold block">
-                  ● Active Lesson Context: {activeLessonTitle}
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
-            >
-              <X size={18} />
-            </button>
+    <div className="fixed bottom-6 right-6 z-50 w-full max-w-sm sm:max-w-md h-[540px] glass-panel border border-[#FF6B35]/40 shadow-2xl flex flex-col overflow-hidden animate-fadeIn bg-slate-950/95 rounded-3xl">
+      {/* Header */}
+      <div className="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-[#FF6B35]/20 border border-[#FF6B35]/40 flex items-center justify-center text-[#FF6B35] text-sm">
+            🐾
           </div>
-
-          {/* Quick Action Prompt Chips */}
-          <div className="px-3 py-2 bg-slate-900/60 border-b border-slate-800 flex gap-2 overflow-x-auto">
-            <button
-              onClick={() => handleSend("Explain formal vs informal speech rules")}
-              className="text-[11px] text-sky-300 bg-sky-950 hover:bg-sky-900 px-3 py-1 rounded-full border border-sky-800 shrink-0 font-bold"
-            >
-              💡 Formal Rules
-            </button>
-            <button
-              onClick={() => handleSend("Quiz me on vocabulary")}
-              className="text-[11px] text-amber-300 bg-amber-950 hover:bg-amber-900 px-3 py-1 rounded-full border border-amber-800 shrink-0 font-bold"
-            >
-              🎯 Quick Quiz
-            </button>
-          </div>
-
-          {/* Messages Feed */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/40">
-            {messages.map(msg => (
-              <div
-                key={msg.id}
-                className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                {msg.sender === 'ai' && (
-                  <div className="w-7 h-7 rounded-full bg-sky-900 border border-sky-700 flex items-center justify-center text-sky-300 text-xs shrink-0 mt-1">
-                    🐾
-                  </div>
-                )}
-                <div
-                  className={`p-3 rounded-2xl max-w-[85%] text-xs leading-relaxed ${
-                    msg.sender === 'user'
-                      ? 'bg-sky-600 text-white rounded-tr-none font-medium'
-                      : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none font-normal'
-                  }`}
-                >
-                  <p className="whitespace-pre-line">{msg.text}</p>
-                  <span className="text-[9px] opacity-60 block text-right mt-1 font-mono">{msg.timestamp}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Input Footer */}
-          <div className="p-3 bg-slate-900 border-t border-slate-800 flex items-center gap-2">
-            <input
-              type="text"
-              value={inputMsg}
-              onChange={(e) => setInputMsg(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask grammar, vocabulary, or culture..."
-              className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-sky-500 font-sans"
-            />
-            <button
-              onClick={() => handleSend()}
-              className="p-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold transition-all"
-            >
-              <Send size={15} />
-            </button>
+          <div>
+            <h3 className="font-display font-black text-white text-sm flex items-center gap-1.5">
+              AI Tutor & Grammar Coach <span className="text-xs">🤖</span>
+            </h3>
+            <span className="text-[10px] text-emerald-400 font-bold block">
+              ● Active Context: {activeLessonTitle}
+            </span>
           </div>
         </div>
-      )}
-    </>
+        <button
+          onClick={() => setIsOpen(false)}
+          className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+        >
+          <X size={18} />
+        </button>
+      </div>
+
+      {/* Messages Feed */}
+      <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs">
+        {messages.map(m => (
+          <div
+            key={m.id}
+            className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div
+              className={`max-w-[85%] p-3 rounded-2xl ${
+                m.sender === 'user'
+                  ? 'bg-gradient-to-r from-[#FF6B35] to-[#ff7849] text-white font-medium rounded-tr-none shadow-md'
+                  : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none leading-relaxed'
+              }`}
+            >
+              <p className="whitespace-pre-line">{m.text}</p>
+              <span className="text-[9px] text-slate-400 mt-1 block text-right font-bold">
+                {m.timestamp}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Quick Prompts */}
+      <div className="p-2 bg-slate-900/80 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto text-[10px]">
+        <button
+          onClick={() => handleSend('Explain formal vs informal speech')}
+          className="px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 hover:bg-[#FF6B35] hover:text-white shrink-0 transition-colors font-bold"
+        >
+          💡 Honorifics
+        </button>
+        <button
+          onClick={() => handleSend('Give me a quick quiz')}
+          className="px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 hover:bg-[#FF6B35] hover:text-white shrink-0 transition-colors font-bold"
+        >
+          🎯 Quiz Me
+        </button>
+        <button
+          onClick={() => handleSend('Grammar breakdown of current lesson')}
+          className="px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 hover:bg-[#FF6B35] hover:text-white shrink-0 transition-colors font-bold"
+        >
+          📘 Lesson Grammar
+        </button>
+      </div>
+
+      {/* Input */}
+      <div className="p-3 bg-slate-950 border-t border-slate-800 flex items-center gap-2">
+        <input
+          type="text"
+          value={inputMsg}
+          onChange={e => setInputMsg(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleSend()}
+          placeholder="Ask AI Tutor any grammar or vocabulary question..."
+          className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FF6B35]"
+        />
+        <button
+          onClick={() => handleSend()}
+          className="p-2 rounded-xl btn-vibrant-orange flex items-center justify-center shrink-0"
+        >
+          <Send size={16} />
+        </button>
+      </div>
+    </div>
   );
 };

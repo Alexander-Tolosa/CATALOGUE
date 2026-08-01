@@ -61,6 +61,8 @@ const DEFAULT_PROFILE: UserProfile = {
 
 interface AppStoreState {
   profile: UserProfile;
+  isDarkMode: boolean;
+  toggleThemeMode: () => void;
   selectLanguageTrack: (lang: LanguageTrack) => void;
   deductHeart: () => void;
   refillHearts: () => void;
@@ -83,6 +85,16 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     }
     return DEFAULT_PROFILE;
   })(),
+
+  isDarkMode: localStorage.getItem('catalouge_theme_dark') === 'true',
+
+  toggleThemeMode: () => {
+    set((state) => {
+      const nextMode = !state.isDarkMode;
+      localStorage.setItem('catalouge_theme_dark', String(nextMode));
+      return { isDarkMode: nextMode };
+    });
+  },
 
   selectLanguageTrack: (lang) => {
     set((state) => {

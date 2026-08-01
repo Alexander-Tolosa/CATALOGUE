@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserProfile, LanguageTrack, LessonNode, ReviewItem, AppView } from '../../types';
 import { useKleoStore } from '../../store/useKleoStore';
+import { useAppStore } from '../../store/useAppStore';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 
 interface DashboardViewProps {
@@ -20,62 +21,91 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onSelectNode,
   onNavigate
 }) => {
+  const { isDarkMode } = useAppStore();
   const { mood, speechText, bondXp, bondLevel, equippedCosmetics } = useKleoStore();
 
   const nextNode = activeNodes.find(n => !profile.completedNodeIds.includes(n.id)) || activeNodes[0];
   const percentGoal = Math.min(100, Math.round((profile.minutesCompletedToday / profile.dailyGoalMinutes) * 100));
 
   return (
-    <div className="pt-20 px-4 md:px-8 pb-16 max-w-7xl mx-auto space-y-8">
-      {/* Top Bento Row */}
+    <div className={`pt-20 px-4 md:px-8 pb-24 max-w-7xl mx-auto space-y-6 transition-colors duration-250 ${isDarkMode ? 'bg-[#0b0f19]' : 'bg-[#f8fafc]'}`}>
+      {/* Top Bento Grid Section (12 Columns) */}
       <section className="grid grid-cols-12 gap-6 items-stretch">
-        {/* Kleo Mascot Card (Bento Item 1) */}
-        <div className="col-span-12 lg:col-span-8 glass-card rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden bg-[#161b2b]/80 border border-[#38bdf8]/20">
-          <div className="absolute -right-12 -top-12 w-64 h-64 bg-[#38bdf8]/10 blur-[90px] rounded-full pointer-events-none" />
+        {/* Kleo Hero Mascot Banner Card (Col 8) */}
+        <div
+          className={`col-span-12 lg:col-span-8 ${
+            isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
+          } p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden`}
+        >
+          {/* Decorative Subtle Radial Backdrop */}
+          <div className="absolute -right-16 -top-16 w-64 h-64 bg-[#FF6B35]/10 blur-[100px] rounded-full pointer-events-none" />
 
-          {/* Avatar Container */}
-          <div className="relative w-44 h-44 flex-shrink-0">
-            <div className="w-full h-full rounded-full border-4 border-[#38bdf8]/30 flex items-center justify-center p-3 bg-[#090d16] shadow-inner">
-              <KleoAvatar mood={mood} equippedCosmetics={equippedCosmetics} size={140} />
+          {/* Kleo Cat Mascot Circle */}
+          <div className="relative w-40 h-40 flex-shrink-0">
+            <div
+              className={`w-full h-full rounded-full border-4 flex items-center justify-center p-2.5 shadow-inner ${
+                isDarkMode ? 'bg-[#0b0f19] border-[#FF6B35]/30' : 'bg-slate-50 border-[#FF6B35]/20'
+              }`}
+            >
+              <KleoAvatar mood={mood} equippedCosmetics={equippedCosmetics} size={130} />
             </div>
-            <div className="absolute -bottom-2 right-2 bg-gradient-to-r from-[#f97316] to-[#ff6b4a] text-white font-black text-xs px-3 py-1 rounded-full shadow-lg uppercase tracking-wider">
+            <div className="absolute -bottom-2 right-1.5 bg-gradient-to-r from-[#FF6B35] to-[#ff7849] text-white font-black text-[11px] px-3 py-0.5 rounded-full shadow-md uppercase tracking-wider">
               {mood}
             </div>
           </div>
 
-          {/* Kleo Info & Speech Bubble */}
+          {/* Kleo Content & Speech Card */}
           <div className="flex-1 space-y-4 z-10 text-center md:text-left w-full">
-            <div className="inline-block px-5 py-3.5 bg-[#1e293b] rounded-2xl rounded-tl-none border border-[#38bdf8]/25 shadow-md">
-              <p className="font-display font-bold text-base text-[#38bdf8] leading-relaxed">
+            {/* Speech Bubble */}
+            <div
+              className={`inline-block px-5 py-3 rounded-2xl rounded-tl-none border shadow-2xs ${
+                isDarkMode
+                  ? 'bg-[#1e293b] border-[#334155] text-white'
+                  : 'bg-[#fff7ed] border-[#ffe4c9] text-slate-900 font-medium'
+              }`}
+            >
+              <p className="font-display font-bold text-sm md:text-base leading-relaxed">
                 "{speechText}"
               </p>
             </div>
 
+            {/* Kleo Bond Level Progress Bar */}
             <div className="space-y-1.5">
               <div className="flex justify-between items-center px-1 text-xs font-bold">
-                <span className="text-[#f8fafc] uppercase tracking-tighter">Kleo Bond Level {bondLevel}</span>
-                <span className="text-[#38bdf8] font-mono">{bondXp} / 1000 XP</span>
+                <span className={`uppercase tracking-tight ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>
+                  Kleo Bond Level {bondLevel}
+                </span>
+                <span className="text-[#FF6B35] font-mono font-extrabold">{bondXp} / 1000 XP</span>
               </div>
-              <div className="h-3 w-full bg-[#1e293b] rounded-full overflow-hidden border border-slate-800">
+              <div className={`h-2.5 w-full rounded-full overflow-hidden border ${isDarkMode ? 'bg-[#1e293b] border-[#334155]' : 'bg-slate-100 border-slate-200'}`}>
                 <div
-                  className="h-full bg-gradient-to-r from-[#0ea5e9] to-[#2dd4bf] neon-glow rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-[#FF6B35] to-[#ff7849] rounded-full transition-all duration-500 shadow-sm"
                   style={{ width: `${Math.min(100, (bondXp % 100))}%` }}
                 />
               </div>
             </div>
 
+            {/* Action Buttons */}
             <div className="flex flex-wrap gap-3 pt-1 justify-center md:justify-start">
-              {/* Vibrant Coral / Orange Action CTA */}
+              {/* Practice Now Primary CTA */}
               <button
                 onClick={() => nextNode && onSelectNode(nextNode)}
-                className="btn-orange px-6 py-2.5 rounded-xl text-xs flex items-center gap-2"
+                className="btn-vibrant-orange px-6 py-2.5 rounded-xl text-xs flex items-center gap-2"
               >
-                <span className="material-symbols-outlined text-lg">play_circle</span>
-                Practice Now
+                <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  play_circle
+                </span>
+                <span>Practice Now</span>
               </button>
+
+              {/* Chat with Kleo Ghost Button */}
               <button
                 onClick={() => onNavigate('kleo')}
-                className="border-2 border-[#38bdf8]/40 text-[#38bdf8] px-6 py-2.5 rounded-xl font-bold hover:bg-[#38bdf8]/10 active:scale-95 transition-all text-xs"
+                className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all border ${
+                  isDarkMode
+                    ? 'border-[#334155] text-slate-200 hover:bg-[#1e293b] hover:border-[#FF6B35]/50'
+                    : 'border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                }`}
               >
                 Chat with Kleo
               </button>
@@ -83,131 +113,168 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Daily Goal Meter (Bento Item 2) */}
-        <div className="col-span-12 lg:col-span-4 glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center space-y-4 bg-[#161b2b]/80 border border-[#38bdf8]/20">
-          <h3 className="font-display text-lg font-bold text-[#f8fafc]">Daily Goal</h3>
+        {/* Daily Goal Progress Card (Col 4) */}
+        <div
+          className={`col-span-12 lg:col-span-4 ${
+            isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
+          } p-6 flex flex-col items-center justify-center text-center space-y-4`}
+        >
+          <h3 className={`font-display text-base font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+            Daily Goal
+          </h3>
+
+          {/* Circular Progress Gauge */}
           <div className="relative w-36 h-36 flex items-center justify-center">
             <svg className="w-full h-full transform -rotate-90">
-              <circle className="text-[#1e293b]" cx="72" cy="72" fill="transparent" r="60" stroke="currentColor" strokeWidth="10" />
               <circle
-                className="text-[#38bdf8] neon-glow transition-all duration-700"
+                className={isDarkMode ? 'text-[#1e293b]' : 'text-slate-100'}
                 cx="72"
                 cy="72"
                 fill="transparent"
-                r="60"
+                r="56"
                 stroke="currentColor"
-                strokeDasharray="376.8"
-                strokeDashoffset={376.8 - (376.8 * percentGoal) / 100}
+                strokeWidth="10"
+              />
+              <circle
+                className="text-[#FF6B35] transition-all duration-700"
+                cx="72"
+                cy="72"
+                fill="transparent"
+                r="56"
+                stroke="currentColor"
+                strokeDasharray="351.8"
+                strokeDashoffset={351.8 - (351.8 * percentGoal) / 100}
                 strokeLinecap="round"
                 strokeWidth="10"
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display text-3xl font-extrabold text-white leading-none">{profile.minutesCompletedToday}</span>
-              <span className="text-xs font-semibold text-[#38bdf8]">/ {profile.dailyGoalMinutes} min</span>
+              <span className={`font-display text-3xl font-black leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                {profile.minutesCompletedToday}
+              </span>
+              <span className="text-xs font-semibold text-[#FF6B35] mt-1">/ {profile.dailyGoalMinutes} min</span>
             </div>
           </div>
-          <p className="text-xs text-slate-300 px-2">You've completed {percentGoal}% of today's study block. Keep it up!</p>
+
+          <p className={`text-xs px-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+            You've completed <strong className="text-[#FF6B35]">{percentGoal}%</strong> of today's study block. Keep it up!
+          </p>
         </div>
       </section>
 
-      {/* Bottom Bento Row: Lessons & Quick Access */}
+      {/* Bottom Grid Section: Sequence Card + 4 Quick Action Cards */}
       <section className="grid grid-cols-12 gap-6">
-        {/* Continue Lesson Card */}
+        {/* Next Up In Sequence Card (Col 7) */}
         {nextNode && (
           <div
             onClick={() => onSelectNode(nextNode)}
-            className="col-span-12 md:col-span-7 glass-card rounded-3xl p-6 flex flex-col justify-between group cursor-pointer border-l-4 border-l-[#f97316] bg-[#161b2b]/80 hover:scale-[1.01]"
+            className={`col-span-12 md:col-span-7 ${
+              isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
+            } p-6 flex flex-col justify-between group cursor-pointer border-l-4 border-l-[#FF6B35]`}
           >
             <div className="flex justify-between items-start mb-6">
-              <div>
-                <span className="text-xs font-bold text-[#f97316] uppercase tracking-widest">Next Up In Sequence</span>
-                <h2 className="font-display text-xl font-bold mt-1 text-white">{nextNode.title}</h2>
-                <p className="text-xs text-slate-300 mt-1.5">{nextNode.description}</p>
+              <div className="space-y-1">
+                <span className="text-[11px] font-bold text-[#FF6B35] uppercase tracking-widest">
+                  Next Up In Sequence
+                </span>
+                <h2 className={`font-display text-xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                  {nextNode.title}
+                </h2>
+                <p className={`text-xs leading-relaxed max-w-md ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                  {nextNode.description}
+                </p>
               </div>
-              <div className="w-14 h-14 bg-[#f97316]/15 rounded-2xl flex items-center justify-center text-[#f97316] group-hover:scale-110 transition-transform shrink-0 border border-[#f97316]/30">
-                <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+
+              <div className="w-12 h-12 bg-[#fff7ed] rounded-2xl flex items-center justify-center text-[#FF6B35] group-hover:scale-110 transition-transform shrink-0 border border-[#ffe4c9]">
+                <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                   school
                 </span>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#38bdf8] text-base">stars</span>
-                  <span className="text-xs font-bold text-[#38bdf8]">+{nextNode.xpReward} XP Reward</span>
-                </div>
-                <button className="btn-orange px-5 py-2 rounded-xl text-xs flex items-center gap-1.5">
-                  <span>Continue</span>
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                </button>
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#FF6B35]">
+                <span className="material-symbols-outlined text-base">stars</span>
+                <span>+{nextNode.xpReward} XP Reward</span>
               </div>
+
+              <button className="btn-vibrant-orange px-5 py-2 rounded-xl text-xs flex items-center gap-1.5">
+                <span>Continue</span>
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </button>
             </div>
           </div>
         )}
 
-        {/* Quick Access Grid */}
+        {/* 4 Quick Access Widgets (Col 5) */}
         <div className="col-span-12 md:col-span-5 grid grid-cols-2 gap-4">
-          {/* Translator */}
+          {/* Translator Widget */}
           <div
             onClick={() => onNavigate('translator')}
-            className="glass-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 bg-[#161b2b]/80 hover:bg-[#1e293b] cursor-pointer"
+            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${
+              isDarkMode
+                ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/40 hover:bg-[#1a243d]'
+                : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-2xs'
+            }`}
           >
-            <div className="w-12 h-12 rounded-full bg-[#38bdf8]/15 flex items-center justify-center text-[#38bdf8] border border-[#38bdf8]/30">
-              <span className="material-symbols-outlined text-2xl">translate</span>
+            <div className="w-11 h-11 rounded-2xl bg-[#fff7ed] flex items-center justify-center text-[#FF6B35] border border-[#ffe4c9]">
+              <span className="material-symbols-outlined text-xl">translate</span>
             </div>
-            <span className="text-xs font-bold text-[#f8fafc]">Translator</span>
+            <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Translator</span>
           </div>
 
-          {/* Review */}
+          {/* Review Widget */}
           <div
             onClick={() => onNavigate('review')}
-            className="glass-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 bg-[#161b2b]/80 hover:bg-[#1e293b] cursor-pointer relative"
+            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer relative transition-all ${
+              isDarkMode
+                ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/40 hover:bg-[#1a243d]'
+                : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-2xs'
+            }`}
           >
             {savedPhrases.length > 0 && (
-              <div className="absolute top-2.5 right-2.5 bg-[#f97316] text-white font-black text-[10px] px-2 py-0.5 rounded-full shadow-md">
+              <span className="absolute top-2.5 right-2.5 bg-[#FF6B35] text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-xs">
                 {savedPhrases.length} DUE
-              </div>
+              </span>
             )}
-            <div className="w-12 h-12 rounded-full bg-[#f97316]/15 flex items-center justify-center text-[#f97316] border border-[#f97316]/30">
-              <span className="material-symbols-outlined text-2xl">rebase_edit</span>
+            <div className="w-11 h-11 rounded-2xl bg-[#fff7ed] flex items-center justify-center text-[#FF6B35] border border-[#ffe4c9]">
+              <span className="material-symbols-outlined text-xl">rebase_edit</span>
             </div>
-            <span className="text-xs font-bold text-[#f8fafc]">Review</span>
+            <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Review</span>
           </div>
 
-          {/* League */}
+          {/* League Widget */}
           <div
             onClick={() => onNavigate('gamify')}
-            className="glass-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 bg-[#161b2b]/80 hover:bg-[#1e293b] cursor-pointer"
+            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${
+              isDarkMode
+                ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/40 hover:bg-[#1a243d]'
+                : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-2xs'
+            }`}
           >
-            <div className="w-12 h-12 rounded-full bg-[#2dd4bf]/15 flex items-center justify-center text-[#2dd4bf] border border-[#2dd4bf]/30">
-              <span className="material-symbols-outlined text-2xl">leaderboard</span>
+            <div className="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+              <span className="material-symbols-outlined text-xl">leaderboard</span>
             </div>
-            <span className="text-xs font-bold text-[#f8fafc]">League</span>
+            <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>League</span>
           </div>
 
-          {/* Journal */}
+          {/* Journal Widget */}
           <div
             onClick={() => onNavigate('gamify')}
-            className="glass-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 bg-[#161b2b]/80 hover:bg-[#1e293b] cursor-pointer"
+            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${
+              isDarkMode
+                ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/40 hover:bg-[#1a243d]'
+                : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-2xs'
+            }`}
           >
-            <div className="w-12 h-12 rounded-full bg-[#0284c7]/15 flex items-center justify-center text-[#38bdf8] border border-[#0284c7]/30">
-              <span className="material-symbols-outlined text-2xl">menu_book</span>
+            <div className="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+              <span className="material-symbols-outlined text-xl">menu_book</span>
             </div>
-            <span className="text-xs font-bold text-[#f8fafc]">Journal</span>
+            <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Journal</span>
           </div>
         </div>
       </section>
 
-      {/* Floating Action Button (FAB) */}
-      <button
-        onClick={() => nextNode && onSelectNode(nextNode)}
-        className="fixed bottom-8 right-8 w-14 h-14 btn-orange rounded-full flex items-center justify-center glow-orange hover:scale-110 active:scale-95 transition-all shadow-2xl z-40"
-        title="Start Practice Session"
-      >
-        <span className="material-symbols-outlined text-3xl font-bold">add</span>
-      </button>
     </div>
   );
 };

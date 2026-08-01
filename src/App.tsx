@@ -20,6 +20,7 @@ import { AuthScreen } from './components/Auth/AuthScreen';
 export const App: React.FC = () => {
   const { isAuthenticated, token } = useAuthStore();
   const {
+    isDarkMode,
     profile,
     selectLanguageTrack,
     deductHeart,
@@ -48,7 +49,9 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0e1322] text-[#dee1f7] font-sans selection:bg-[#5affff]/30">
+    <div className={`min-h-screen font-sans selection:bg-[#f97316]/20 transition-colors duration-300 ${
+      isDarkMode ? 'bg-[#0e1322] text-white' : 'bg-[#f8fafc] text-[#0f172a]'
+    }`}>
       {/* 1. Persistent SideNavBar */}
       <SidebarNav
         activeView={activeView}
@@ -57,7 +60,9 @@ export const App: React.FC = () => {
       />
 
       {/* 2. Main Canvas & TopAppBar */}
-      <main className="md:ml-64 min-h-screen relative">
+      <main className={`md:ml-64 min-h-screen relative transition-colors duration-300 ${
+        isDarkMode ? 'bg-[#0e1322]' : 'bg-[#f8fafc]'
+      }`}>
         {/* Top Header */}
         <TopAppBar
           profile={profile}
@@ -67,7 +72,9 @@ export const App: React.FC = () => {
         />
 
         {/* View Stage */}
-        <div className="min-h-screen">
+        <div className={`min-h-screen transition-colors duration-300 ${
+          isDarkMode ? 'bg-[#0e1322]' : 'bg-[#f8fafc]'
+        }`}>
           {activeView === 'dashboard' && (
             <DashboardView
               profile={profile}

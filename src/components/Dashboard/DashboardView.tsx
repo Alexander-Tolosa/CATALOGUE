@@ -33,9 +33,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <section className="grid grid-cols-12 gap-6 items-stretch">
         {/* Kleo Hero Mascot Banner Card (Col 8) */}
         <div
-          className={`col-span-12 lg:col-span-8 ${
-            isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
-          } p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden`}
+          className={`col-span-12 lg:col-span-8 ${isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
+            } p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden`}
         >
           {/* Decorative Subtle Radial Backdrop */}
           <div className="absolute -right-16 -top-16 w-64 h-64 bg-[#FF6B35]/10 blur-[100px] rounded-full pointer-events-none" />
@@ -43,9 +42,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* Kleo Cat Mascot Circle */}
           <div className="relative w-40 h-40 flex-shrink-0">
             <div
-              className={`w-full h-full rounded-full border-4 flex items-center justify-center p-2.5 shadow-inner ${
-                isDarkMode ? 'bg-[#0b0f19] border-[#FF6B35]/30' : 'bg-slate-50 border-[#FF6B35]/20'
-              }`}
+              className={`w-full h-full rounded-full border-4 flex items-center justify-center p-2.5 shadow-inner ${isDarkMode ? 'bg-[#0b0f19] border-[#FF6B35]/30' : 'bg-slate-50 border-[#FF6B35]/20'
+                }`}
             >
               <KleoAvatar mood={mood} equippedCosmetics={equippedCosmetics} size={130} />
             </div>
@@ -58,11 +56,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="flex-1 space-y-4 z-10 text-center md:text-left w-full">
             {/* Speech Bubble */}
             <div
-              className={`inline-block px-5 py-3 rounded-2xl rounded-tl-none border shadow-2xs ${
-                isDarkMode
+              className={`inline-block px-5 py-3 rounded-2xl rounded-tl-none border shadow-2xs ${isDarkMode
                   ? 'bg-[#1e293b] border-[#334155] text-white'
                   : 'bg-[#fff7ed] border-[#ffe4c9] text-slate-900 font-medium'
-              }`}
+                }`}
             >
               <p className="font-display font-bold text-sm md:text-base leading-relaxed">
                 "{speechText}"
@@ -101,11 +98,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               {/* Chat with Kleo Ghost Button */}
               <button
                 onClick={() => onNavigate('kleo')}
-                className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all border ${
-                  isDarkMode
+                className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all border ${isDarkMode
                     ? 'border-[#334155] text-slate-200 hover:bg-[#1e293b] hover:border-[#FF6B35]/50'
                     : 'border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-                }`}
+                  }`}
               >
                 Chat with Kleo
               </button>
@@ -115,9 +111,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         {/* Daily Goal Progress Card (Col 4) */}
         <div
-          className={`col-span-12 lg:col-span-4 ${
-            isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
-          } p-6 flex flex-col items-center justify-center text-center space-y-4`}
+          className={`col-span-12 lg:col-span-4 ${isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
+            } p-6 flex flex-col items-center justify-center text-center space-y-4`}
         >
           <h3 className={`font-display text-base font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
             Daily Goal
@@ -168,9 +163,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {nextNode && (
           <div
             onClick={() => onSelectNode(nextNode)}
-            className={`col-span-12 md:col-span-7 ${
-              isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
-            } p-6 flex flex-col justify-between group cursor-pointer border-l-4 border-l-[#FF6B35]`}
+            className={`col-span-12 md:col-span-7 ${isDarkMode ? 'saas-card-dark text-white' : 'saas-card-light text-slate-900'
+              } p-6 flex flex-col justify-between group cursor-pointer border-l-4 border-l-[#FF6B35]`}
           >
             <div className="flex justify-between items-start mb-6">
               <div className="space-y-1">
@@ -211,11 +205,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* Translator Widget */}
           <div
             onClick={() => onNavigate('translator')}
-            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${
-              isDarkMode
+            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${isDarkMode
                 ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/40 hover:bg-[#1a243d]'
                 : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-2xs'
-            }`}
+              }`}
           >
             <div className="w-11 h-11 rounded-2xl bg-[#fff7ed] flex items-center justify-center text-[#FF6B35] border border-[#ffe4c9]">
               <span className="material-symbols-outlined text-xl">translate</span>
@@ -226,11 +219,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* Review Widget */}
           <div
             onClick={() => onNavigate('review')}
-            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer relative transition-all ${
-              isDarkMode
+            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer relative transition-all ${isDarkMode
                 ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/40 hover:bg-[#1a243d]'
                 : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-2xs'
-            }`}
+              }`}
           >
             {savedPhrases.length > 0 && (
               <span className="absolute top-2.5 right-2.5 bg-[#FF6B35] text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-xs">
@@ -246,11 +238,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* League Widget */}
           <div
             onClick={() => onNavigate('gamify')}
-            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${
-              isDarkMode
+            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${isDarkMode
                 ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/40 hover:bg-[#1a243d]'
                 : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-2xs'
-            }`}
+              }`}
           >
             <div className="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
               <span className="material-symbols-outlined text-xl">leaderboard</span>
@@ -261,11 +252,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* Journal Widget */}
           <div
             onClick={() => onNavigate('gamify')}
-            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${
-              isDarkMode
+            className={`p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer transition-all ${isDarkMode
                 ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/40 hover:bg-[#1a243d]'
                 : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-2xs'
-            }`}
+              }`}
           >
             <div className="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
               <span className="material-symbols-outlined text-xl">menu_book</span>

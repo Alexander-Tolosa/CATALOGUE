@@ -86,9 +86,17 @@ body {
 }
 
 @keyframes streak-pulse-anim {
-  0% { filter: drop-shadow(0 0 2px rgba(255, 107, 53, 0.4)); }
-  50% { filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.8)); }
-  100% { filter: drop-shadow(0 0 2px rgba(255, 107, 53, 0.4)); }
+  0% {
+    filter: drop-shadow(0 0 2px rgba(255, 107, 53, 0.4));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.8));
+  }
+
+  100% {
+    filter: drop-shadow(0 0 2px rgba(255, 107, 53, 0.4));
+  }
 }
 
 .streak-pulse {
@@ -99,13 +107,16 @@ body {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #FF6B35;
 }
@@ -113,9 +124,11 @@ body {
 .font-kr {
   font-family: 'Noto Sans KR', sans-serif;
 }
+
 .font-jp {
   font-family: 'Noto Sans JP', sans-serif;
 }
+
 .font-display {
   font-family: 'Quicksand', sans-serif;
 }

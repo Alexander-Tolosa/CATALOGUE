@@ -19,11 +19,10 @@ export const TopAppBar: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`fixed top-0 right-0 left-0 md:left-64 h-16 backdrop-blur-md border-b flex items-center justify-between px-6 z-40 transition-colors duration-250 ${
-        isDarkMode
+      className={`fixed top-0 right-0 left-0 md:left-64 h-16 backdrop-blur-md border-b flex items-center justify-between px-6 z-40 transition-colors duration-250 ${isDarkMode
           ? 'bg-[#0b0f19]/90 border-[#1e293b] text-white'
           : 'bg-white/90 border-slate-200/80 text-slate-900 shadow-xs'
-      }`}
+        }`}
     >
       {/* Left Title / Language Track Switcher */}
       <div className="flex items-center gap-4">
@@ -46,11 +45,10 @@ export const TopAppBar: React.FC<HeaderProps> = ({
         ) : (
           <div className="relative group">
             <button
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold transition-all shadow-2xs ${
-                isDarkMode
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold transition-all shadow-2xs ${isDarkMode
                   ? 'bg-[#131b2e] border-[#1e293b] text-white hover:border-[#FF6B35]/40'
                   : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100 hover:border-slate-300'
-              }`}
+                }`}
             >
               <span className="text-base">
                 {profile.selectedLanguage === 'ko' ? '🇰🇷' : profile.selectedLanguage === 'ja' ? '🇯🇵' : '🇺🇸'}
@@ -62,31 +60,27 @@ export const TopAppBar: React.FC<HeaderProps> = ({
             </button>
 
             <div
-              className={`absolute top-full left-0 mt-1 w-48 rounded-2xl p-1.5 shadow-xl hidden group-hover:block z-50 border ${
-                isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200'
-              }`}
+              className={`absolute top-full left-0 mt-1 w-48 rounded-2xl p-1.5 shadow-xl hidden group-hover:block z-50 border ${isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200'
+                }`}
             >
               <button
                 onClick={() => onSelectLanguage('ko')}
-                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${
-                  isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
-                }`}
+                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
+                  }`}
               >
                 <span>🇰🇷</span> Korean Track
               </button>
               <button
                 onClick={() => onSelectLanguage('ja')}
-                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${
-                  isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
-                }`}
+                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
+                  }`}
               >
                 <span>🇯🇵</span> Japanese Track
               </button>
               <button
                 onClick={() => onSelectLanguage('en')}
-                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${
-                  isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
-                }`}
+                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
+                  }`}
               >
                 <span>🇺🇸</span> English Track
               </button>
@@ -130,25 +124,22 @@ export const TopAppBar: React.FC<HeaderProps> = ({
         {/* Investor Pitch Deck Launcher */}
         <button
           onClick={onOpenPitchModal}
-          className={`p-1.5 rounded-full transition-colors ${
-            isDarkMode ? 'text-[#FF6B35] hover:bg-[#131b2e]' : 'text-[#FF6B35] hover:bg-slate-100'
-          }`}
+          className={`p-1.5 rounded-full transition-colors ${isDarkMode ? 'text-[#FF6B35] hover:bg-[#131b2e]' : 'text-[#FF6B35] hover:bg-slate-100'
+            }`}
           title="Investor Pitch Deck"
         >
           <span className="material-symbols-outlined text-xl">auto_awesome</span>
         </button>
 
         {/* Notifications Icon */}
-        <button className={`material-symbols-outlined transition-colors text-xl ${
-          isDarkMode ? 'text-slate-400 hover:text-[#FF6B35]' : 'text-slate-500 hover:text-[#FF6B35]'
-        }`}>
+        <button className={`material-symbols-outlined transition-colors text-xl ${isDarkMode ? 'text-slate-400 hover:text-[#FF6B35]' : 'text-slate-500 hover:text-[#FF6B35]'
+          }`}>
           notifications
         </button>
 
         {/* Profile Avatar Icon */}
-        <button className={`material-symbols-outlined transition-colors text-xl ${
-          isDarkMode ? 'text-slate-400 hover:text-[#FF6B35]' : 'text-slate-500 hover:text-[#FF6B35]'
-        }`}>
+        <button className={`material-symbols-outlined transition-colors text-xl ${isDarkMode ? 'text-slate-400 hover:text-[#FF6B35]' : 'text-slate-500 hover:text-[#FF6B35]'
+          }`}>
           account_circle
         </button>
       </div>

@@ -13,17 +13,32 @@ interface LandingPageProps {
 export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin }) => {
   const [selectedSiteLang, setSelectedSiteLang] = useState('ENGLISH');
 
+  const handleBrandClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#F97316]/20">
       {/* 1. Top Header Navigation (Duolingo Style) */}
       <header className="h-20 border-b border-slate-200 px-6 md:px-12 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-md z-50">
-        {/* Brand Header & Cat Mascot Logo */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={onGetStarted}>
+        {/* Brand Header & Cat Mascot Logo (Clicking logo or title refreshes site & returns to top) */}
+        <div
+          onClick={handleBrandClick}
+          className="flex items-center gap-3 cursor-pointer group select-none"
+          title="Refresh site & return to top"
+        >
           <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-200/80 flex items-center justify-center p-1 shadow-sm shrink-0">
-            <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
+            <img
+              src={catalougeLogo}
+              alt="CATalouge Logo"
+              onClick={handleBrandClick}
+              className="w-full h-full object-contain cursor-pointer"
+            />
           </div>
-          <div>
-            <h1 className="font-display font-black text-2xl tracking-tight leading-none text-slate-900">
+          <div onClick={handleBrandClick} className="cursor-pointer">
+            <h1 className="font-display font-black text-2xl tracking-tight leading-none text-slate-900 group-hover:text-[#F97316] transition-colors">
               CATalouge
             </h1>
             <span className="text-[10px] font-bold text-[#F97316] uppercase tracking-widest block mt-0.5">

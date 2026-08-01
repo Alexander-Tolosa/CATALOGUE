@@ -29,6 +29,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     setIsLogoutModalOpen(false);
   };
 
+  const handleBrandClick = () => {
+    logout();
+    window.location.reload();
+  };
+
   const navItems: { id: AppView; label: string; icon: string }[] = [
     { id: 'dashboard', label: 'Overview', icon: 'grid_view' },
     { id: 'learn', label: 'Skill Tree', icon: 'school' },
@@ -49,16 +54,22 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             : 'bg-white border-slate-200 text-slate-900 shadow-2xs'
         }`}
       >
-        {/* Brand Header & Cat Mascot Logo */}
-        <div className="mb-5 px-2 flex items-center gap-2.5">
+        {/* Brand Header & Cat Mascot Logo (Clicking logo logs out and returns to Landing Page) */}
+        <div
+          onClick={handleBrandClick}
+          className="mb-5 px-2 flex items-center gap-2.5 cursor-pointer group select-none"
+          title="Click to go to Landing Page"
+        >
           <motion.div
             whileHover={{ scale: 1.08, rotate: 5 }}
-            className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-slate-800 border border-[#f97316]/30 flex items-center justify-center p-1 shadow-xs cursor-pointer shrink-0"
+            className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-slate-800 border border-[#f97316]/30 flex items-center justify-center p-1 shadow-xs shrink-0"
           >
             <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
           </motion.div>
           <div className="flex flex-col">
-            <h1 className={`font-display font-bold text-base tracking-tight leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+            <h1 className={`font-display font-bold text-base tracking-tight leading-none group-hover:text-[#f97316] transition-colors ${
+              isDarkMode ? 'text-white' : 'text-slate-900'
+            }`}>
               CATalouge
             </h1>
             <span className="text-[10px] font-semibold text-[#f97316] uppercase tracking-wider mt-0.5">

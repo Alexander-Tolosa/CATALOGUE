@@ -16,7 +16,7 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  token: localStorage.getItem('catalouge_google_oidc_token') || 'google-oidc-active-token',
+  token: localStorage.getItem('catalouge_google_oidc_token'),
   googleUser: (() => {
     const saved = localStorage.getItem('catalouge_google_user');
     if (saved) {
@@ -26,14 +26,9 @@ export const useAuthStore = create<AuthState>((set) => ({
         console.error(e);
       }
     }
-    return {
-      googleSubId: 'google-sub-1029384756',
-      email: 'sensei@google.com',
-      name: 'User_Sensei',
-      picture: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDpsPyAmyFX0-x7YmO2F6V-HYUNSkQZ9y5ZwiGTPRDuKh7w8NLjQdcf1Q2MivuhQ4D9qxOYSRakIe57czlU0OETFOGpsghOsax81R8YeFIC_QKmFDJ6W4koSBPBvEruskA_MQyZ4RgLhVW1PM3kb-l4J8Xn4WkSprmlTkQlvaOABYQ0SKUWhiFcEmtyH6yhDEmNEgnsyQMttVVfCDSSXR6Gw_JKdDikoKAyDWZ2yHGXkiNggh5IEs39Zg'
-    };
+    return null;
   })(),
-  isAuthenticated: true,
+  isAuthenticated: !!localStorage.getItem('catalouge_google_oidc_token'),
 
   loginWithGoogle: (profile, token) => {
     localStorage.setItem('catalouge_google_oidc_token', token);

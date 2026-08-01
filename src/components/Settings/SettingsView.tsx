@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, LanguageTrack } from '../../types';
-import { Settings, Volume2, Type, Shield, User, Globe } from 'lucide-react';
+import { Settings, Volume2, Type, Shield, User, Globe, Sun, Moon, Palette } from 'lucide-react';
+import { useAppStore } from '../../store/useAppStore';
 
 interface SettingsViewProps {
   profile: UserProfile;
@@ -8,6 +9,7 @@ interface SettingsViewProps {
 }
 
 export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLanguage }) => {
+  const { isDarkMode, toggleThemeMode } = useAppStore();
   const [audioSpeed, setAudioSpeed] = useState<number>(1.0);
   const [fontSize, setFontSize] = useState<string>('medium');
   const [colorblindMode, setColorblindMode] = useState<boolean>(false);
@@ -15,31 +17,112 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       {/* Header Banner */}
-      <div className="glass-panel p-6 bg-gradient-to-r from-slate-900 via-slate-950 to-sky-950 border border-slate-800 shadow-xl flex items-center justify-between">
+      <div className={`p-6 rounded-3xl border shadow-xl flex items-center justify-between transition-colors ${
+        isDarkMode ? 'bg-[#131b2e] border-[#1e293b] text-white' : 'bg-white border-slate-200 text-slate-900'
+      }`}>
         <div>
-          <span className="text-xs font-black text-sky-400 uppercase tracking-widest block mb-1">
+          <span className="text-xs font-black text-[#FF6B35] uppercase tracking-widest block mb-1">
             Application Preferences
           </span>
-          <h2 className="font-brand text-3xl font-black text-white flex items-center gap-2">
-            <Settings size={26} className="text-sky-400" /> Platform Settings
+          <h2 className="font-display text-2xl md:text-3xl font-black flex items-center gap-2">
+            <Settings size={26} className="text-[#FF6B35]" /> Platform Settings
           </h2>
-          <p className="text-xs text-slate-300 mt-1">Configure language tracks, audio playback, font display, and accessibility</p>
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            Configure theme mode, active language tracks, audio playback, font display, and accessibility
+          </p>
         </div>
       </div>
 
-      {/* Language Tracks Config */}
-      <div className="glass-panel p-6 bg-slate-950/90 border border-slate-800 space-y-4">
-        <h3 className="font-brand font-black text-slate-100 text-sm flex items-center gap-2">
+      {/* 1. Theme & Appearance Settings (Light / Dark Mode) */}
+      <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
+        isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200 shadow-xs'
+      }`}>
+        <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
+          isDarkMode ? 'text-white' : 'text-slate-900'
+        }`}>
+          <Palette size={18} className="text-[#FF6B35]" /> Appearance & Theme Mode
+        </h3>
+
+        <div className="grid grid-cols-2 gap-4">
+          {/* Light Mode Option Tile */}
+          <button
+            onClick={() => isDarkMode && toggleThemeMode()}
+            className={`p-5 rounded-2xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
+              !isDarkMode
+                ? 'bg-[#fff7ed] border-[#FF6B35] shadow-md ring-2 ring-[#FF6B35]/20'
+                : 'bg-[#0b0f19] border-[#1e293b] hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 font-bold border border-amber-200">
+                <Sun size={20} />
+              </div>
+              {!isDarkMode && (
+                <span className="bg-[#FF6B35] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Active
+                </span>
+              )}
+            </div>
+            <div>
+              <span className={`font-display text-sm font-black block ${!isDarkMode ? 'text-slate-900' : 'text-white'}`}>
+                Light Mode ☀️
+              </span>
+              <span className={`text-[11px] block mt-0.5 ${!isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>
+                Crisp off-white canvas with high-contrast text and vibrant orange CTAs
+              </span>
+            </div>
+          </button>
+
+          {/* Dark Mode Option Tile */}
+          <button
+            onClick={() => !isDarkMode && toggleThemeMode()}
+            className={`p-5 rounded-2xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
+              isDarkMode
+                ? 'bg-[#FF6B35]/15 border-[#FF6B35] shadow-md ring-2 ring-[#FF6B35]/20'
+                : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-950 flex items-center justify-center text-indigo-400 font-bold border border-indigo-800">
+                <Moon size={20} />
+              </div>
+              {isDarkMode && (
+                <span className="bg-[#FF6B35] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Active
+                </span>
+              )}
+            </div>
+            <div>
+              <span className={`font-display text-sm font-black block ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                Dark Mode 🌙
+              </span>
+              <span className={`text-[11px] block mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                Deep obsidian navy background optimized for night study sessions
+              </span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* 2. Active Language Tracks Config */}
+      <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
+        isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200 shadow-xs'
+      }`}>
+        <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
+          isDarkMode ? 'text-white' : 'text-slate-900'
+        }`}>
           <Globe size={18} className="text-sky-400" /> Active Language Track
         </h3>
 
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={() => onSelectLanguage('ko')}
-            className={`p-4 rounded-2xl border text-center transition-all ${
+            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'ko'
-                ? 'bg-sky-950 border-sky-400 text-white font-black shadow-lg'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
+                : isDarkMode
+                ? 'bg-[#0b0f19] border-[#1e293b] text-slate-400 hover:border-slate-700'
+                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
             <span className="text-2xl block mb-1">🇰🇷</span>
@@ -48,10 +131,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
 
           <button
             onClick={() => onSelectLanguage('ja')}
-            className={`p-4 rounded-2xl border text-center transition-all ${
+            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'ja'
-                ? 'bg-sky-950 border-sky-400 text-white font-black shadow-lg'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
+                : isDarkMode
+                ? 'bg-[#0b0f19] border-[#1e293b] text-slate-400 hover:border-slate-700'
+                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
             <span className="text-2xl block mb-1">🇯🇵</span>
@@ -60,10 +145,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
 
           <button
             onClick={() => onSelectLanguage('en')}
-            className={`p-4 rounded-2xl border text-center transition-all ${
+            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'en'
-                ? 'bg-sky-950 border-sky-400 text-white font-black shadow-lg'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
+                : isDarkMode
+                ? 'bg-[#0b0f19] border-[#1e293b] text-slate-400 hover:border-slate-700'
+                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
             <span className="text-2xl block mb-1">🇺🇸</span>
@@ -72,22 +159,30 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
         </div>
       </div>
 
-      {/* Audio & Accessibility Config */}
-      <div className="glass-panel p-6 bg-slate-950/90 border border-slate-800 space-y-4">
-        <h3 className="font-brand font-black text-slate-100 text-sm flex items-center gap-2">
+      {/* 3. Audio & Accessibility Config */}
+      <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
+        isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200 shadow-xs'
+      }`}>
+        <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
+          isDarkMode ? 'text-white' : 'text-slate-900'
+        }`}>
           <Volume2 size={18} className="text-emerald-400" /> Audio & Accessibility Options
         </h3>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-3.5 bg-slate-900 rounded-xl border border-slate-800">
+        <div className="space-y-3">
+          <div className={`flex items-center justify-between p-3.5 rounded-xl border ${
+            isDarkMode ? 'bg-[#0b0f19] border-[#1e293b]' : 'bg-slate-50 border-slate-200'
+          }`}>
             <div>
-              <div className="text-xs font-black text-slate-200">Audio Playback Speed</div>
-              <div className="text-[10px] text-slate-400">Adjust TTS speech speed for listening exercises</div>
+              <div className={`text-xs font-black ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>Audio Playback Speed</div>
+              <div className={`text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Adjust TTS speech speed for listening exercises</div>
             </div>
             <select
               value={audioSpeed}
               onChange={(e) => setAudioSpeed(parseFloat(e.target.value))}
-              className="bg-slate-950 text-slate-100 border border-slate-700 rounded-lg px-3 py-1 text-xs font-bold"
+              className={`rounded-lg px-3 py-1 text-xs font-bold border ${
+                isDarkMode ? 'bg-[#131b2e] text-white border-slate-700' : 'bg-white text-slate-900 border-slate-300'
+              }`}
             >
               <option value={0.75}>0.75x (Slow)</option>
               <option value={1.0}>1.0x (Normal)</option>
@@ -95,16 +190,18 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             </select>
           </div>
 
-          <div className="flex items-center justify-between p-3.5 bg-slate-900 rounded-xl border border-slate-800">
+          <div className={`flex items-center justify-between p-3.5 rounded-xl border ${
+            isDarkMode ? 'bg-[#0b0f19] border-[#1e293b]' : 'bg-slate-50 border-slate-200'
+          }`}>
             <div>
-              <div className="text-xs font-black text-slate-200">Colorblind Accessibility Palette</div>
-              <div className="text-[10px] text-slate-400">Enable high-contrast color accents for UI nodes</div>
+              <div className={`text-xs font-black ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>Colorblind Accessibility Palette</div>
+              <div className={`text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>High-contrast color profiles for UI elements</div>
             </div>
             <input
               type="checkbox"
               checked={colorblindMode}
               onChange={(e) => setColorblindMode(e.target.checked)}
-              className="w-4 h-4 accent-sky-500 rounded cursor-pointer"
+              className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
             />
           </div>
         </div>

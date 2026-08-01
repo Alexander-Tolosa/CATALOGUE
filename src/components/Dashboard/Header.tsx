@@ -15,7 +15,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   onSelectLanguage,
   onOpenPitchModal
 }) => {
-  const { isDarkMode, toggleThemeMode } = useAppStore();
+  const { isDarkMode } = useAppStore();
 
   return (
     <header
@@ -126,22 +126,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
             </div>
           </>
         )}
-
-        {/* Theme Toggle Button (Light / Dark) */}
-        <button
-          onClick={toggleThemeMode}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border ${
-            isDarkMode
-              ? 'bg-[#1e293b] border-[#334155] text-[#FF6B35] hover:bg-[#334155]'
-              : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
-          }`}
-          title="Toggle Light / Dark Mode"
-        >
-          <span className="material-symbols-outlined text-base">
-            {isDarkMode ? 'dark_mode' : 'light_mode'}
-          </span>
-          <span className="hidden sm:inline">{isDarkMode ? 'Dark' : 'Light'}</span>
-        </button>
 
         {/* Investor Pitch Deck Launcher */}
         <button

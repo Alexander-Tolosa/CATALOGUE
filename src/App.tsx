@@ -17,6 +17,7 @@ import { SettingsView } from './components/Settings/SettingsView';
 import { GlobalAIChatbox } from './components/Chatbox/GlobalAIChatbox';
 import { InvestorPitchModal } from './components/Investor/InvestorPitchModal';
 import { AuthScreen } from './components/Auth/AuthScreen';
+import { LandingPage } from './components/Landing/LandingPage';
 
 export const App: React.FC = () => {
   const { isAuthenticated, token } = useAuthStore();
@@ -35,10 +36,19 @@ export const App: React.FC = () => {
 
   const [activeView, setActiveView] = useState<AppView>('dashboard');
   const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Auth Gate: Render Auth Landing Screen if not authenticated
+  // Unauthenticated Gate: Show Duolingo-style Landing Page (with Auth modal overlay)
   if (!isAuthenticated || !token) {
-    return <AuthScreen />;
+    if (showAuthModal) {
+      return <AuthScreen onBack={() => setShowAuthModal(false)} />;
+    }
+    return (
+      <LandingPage
+        onGetStarted={() => setShowAuthModal(true)}
+        onLogin={() => setShowAuthModal(true)}
+      />
+    );
   }
 
   const activeNodes = getActiveNodes();
@@ -50,8 +60,8 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-[#FF6B35]/20 transition-colors duration-300 ${
-      isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#f8fafc] text-slate-900'
+    <div className={`min-h-screen font-sans selection:bg-[#F97316]/20 transition-colors duration-300 ${
+      isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#fafafa] text-slate-900'
     }`}>
       {/* 1. Persistent SideNavBar */}
       <SidebarNav
@@ -62,7 +72,7 @@ export const App: React.FC = () => {
 
       {/* 2. Main Canvas & TopAppBar */}
       <main className={`md:ml-64 min-h-screen relative transition-colors duration-300 ${
-        isDarkMode ? 'bg-[#0b0f19]' : 'bg-[#f8fafc]'
+        isDarkMode ? 'bg-[#0b0f17]' : 'bg-[#fafafa]'
       }`}>
         {/* Top Header */}
         <TopAppBar

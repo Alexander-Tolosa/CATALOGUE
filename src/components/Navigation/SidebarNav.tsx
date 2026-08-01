@@ -6,6 +6,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { LogoutModal } from './LogoutModal';
 import { GoogleAuthModal } from '../Auth/GoogleAuthModal';
 import { Badge } from '../ui/badge';
+import catalougeLogo from '../../assets/catalouge_logo.png';
 
 interface SidebarNavProps {
   activeView: AppView;
@@ -48,15 +49,13 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             : 'bg-white border-slate-200 text-slate-900 shadow-2xs'
         }`}
       >
-        {/* Brand Header & Logo */}
+        {/* Brand Header & Cat Mascot Logo */}
         <div className="mb-5 px-2 flex items-center gap-2.5">
           <motion.div
             whileHover={{ scale: 1.08, rotate: 5 }}
-            className="w-8 h-8 rounded-lg bg-[#f97316] flex items-center justify-center text-white font-bold shrink-0 shadow-md shadow-[#f97316]/30 cursor-pointer"
+            className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-slate-800 border border-[#f97316]/30 flex items-center justify-center p-1 shadow-xs cursor-pointer shrink-0"
           >
-            <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-              language
-            </span>
+            <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
           </motion.div>
           <div className="flex flex-col">
             <h1 className={`font-display font-bold text-base tracking-tight leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
@@ -68,7 +67,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           </div>
         </div>
 
-        {/* Navigation Items with Orange Glow Animation & Top Right Standalone Paw Symbol */}
+        {/* Navigation Items */}
         <nav className="flex-1 space-y-2.5 overflow-y-visible pt-1 px-1">
           {navItems.map((item) => {
             const isActive = activeView === item.id;
@@ -126,7 +125,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           })}
         </nav>
 
-        {/* Sidebar AI Tutor & Coach Feature Card with Glow Animation & Top Right Paw Symbol */}
+        {/* Sidebar AI Tutor & Coach Feature Card */}
         <div className="my-3 px-1">
           <motion.button
             onClick={() => onSelectView('kleo')}

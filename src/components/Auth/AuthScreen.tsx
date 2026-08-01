@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { GoogleAuthModal } from './GoogleAuthModal';
-import { Lock } from 'lucide-react';
+import { Lock, ArrowLeft } from 'lucide-react';
+import catalougeLogo from '../../assets/catalouge_logo.png';
 
-export const AuthScreen: React.FC = () => {
+interface AuthScreenProps {
+  onBack?: () => void;
+}
+
+export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
   const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [email, setEmail] = useState('you@company.com');
@@ -29,6 +34,17 @@ export const AuthScreen: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] text-slate-900 font-sans flex items-center justify-center p-4 selection:bg-[#f97316]/20 relative overflow-hidden">
+      {/* Top Left Big Lucide Back Arrow Button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="fixed top-6 left-6 z-50 p-3 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-[#f97316] border border-slate-200 shadow-md transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center"
+          title="Back to Landing Page"
+        >
+          <ArrowLeft size={24} className="stroke-[2.5]" />
+        </button>
+      )}
+
       {/* Background Soft Glow Aura */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 flex items-center justify-center">
         <div className="w-[500px] h-[500px] bg-orange-100/50 blur-[140px] rounded-full" />
@@ -36,10 +52,10 @@ export const AuthScreen: React.FC = () => {
 
       {/* Main Authentication Card Container */}
       <div className="bg-white w-full max-w-md p-8 md:p-10 rounded-3xl border border-slate-100 shadow-2xl shadow-slate-300/40 space-y-6 relative z-10 text-center">
-        {/* Top Circular Brand Logo Badge */}
+        {/* Top Circular Brand Mascot Logo Badge */}
         <div className="space-y-3">
-          <div className="w-12 h-12 mx-auto rounded-full bg-orange-50 border border-orange-200/80 flex items-center justify-center text-[#f97316] font-display font-black text-xl shadow-2xs">
-            C
+          <div className="w-14 h-14 mx-auto rounded-full bg-orange-50 border border-orange-200/80 flex items-center justify-center p-2 shadow-2xs">
+            <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
           </div>
 
           <div>

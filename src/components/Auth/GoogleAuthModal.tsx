@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useAuthStore } from '../../store/useAuthStore';
+import { X, ShieldCheck } from 'lucide-react';
+import catalougeLogo from '../../assets/catalouge_logo.png';
 
 interface GoogleOidcPayload {
   sub: string;
@@ -72,33 +74,41 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fadeIn">
-      <div className="glass-card w-full max-w-md p-8 rounded-3xl border border-[#5affff]/30 shadow-2xl space-y-6 text-center relative overflow-hidden bg-[#090e1c]/95">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-fadeIn">
+      {/* Clean Modern White Card Modal Container */}
+      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-2xl p-8 space-y-6 text-center relative overflow-hidden">
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#bacac9] hover:text-white p-2 rounded-full hover:bg-white/10"
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer"
+          title="Close modal"
         >
-          ✕
+          <X size={18} />
         </button>
 
-        {/* Header */}
-        <div className="space-y-2">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#5affff]/20 border border-[#5affff]/40 flex items-center justify-center text-[#5affff] text-2xl shadow-lg">
-            🐾
+        {/* Header & Cat Mascot Logo Badge */}
+        <div className="space-y-3 pt-2">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-orange-50 border border-orange-200/80 flex items-center justify-center p-2.5 shadow-xs">
+            <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
           </div>
-          <h3 className="font-display font-extrabold text-2xl text-white">Sign in to CATalouge</h3>
-          <p className="text-xs text-[#bacac9] max-w-xs mx-auto">
-            Use Google Identity Services (OAuth 2.0 & OIDC) for real-time cloud sync with Convex.
-          </p>
+
+          <div className="space-y-1">
+            <h3 className="font-display font-black text-2xl text-slate-900 tracking-tight">
+              Sign in to CATalouge
+            </h3>
+            <p className="text-xs font-medium text-slate-500 max-w-xs mx-auto leading-relaxed">
+              Use Google Identity Services (OAuth 2.0 & OIDC) for real-time cloud sync with Convex.
+            </p>
+          </div>
         </div>
 
-        {/* Official Google Sign In Button */}
-        <div className="space-y-3 pt-2">
+        {/* Duolingo 3D Style Google Sign In Button */}
+        <div className="space-y-4 pt-2">
           <button
             onClick={handleSandboxLogin}
-            className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 font-extrabold text-xs transition-all shadow-xl active:scale-95 border border-slate-300"
+            className="w-full flex items-center justify-center gap-3 py-3.5 px-5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-sm transition-all border-2 border-slate-200 shadow-[0_4px_0_0_#cbd5e1] active:translate-y-1 active:shadow-none cursor-pointer"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -119,9 +129,11 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
             <span>Sign in with Google (OIDC)</span>
           </button>
 
-          <span className="text-[10px] text-[#bacac9]/70 uppercase tracking-widest block font-bold">
-            OAuth 2.0 & OpenID Connect Secured
-          </span>
+          {/* Security Badge */}
+          <div className="flex items-center justify-center gap-1.5 text-[10px] font-extrabold text-[#F97316] uppercase tracking-wider pt-1">
+            <ShieldCheck size={14} className="text-[#F97316]" />
+            <span>OAuth 2.0 & OpenID Connect Secured</span>
+          </div>
         </div>
       </div>
     </div>

@@ -197,7 +197,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
                   className="absolute right-0 mt-2 w-56 rounded-2xl bg-white border border-slate-200 shadow-2xl p-2 z-50 overflow-hidden"
                 >
                   <div className="text-[10px] font-bold text-slate-400 px-3 py-1.5 uppercase tracking-wider">
-                    Select Language / 언어 선택
+                    SELECT LANGUAGE
                   </div>
 
                   <button

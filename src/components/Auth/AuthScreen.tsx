@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { GoogleAuthModal } from './GoogleAuthModal';
-import kleoCatImg from '../../assets/kleo_cat_isolated.png';
+import { Lock } from 'lucide-react';
 
 export const AuthScreen: React.FC = () => {
   const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
-  const [email, setEmail] = useState('learner@catalouge.app');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('you@company.com');
+  const [password, setPassword] = useState('••••••••');
   const [name, setName] = useState('User_Sensei');
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
 
@@ -15,7 +15,7 @@ export const AuthScreen: React.FC = () => {
     e.preventDefault();
     if (!email || !password) return;
 
-    // Authenticate user via JWT / Session
+    // Authenticate user via session
     loginWithGoogle(
       {
         googleSubId: 'usr-' + Date.now(),
@@ -28,43 +28,48 @@ export const AuthScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0e1322] text-[#dee1f7] font-sans flex items-center justify-center p-4 selection:bg-[#5affff]/30 relative overflow-hidden">
-      {/* Dynamic Ambient Background Glows */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#5affff]/10 blur-[130px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#cebdff]/10 blur-[130px] rounded-full" />
+    <div className="min-h-screen bg-[#f3f4f6] text-slate-900 font-sans flex items-center justify-center p-4 selection:bg-[#f97316]/20 relative overflow-hidden">
+      {/* Background Soft Glow Aura */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 flex items-center justify-center">
+        <div className="w-[500px] h-[500px] bg-orange-100/50 blur-[140px] rounded-full" />
       </div>
 
-      {/* Auth Container Card */}
-      <div className="glass-card w-full max-w-md p-8 rounded-3xl border border-[#5affff]/30 shadow-2xl space-y-6 relative z-10 bg-[#090e1c]/90">
-        {/* Brand Header & Kleo Cat Mascot Avatar */}
-        <div className="text-center space-y-3">
-          <div className="w-24 h-24 mx-auto rounded-full bg-[#161b2b] border-2 border-[#5affff]/30 p-2 relative flex items-center justify-center shadow-[0_0_25px_rgba(90,255,255,0.2)]">
-            <img
-              src={kleoCatImg}
-              alt="Kleo Cat Mascot"
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = '/kleo_cat_isolated.png';
-              }}
-            />
+      {/* Main Authentication Card Container */}
+      <div className="bg-white w-full max-w-md p-8 md:p-10 rounded-3xl border border-slate-100 shadow-2xl shadow-slate-300/40 space-y-6 relative z-10 text-center">
+        {/* Top Circular Brand Logo Badge */}
+        <div className="space-y-3">
+          <div className="w-12 h-12 mx-auto rounded-full bg-orange-50 border border-orange-200/80 flex items-center justify-center text-[#f97316] font-display font-black text-xl shadow-2xs">
+            C
           </div>
 
           <div>
-            <h1 className="font-display font-black text-3xl text-[#5affff] tracking-tight">CATalouge</h1>
-            <p className="text-xs font-bold text-[#bacac9]/70 uppercase tracking-widest mt-0.5">
-              Multilingual AI Platform
+            <h1 className="font-display font-black text-2xl text-slate-900 tracking-tight">
+              CATalogue
+            </h1>
+            <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mt-0.5">
+              MULTILINGUAL AI PLATFORM
+            </p>
+          </div>
+
+          <div className="pt-2 space-y-1">
+            <h2 className="font-display font-black text-xl text-slate-900">
+              {isRegisterMode ? 'Create your account' : 'Welcome back'}
+            </h2>
+            <p className="text-xs text-slate-500">
+              {isRegisterMode
+                ? 'Sign up to start mastering new languages with Kleo.'
+                : 'Sign in to continue where you left off.'}
             </p>
           </div>
         </div>
 
-        {/* Google Identity Services (OAuth 2.0 & OIDC) Quick Button */}
-        <div className="space-y-3">
+        {/* Google Identity Services (OAuth 2.0 & OIDC) Button */}
+        <div className="space-y-4">
           <button
             onClick={() => setIsGoogleModalOpen(true)}
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 font-extrabold text-xs transition-all shadow-xl active:scale-95 border border-slate-300"
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs transition-all border border-slate-200 cursor-pointer shadow-2xs"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -82,74 +87,100 @@ export const AuthScreen: React.FC = () => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span>Continue with Google (OIDC)</span>
+            <span>Continue with Google</span>
           </button>
 
-          <div className="flex items-center gap-3 py-1">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-[10px] text-[#bacac9]/60 font-bold uppercase tracking-widest">OR EMAIL</span>
-            <div className="flex-1 h-px bg-white/10" />
+          {/* Divider */}
+          <div className="relative flex items-center justify-center my-2">
+            <div className="w-full border-t border-slate-200" />
+            <span className="absolute bg-white px-3 text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">
+              OR CONTINUE WITH EMAIL
+            </span>
           </div>
         </div>
 
         {/* Email & Password Authentication Form */}
-        <form onSubmit={handleEmailSubmit} className="space-y-4">
+        <form onSubmit={handleEmailSubmit} className="space-y-3.5 text-left">
           {isRegisterMode && (
-            <div className="space-y-1 text-left">
-              <label className="text-[11px] font-bold text-[#bacac9] uppercase tracking-wider">Display Name</label>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                FULL NAME
+              </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your display name"
-                className="w-full bg-[#161b2b] border border-[#5affff]/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#5affff]"
+                placeholder="User Sensei"
+                className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#f97316] focus:bg-white transition-all"
                 required
               />
             </div>
           )}
 
-          <div className="space-y-1 text-left">
-            <label className="text-[11px] font-bold text-[#bacac9] uppercase tracking-wider">Email Address</label>
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+              EMAIL ADDRESS
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="learner@catalouge.app"
-              className="w-full bg-[#161b2b] border border-[#5affff]/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#5affff]"
+              placeholder="you@company.com"
+              className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#f97316] focus:bg-white transition-all"
               required
             />
           </div>
 
-          <div className="space-y-1 text-left">
-            <label className="text-[11px] font-bold text-[#bacac9] uppercase tracking-wider">Password</label>
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                PASSWORD
+              </label>
+              {!isRegisterMode && (
+                <button
+                  type="button"
+                  onClick={() => alert('Password reset link sent to your email!')}
+                  className="text-[11px] font-bold text-[#f97316] hover:underline cursor-pointer"
+                >
+                  Forgot password?
+                </button>
+              )}
+            </div>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-[#161b2b] border border-[#5affff]/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#5affff]"
+              placeholder="Enter your password"
+              className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#f97316] focus:bg-white transition-all"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3.5 px-4 rounded-2xl bg-[#5affff] text-[#003737] font-black text-xs transition-all shadow-[0_0_20px_rgba(90,255,255,0.3)] hover:scale-[1.02] active:scale-95 uppercase tracking-wider"
+            className="w-full py-3.5 px-4 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white font-black text-xs transition-all shadow-md active:scale-98 uppercase tracking-wider cursor-pointer mt-2"
           >
-            {isRegisterMode ? 'Create Account & Start Learning' : 'Sign In to CATalouge'}
+            {isRegisterMode ? 'CREATE AN ACCOUNT' : 'SIGN IN TO CATALOGUE'}
           </button>
         </form>
 
-        {/* Toggle Mode Footer */}
-        <div className="text-center pt-2 border-t border-white/5">
+        {/* Footer & Mode Toggle */}
+        <div className="pt-3 border-t border-slate-100 space-y-3">
           <button
             onClick={() => setIsRegisterMode(!isRegisterMode)}
-            className="text-xs font-bold text-[#5affff] hover:underline"
+            className="text-xs font-medium text-slate-600 cursor-pointer transition-colors"
           >
-            {isRegisterMode
-              ? 'Already have an account? Sign In'
-              : "Don't have an account? Register Now"}
+            {isRegisterMode ? (
+              <>Already have an account? <span className="text-[#f97316] font-bold hover:underline">Sign in</span></>
+            ) : (
+              <>New to CATalogue? <span className="text-[#f97316] font-bold hover:underline">Create an account</span></>
+            )}
           </button>
+
+          <div className="flex items-center justify-center gap-1.5 text-[10px] font-medium text-slate-400">
+            <Lock size={12} className="text-slate-400" />
+            <span>Your access is protected with secure encryption</span>
+          </div>
         </div>
       </div>
 

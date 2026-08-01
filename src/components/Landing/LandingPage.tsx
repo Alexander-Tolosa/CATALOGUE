@@ -4,6 +4,7 @@ import { FlagIcon } from '../Common/FlagIcon';
 import { Sparkles, Globe, ShieldCheck, Heart, Award, ArrowRight, ChevronDown } from 'lucide-react';
 import catalougeLogo from '../../assets/catalouge_logo.png';
 import catVideo from '../../assets/Cat.mp4';
+import studyVideo from '../../assets/Study.mp4';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -49,35 +50,35 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
 
         {/* Right Header Actions */}
         <div className="flex items-center gap-4">
-          {/* Site Language Selector Dropdown */}
-          <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-white hover:text-orange-100 cursor-pointer px-3 py-1.5 rounded-xl border border-white/30 bg-white/10">
-            <Globe size={16} className="text-white" />
-            <span>SITE LANGUAGE: {selectedSiteLang}</span>
-            <ChevronDown size={14} />
+          {/* Site Language Selector Dropdown (Skeuomorphic 3D UI) */}
+          <div className="hidden sm:flex items-center gap-2 text-xs font-black text-[#EA580C] cursor-pointer px-4 py-2 rounded-xl bg-gradient-to-b from-white via-orange-50/60 to-orange-100/80 border-t-2 border-t-white border-b-2 border-b-orange-200/90 border-x border-x-orange-100 shadow-[0_4px_8px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,1)] hover:from-white hover:to-orange-100 transition-all">
+            <Globe size={16} className="text-[#F97316] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]" />
+            <span className="drop-shadow-[0_1px_0_rgba(255,255,255,0.9)]">SITE LANGUAGE: {selectedSiteLang}</span>
+            <ChevronDown size={14} className="text-[#F97316]" />
           </div>
 
-          {/* Log In Button */}
+          {/* Log In Button (Duolingo 3D Style in Orange) */}
           <button
             onClick={onLogin}
-            className="px-5 py-2.5 rounded-xl border-2 border-white/40 hover:border-white hover:bg-white/20 text-white font-extrabold text-xs tracking-wider uppercase transition-all shadow-[0_3px_0_rgba(194,65,12,0.3)] active:translate-y-0.5 active:shadow-none cursor-pointer"
+            className="px-6 py-2.5 rounded-xl bg-[#F97316] hover:bg-[#ea580c] text-white font-black text-xs tracking-wider uppercase transition-all shadow-[0_4px_0_0_#c2410c] active:translate-y-1 active:shadow-none cursor-pointer border border-[#ea580c]/50"
           >
-            Log In
+            LOG IN
           </button>
         </div>
       </header>
 
-      {/* 2. Hero Section (Duolingo 2-Column Layout with Full Unclipped Cat.mp4 Video Mascot) */}
-      <section className="max-w-6xl mx-auto px-6 py-6 md:py-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-        {/* Left Column: Unclipped Large Cat.mp4 Video Mascot Container */}
-        <div className="md:col-span-6 flex flex-col items-center justify-center text-center">
+      {/* 2. Hero Section (Duolingo 2-Column Layout with Full Unclipped Study.mp4 Video Mascot) */}
+      <section className="max-w-7xl mx-auto px-6 py-6 md:py-12 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-14 items-center">
+        {/* Left Column: Unclipped Large Study.mp4 Video Mascot Container */}
+        <div className="md:col-span-6 flex flex-col items-center justify-center text-center md:-translate-x-6 lg:-translate-x-10">
           <div className="mascot-container relative flex items-center justify-center w-full max-w-[560px] h-[440px] sm:h-[500px] md:h-[540px]">
             <video
-              src={catVideo}
+              src={studyVideo}
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-contain scale-[1.35] transform mix-blend-multiply contrast-[1.05] brightness-[1.02] pointer-events-none select-none"
+              className="w-full h-full object-contain scale-[1.3] transform mix-blend-multiply contrast-[1.05] brightness-[1.02] pointer-events-none select-none"
             />
           </div>
         </div>
@@ -237,7 +238,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
 
       {/* 6. Footer */}
       <footer className="border-t border-slate-200 py-8 px-6 text-center text-xs text-slate-500 space-y-2">
-        <p>© 2026 CATalouge EdTech Platform. All rights reserved.</p>
+        <p>© 2026 CATalouge Platform. All rights reserved.</p>
         <div className="flex items-center justify-center gap-4 text-slate-400 font-semibold">
           <a href="#" onClick={onGetStarted} className="hover:text-[#F97316]">Korean</a>
           <span>•</span>

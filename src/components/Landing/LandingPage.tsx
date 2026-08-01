@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FlagIcon } from '../Common/FlagIcon';
-import { Sparkles, Globe, ShieldCheck, Heart, Award, ArrowRight, ChevronDown } from 'lucide-react';
+import { Sparkles, Globe, Zap, Bot, ShieldCheck, Heart, Award, ArrowRight, ChevronDown } from 'lucide-react';
 import catalougeLogo from '../../assets/catalouge_logo.png';
 import catVideo from '../../assets/Cat.mp4';
 import studyVideo from '../../assets/Study.mp4';
@@ -163,28 +163,43 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
               Free, fun, and effective language learning
             </h3>
             <p className="text-sm text-slate-600 leading-relaxed max-w-md">
-              CATalouge combines bite-sized skill tree lessons, native Web Speech pronunciation, and SM-2 flashcard decks that fit naturally into your daily routine.
+              CATalouge combines language lessons, translator, missions, letters and pronunciation that fits naturally into your daily routine and activities.
             </p>
           </div>
-          <div className="md:col-span-6 p-8 rounded-3xl bg-slate-50 border border-slate-200 shadow-xl flex items-center justify-center">
-            <div className="space-y-4 w-full max-w-sm">
-              <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-center gap-4 shadow-sm">
-                <div className="w-10 h-10 rounded-xl bg-orange-100 text-[#F97316] flex items-center justify-center font-bold">
-                  ⚡
+
+          {/* Soft Neumorphism Extruded Cards Container */}
+          <div className="md:col-span-6 p-8 rounded-3xl bg-[#eef2f7] border border-white/60 shadow-[10px_10px_24px_rgba(163,177,198,0.4),-10px_-10px_24px_rgba(255,255,255,0.9)] flex items-center justify-center">
+            <div className="space-y-4.5 w-full max-w-sm">
+              {/* 1. Translator */}
+              <div className="p-4 rounded-2xl bg-[#eef2f7] shadow-[6px_6px_14px_rgba(163,177,198,0.4),-6px_-6px_14px_rgba(255,255,255,0.9)] flex items-center gap-4 border border-white/60 transition-all hover:scale-[1.02]">
+                <div className="w-12 h-12 rounded-2xl bg-[#dbeafe]/80 text-blue-500 flex items-center justify-center shrink-0 shadow-inner">
+                  <Globe size={22} className="text-blue-500 stroke-[2.2]" />
                 </div>
                 <div>
-                  <span className="font-bold text-xs text-slate-900 block">Bite-Sized Skill Tree</span>
-                  <span className="text-[10px] text-slate-500">Master Hangul & Kana in 5 mins/day</span>
+                  <span className="font-extrabold text-xs text-slate-800 block">Translator</span>
+                  <span className="text-[10px] font-medium text-slate-500">Instant context-aware multi-language translation</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-center gap-4 shadow-sm">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
-                  🎯
+              {/* 2. Gamified Lessons */}
+              <div className="p-4 rounded-2xl bg-[#eef2f7] shadow-[6px_6px_14px_rgba(163,177,198,0.4),-6px_-6px_14px_rgba(255,255,255,0.9)] flex items-center gap-4 border border-white/60 transition-all hover:scale-[1.02]">
+                <div className="w-12 h-12 rounded-2xl bg-[#ffedd5]/80 text-amber-500 flex items-center justify-center shrink-0 shadow-inner">
+                  <Zap size={22} className="text-amber-500 fill-amber-400 stroke-[1.8]" />
                 </div>
                 <div>
-                  <span className="font-bold text-xs text-slate-900 block">SM-2 Spaced Repetition</span>
-                  <span className="text-[10px] text-slate-500">Remember vocabulary forever</span>
+                  <span className="font-extrabold text-xs text-slate-800 block">Gamified Lessons</span>
+                  <span className="text-[10px] font-medium text-slate-500">Master Korean, Japanese & English in 5 mins/day</span>
+                </div>
+              </div>
+
+              {/* 3. AI Chatbot */}
+              <div className="p-4 rounded-2xl bg-[#eef2f7] shadow-[6px_6px_14px_rgba(163,177,198,0.4),-6px_-6px_14px_rgba(255,255,255,0.9)] flex items-center gap-4 border border-white/60 transition-all hover:scale-[1.02]">
+                <div className="w-12 h-12 rounded-2xl bg-[#f3e8ff]/80 text-purple-500 flex items-center justify-center shrink-0 shadow-inner">
+                  <Bot size={22} className="text-purple-500 stroke-[2.2]" />
+                </div>
+                <div>
+                  <span className="font-extrabold text-xs text-slate-800 block">AI Chatbot</span>
+                  <span className="text-[10px] font-medium text-slate-500">Practice real-time conversations with Kleo</span>
                 </div>
               </div>
             </div>
@@ -201,7 +216,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
               Stay motivated with Kleo your AI Siamese Companion
             </h3>
             <p className="text-sm text-slate-600 leading-relaxed max-w-md">
-              Pet Kleo to increase your Bond Level, unlock cosmetic hats and berets, and receive comforting purrs when learning new scripts!
+              Obtain cosmetics by getting points from missions and gain points to lvl up your AI companion. You can also ask Kleo something in Korean, English and Japanese.
             </p>
           </div>
           <div className="md:col-span-6 md:order-1 flex items-center justify-center">

@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  passwordHash String
+  createdAt    DateTime       @default(now())
+  tracks       UserTrack[]
+  progress     UserProgress[]
+  reviewItems  ReviewItem[]
+  streaks      Streak?
+  kleoState    KleoState?
+  chatMessages ChatMessage[]
+}
+
+model UserTrack {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language    String   // 'ko' | 'ja' | 'en'
+  currentUnit Int      @default(1)
+  dailyGoal   Int      @default(10) // minutes
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, language])
+}
+
+model Lesson {
+  id           String         @id @default(uuid())
+  language     String         // 'ko' | 'ja' | 'en'
+  unit         Int
+  order        Int
+  type         String         // 'letters' | 'words' | 'phrases' | 'sentences' | 'dialogue'
+  xpReward     Int            @default(20)
+  title        String
+  description  String
+  exercises    String         // JSON string of exercises
+  userProgress UserProgress[]
+}
+
+model UserProgress {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status      String   // 'locked' | 'unlocked' | 'completed'
+  completedAt DateTime?
+
+  @@unique([userId, lessonId])
+}
+
+model Vocabulary {
+  id          String       @id @default(uuid())
+  language    String
+  term        String
+  translation String
+  audioUrl    String?
+  reviewItems ReviewItem[]
+}
+
+model ReviewItem {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabularyId String
+  vocabulary   Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  interval     Int        @default(1) // days
+  easeFactor   Float      @default(2.5) // SM-2 ease factor
+  nextReviewAt DateTime   @default(now())
+  createdAt    DateTime   @default(now())
+}
+
+model Streak {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentStreak  Int       @default(1)
+  longestStreak  Int       @default(1)
+  lastActiveDate DateTime  @default(now())
+}
+
+model KleoState {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bondXp            Int      @default(0)
+  mood              String   @default("happy") // 'happy' | 'curious' | 'encouraging' | 'nuzzling' | 'celebrating' | 'sleepy'
+  equippedCosmetics String   @default("{}") // JSON string of equipped cosmetics
+  unlockedCosmetics String   @default("[\"blue_beret\"]") // JSON array
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   // 'user' | 'assistant'
+  content   String
+  createdAt DateTime @default(now())
+}

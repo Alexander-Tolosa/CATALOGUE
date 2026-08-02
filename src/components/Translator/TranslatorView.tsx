@@ -250,6 +250,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
   const [isSpeakingTarget, setIsSpeakingTarget] = useState(false);
 
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   // Translation Function using multi-engine internet APIs
   const performTranslation = useCallback(
@@ -429,10 +430,25 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
     setIsSaved(false);
   };
 
+  // Stop Speech Synthesis Audio Playback
+  const stopSpeaking = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeakingSource(false);
+    setIsSpeakingTarget(false);
+  };
+
   // Text-To-Speech (TTS)
   const speakText = (text: string, lang: LangOption, isSource: boolean) => {
     if (!text.trim()) return;
     if ('speechSynthesis' in window) {
+      // Toggle stop if already speaking
+      if ((isSource && isSpeakingSource) || (!isSource && isSpeakingTarget)) {
+        stopSpeaking();
+        return;
+      }
+
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = LANG_CODES[lang].bcp47;
@@ -442,20 +458,35 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
       else setIsSpeakingTarget(true);
 
       utterance.onend = () => {
-        if (isSource) setIsSpeakingSource(false);
-        else setIsSpeakingTarget(false);
+        stopSpeaking();
       };
       utterance.onerror = () => {
-        if (isSource) setIsSpeakingSource(false);
-        else setIsSpeakingTarget(false);
+        stopSpeaking();
       };
 
       window.speechSynthesis.speak(utterance);
     }
   };
 
-  // Speech-To-Text (Voice Input)
+  // Stop Voice Input (Speech Recognition)
+  const stopVoiceInput = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    setIsListening(false);
+  };
+
+  // Speech-To-Text (Voice Input) with Toggle & Stop capability
   const startVoiceInput = () => {
+    if (isListening) {
+      stopVoiceInput();
+      return;
+    }
+
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
@@ -469,6 +500,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
       recognition.lang = LANG_CODES[fromLang].bcp47;
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
+      recognitionRef.current = recognition;
 
       setIsListening(true);
 
@@ -627,7 +659,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                 isDarkMode ? 'border-[#1e293b]' : 'border-slate-100'
               }`}
             >
-              {/* Left Action Icons: Voice Input & TTS */}
+              {/* Left Action Icons: Voice Input & Speaker Icon */}
               <div className="flex items-center gap-2">
                 {/* Voice Input Button */}
                 <button
@@ -639,24 +671,25 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                       ? 'bg-[#1e293b] border-[#334155] text-slate-300 hover:text-white hover:border-[#FF6B35]/40'
                       : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
                   }`}
-                  title="Speak into Microphone"
+                  title={isListening ? 'Click to stop listening' : 'Speak into Microphone'}
                 >
                   <span className="material-symbols-outlined text-base">mic</span>
                   <span>{isListening ? 'Listening...' : 'Voice Input'}</span>
                 </button>
 
-                {/* Audio Speaker Icon for Source Text */}
+                {/* Audio Speaker Icon for Source Text (Single tap: play, Double tap / tap while active: stop voice) */}
                 <button
                   onClick={() => speakText(inputText, fromLang, true)}
+                  onDoubleClick={stopSpeaking}
                   disabled={!inputText.trim()}
                   className={`p-2 rounded-xl border transition-colors cursor-pointer ${
                     isSpeakingSource
-                      ? 'bg-[#FF6B35]/20 text-[#FF6B35] border-[#FF6B35]'
+                      ? 'bg-[#FF6B35]/20 text-[#FF6B35] border-[#FF6B35] animate-pulse'
                       : isDarkMode
                       ? 'bg-[#1e293b] border-[#334155] text-slate-300 hover:text-[#FF6B35] disabled:opacity-40'
                       : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-[#FF6B35] disabled:opacity-40'
                   }`}
-                  title="Listen to Source Text"
+                  title="Single tap to listen • Double tap to stop voice"
                 >
                   <span className="material-symbols-outlined text-base block">volume_up</span>
                 </button>
@@ -741,7 +774,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                 isDarkMode ? 'border-[#1e293b]' : 'border-slate-100'
               }`}
             >
-              {/* Left Action Icons: Copy & TTS for Output */}
+              {/* Left Action Icons: Copy & Speaker Icon for Output */}
               <div className="flex items-center gap-2">
                 {/* Copy Button */}
                 <button
@@ -757,18 +790,19 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                   <span className="material-symbols-outlined text-base block">content_copy</span>
                 </button>
 
-                {/* Audio Speaker Icon for Target Text */}
+                {/* Audio Speaker Icon for Target Text (Single tap: play, Double tap / tap while active: stop voice) */}
                 <button
                   onClick={() => speakText(translatedText, toLang, false)}
+                  onDoubleClick={stopSpeaking}
                   disabled={!translatedText.trim()}
                   className={`p-2 rounded-xl border transition-colors cursor-pointer ${
                     isSpeakingTarget
-                      ? 'bg-[#FF6B35]/20 text-[#FF6B35] border-[#FF6B35]'
+                      ? 'bg-[#FF6B35]/20 text-[#FF6B35] border-[#FF6B35] animate-pulse'
                       : isDarkMode
                       ? 'bg-[#1e293b] border-[#334155] text-slate-300 hover:text-[#FF6B35] disabled:opacity-40'
                       : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-[#FF6B35] disabled:opacity-40'
                   }`}
-                  title="Listen to Translation"
+                  title="Single tap to listen • Double tap to stop voice"
                 >
                   <span className="material-symbols-outlined text-base block">volume_up</span>
                 </button>

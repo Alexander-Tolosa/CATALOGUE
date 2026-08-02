@@ -80,7 +80,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 space-y-2 overflow-y-auto pt-1 px-1">
+        <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar pt-1 px-1">
           {navItems.map((item) => {
             const isActive = activeView === item.id;
             return (
@@ -136,45 +136,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             );
           })}
         </nav>
-
-        {/* Sidebar AI Chatbot Feature Card Button */}
-        <div className="my-2 px-1">
-          <motion.button
-            onClick={toggleChatbot}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className={`w-full p-2.5 rounded-xl border text-left flex items-center justify-between gap-2 transition-all duration-200 shadow-md cursor-pointer ${
-              isChatbotOpen
-                ? 'bg-[#f97316] text-white border-[#f97316] shadow-[0_0_20px_rgba(249,115,22,0.5)]'
-                : 'bg-gradient-to-r from-orange-500/10 to-amber-500/10 dark:bg-[#f97316]/10 border-[#f97316]/40 hover:border-[#f97316]'
-            }`}
-          >
-            <div className="flex items-center gap-2.5">
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                isChatbotOpen ? 'bg-white/20 text-white' : 'bg-[#f97316] text-white shadow-xs'
-              }`}>
-                <span className="material-symbols-outlined text-base">smart_toy</span>
-              </div>
-              <div className="flex flex-col">
-                <span className={`text-xs font-bold leading-tight ${
-                  isChatbotOpen ? 'text-white' : 'text-[#f97316]'
-                }`}>
-                  AI Chatbot
-                </span>
-                <span className={`text-[10px] ${
-                  isChatbotOpen ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'
-                }`}>
-                  Ask Kleo Anything 🐾
-                </span>
-              </div>
-            </div>
-            <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${
-              isChatbotOpen ? 'bg-white text-[#f97316]' : 'bg-[#f97316] text-white'
-            }`}>
-              {isChatbotOpen ? 'Active' : 'Chat'}
-            </span>
-          </motion.button>
-        </div>
 
         {/* Sidebar AI Companion Hub Card */}
         <div className="mb-2 px-1">

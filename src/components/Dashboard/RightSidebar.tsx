@@ -2,6 +2,7 @@ import React from 'react';
 import { LanguageTrack, UserProfile } from '../../types';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { Flame, Heart, Award, Shield, Zap, Sparkles, ChevronDown, Trophy } from 'lucide-react';
+import { FlagIcon } from '../Common/FlagIcon';
 
 interface RightSidebarProps {
   profile: UserProfile;
@@ -25,9 +26,7 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
         {/* Language Flag Selector Dropdown */}
         <div className="relative group">
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700/90 text-xs font-black text-slate-100 hover:bg-slate-800 transition-colors shadow-md">
-            <span className="text-base">
-              {profile.selectedLanguage === 'ko' ? '🇰🇷' : profile.selectedLanguage === 'ja' ? '🇯🇵' : '🇺🇸'}
-            </span>
+            <FlagIcon code={profile.selectedLanguage === 'ko' ? 'kr' : profile.selectedLanguage === 'ja' ? 'jp' : 'us'} size="sm" />
             <span className="font-mono">1</span>
             <ChevronDown size={14} className="text-slate-400" />
           </button>
@@ -36,21 +35,21 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
           <div className="absolute top-full left-0 mt-1.5 w-40 bg-slate-900 border border-slate-700 rounded-xl p-1.5 shadow-2xl hidden group-hover:block z-50">
             <button
               onClick={() => onSelectLanguage('ko')}
-              className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800 flex items-center gap-2"
+              className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800 flex items-center gap-2 cursor-pointer"
             >
-              <span>🇰🇷</span> Korean
+              <FlagIcon code="kr" size="sm" /> Korean
             </button>
             <button
               onClick={() => onSelectLanguage('ja')}
-              className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800 flex items-center gap-2"
+              className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800 flex items-center gap-2 cursor-pointer"
             >
-              <span>🇯🇵</span> Japanese
+              <FlagIcon code="jp" size="sm" /> Japanese
             </button>
             <button
               onClick={() => onSelectLanguage('en')}
-              className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800 flex items-center gap-2"
+              className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800 flex items-center gap-2 cursor-pointer"
             >
-              <span>🇺🇸</span> English
+              <FlagIcon code="us" size="sm" /> English
             </button>
           </div>
         </div>

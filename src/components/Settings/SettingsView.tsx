@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, LanguageTrack } from '../../types';
 import { Settings, Volume2, Type, Shield, User, Globe, Sun, Moon, Palette } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { FlagIcon } from '../Common/FlagIcon';
 
 interface SettingsViewProps {
   profile: UserProfile;
@@ -117,7 +118,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={() => onSelectLanguage('ko')}
-            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
+            className={`p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'ko'
                 ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
                 : isDarkMode
@@ -125,13 +126,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <span className="text-2xl block mb-1">🇰🇷</span>
+            <FlagIcon code="kr" size="lg" className="mb-2" />
             <span className="text-xs">Korean (한글)</span>
           </button>
 
           <button
             onClick={() => onSelectLanguage('ja')}
-            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
+            className={`p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'ja'
                 ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
                 : isDarkMode
@@ -139,13 +140,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <span className="text-2xl block mb-1">🇯🇵</span>
+            <FlagIcon code="jp" size="lg" className="mb-2" />
             <span className="text-xs">Japanese (日本語)</span>
           </button>
 
           <button
             onClick={() => onSelectLanguage('en')}
-            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
+            className={`p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'en'
                 ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
                 : isDarkMode
@@ -153,7 +154,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <span className="text-2xl block mb-1">🇺🇸</span>
+            <FlagIcon code="us" size="lg" className="mb-2" />
             <span className="text-xs">English</span>
           </button>
         </div>

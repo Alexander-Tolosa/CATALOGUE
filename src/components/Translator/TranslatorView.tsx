@@ -810,11 +810,6 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
 
               {/* Right Badges & Save to Deck Action */}
               <div className="flex items-center gap-3">
-                <span className="hidden sm:flex items-center gap-1 text-[11px] font-bold text-emerald-400">
-                  <span className="material-symbols-outlined text-xs">verified</span>
-                  Context-Verified by Kleo LLM
-                </span>
-
                 <button
                   onClick={handleSaveCard}
                   disabled={!translatedText.trim() || isSaved}

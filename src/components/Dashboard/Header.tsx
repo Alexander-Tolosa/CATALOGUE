@@ -42,51 +42,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
               <span className="font-bold text-xs">{profile.streakDays + 2} Day Streak</span>
             </div>
           </div>
-        ) : (
-          <div className="relative group">
-            <button
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold transition-all shadow-2xs ${isDarkMode
-                  ? 'bg-[#131b2e] border-[#1e293b] text-white hover:border-[#FF6B35]/40'
-                  : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100 hover:border-slate-300'
-                }`}
-            >
-              <span className="text-base">
-                {profile.selectedLanguage === 'ko' ? '🇰🇷' : profile.selectedLanguage === 'ja' ? '🇯🇵' : '🇺🇸'}
-              </span>
-              <span className="font-semibold">
-                {profile.selectedLanguage === 'ko' ? 'Korean Track' : profile.selectedLanguage === 'ja' ? 'Japanese Track' : 'English Track'}
-              </span>
-              <span className="material-symbols-outlined text-[18px] text-[#FF6B35]">expand_more</span>
-            </button>
-
-            <div
-              className={`absolute top-full left-0 mt-1 w-48 rounded-2xl p-1.5 shadow-xl hidden group-hover:block z-50 border ${isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200'
-                }`}
-            >
-              <button
-                onClick={() => onSelectLanguage('ko')}
-                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
-                  }`}
-              >
-                <span>🇰🇷</span> Korean Track
-              </button>
-              <button
-                onClick={() => onSelectLanguage('ja')}
-                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
-                  }`}
-              >
-                <span>🇯🇵</span> Japanese Track
-              </button>
-              <button
-                onClick={() => onSelectLanguage('en')}
-                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${isDarkMode ? 'text-white hover:bg-[#1e293b]' : 'text-slate-800 hover:bg-slate-50'
-                  }`}
-              >
-                <span>🇺🇸</span> English Track
-              </button>
-            </div>
-          </div>
-        )}
+        ) : null}
       </div>
 
       {/* Right Controls Bar */}

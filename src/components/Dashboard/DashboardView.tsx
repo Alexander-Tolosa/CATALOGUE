@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { UserProfile, LanguageTrack, LessonNode, ReviewItem, AppView } from '../../types';
 import { useKleoStore } from '../../store/useKleoStore';
 import { useAppStore } from '../../store/useAppStore';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
+import { DashboardLoader } from './DashboardLoader';
 
 interface DashboardViewProps {
   profile: UserProfile;
@@ -12,6 +14,8 @@ interface DashboardViewProps {
   onSelectNode: (node: LessonNode) => void;
   onNavigate: (view: AppView) => void;
 }
+
+let initialDashboardLoaded = false;
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
   profile,
@@ -23,12 +27,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 }) => {
   const { isDarkMode } = useAppStore();
   const { mood, speechText, bondXp, bondLevel, equippedCosmetics } = useKleoStore();
+  const [isLoading, setIsLoading] = useState(!initialDashboardLoaded);
+
+  const handleFinishLoading = () => {
+    initialDashboardLoaded = true;
+    setIsLoading(false);
+  };
 
   const nextNode = activeNodes.find(n => !profile.completedNodeIds.includes(n.id)) || activeNodes[0];
   const percentGoal = Math.min(100, Math.round((profile.minutesCompletedToday / profile.dailyGoalMinutes) * 100));
 
   return (
-    <div className={`pt-20 px-4 md:px-8 pb-24 max-w-7xl mx-auto space-y-6 transition-colors duration-250 ${isDarkMode ? 'bg-[#0b0f19]' : 'bg-[#f8fafc]'}`}>
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading && (
+          <DashboardLoader key="dashboard-loader" onFinish={handleFinishLoading} />
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 15 : 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className={`pt-20 px-4 md:px-8 pb-24 max-w-7xl mx-auto space-y-6 transition-colors duration-250 ${isDarkMode ? 'bg-[#0b0f19]' : 'bg-[#f8fafc]'}`}
+      >
       {/* Top Bento Grid Section (12 Columns) */}
       <section className="grid grid-cols-12 gap-6 items-stretch">
         {/* Kleo Hero Mascot Banner Card (Col 8) */}
@@ -260,11 +282,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
               <span className="material-symbols-outlined text-xl">menu_book</span>
             </div>
-            <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Journal</span>
           </div>
         </div>
       </section>
-
-    </div>
+    </motion.div>
+  </>
   );
 };

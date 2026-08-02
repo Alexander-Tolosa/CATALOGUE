@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { FlagIcon } from '../Common/FlagIcon';
 import { Sparkles, Globe, Zap, Bot, ShieldCheck, Heart, Award, ArrowRight, ChevronDown } from 'lucide-react';
 import catalougeLogo from '../../assets/catalouge_logo.png';
@@ -58,75 +59,75 @@ const translations: Record<SiteLanguage, TranslationSchema> = {
     englishSubtitle: 'CONTEXTUAL SPEECH',
     effectiveBadge: 'EFFECTIVE & GAMIFIED',
     effectiveTitle: 'Free, fun, and effective language learning',
-    effectiveDesc: 'CATalouge combines language lessons, translator, missions, letters and pronunciation that fits naturally into your daily routine and activities.',
-    translatorTitle: 'Translator',
-    translatorDesc: 'Instant context-aware multi-language translation',
-    gamifiedTitle: 'Gamified Lessons',
-    gamifiedDesc: 'Master Korean, Japanese & English in 5 mins/day',
-    chatbotTitle: 'AI Chatbot',
-    chatbotDesc: 'Practice real-time conversations with Kleo',
-    companionBadge: 'AI COMPANION LAYER',
-    companionTitle: 'Stay motivated with Kleo your AI Siamese Companion',
-    companionDesc: 'Obtain cosmetics by getting points from missions and gain points to lvl up your AI companion. You can also ask Kleo something in Korean, English and Japanese.',
-    ctaTitle: 'Learn a new language with CATalouge today.',
-    ctaSubtitle: 'Join thousands of learners mastering Korean, Japanese, and English scripts!',
+    effectiveDesc: 'Learn with Kleo, your AI feline companion. Practice reading, listening, writing, and speaking through interactive bite-sized lessons.',
+    translatorTitle: 'Real-Time AI Translator',
+    translatorDesc: 'Contextual translations with formality levels, breakdowns, and audio playback.',
+    gamifiedTitle: 'Gamified Progress & Streaks',
+    gamifiedDesc: 'Earn XP, unlock cosmetic outfits for Kleo, and build long-term daily habits.',
+    chatbotTitle: 'Contextual AI Companion',
+    chatbotDesc: 'Practice natural conversations with Kleo anytime, adapted to your level.',
+    companionBadge: 'MEET YOUR COMPANION',
+    companionTitle: 'Stay motivated with Kleo',
+    companionDesc: 'Kleo grows with you! Customize outfits, earn bond XP, and practice real-world language skills together.',
+    ctaTitle: 'Ready to start learning?',
+    ctaSubtitle: 'Join thousands of learners mastering Korean, Japanese, and English script!',
     ctaButton: 'GET STARTED NOW',
     rights: '© 2026 CATalouge Platform. All rights reserved.'
   },
   KOREAN: {
     siteLangLabel: '사이트 언어: 한국어',
     login: '로그인',
-    masterHeadline: '영어와 아시아 언어를 쉽고 효과적으로 마스터하세요',
+    masterHeadline: '영어 및 아시아 언어를 쉽고 효과적으로 마스터하세요',
     getStarted: '시작하기',
     alreadyAccount: '이미 계정이 있습니다',
     koreanTrack: '한국어',
-    koreanSubtitle: '한글 및 존댓말',
+    koreanSubtitle: '한글 & 존댓말',
     japaneseTrack: '일본어',
-    japaneseSubtitle: '가나 및 한자 부수',
+    japaneseSubtitle: '가나 & 한자 부수',
     englishTrack: '영어',
-    englishSubtitle: '상황별 회화',
-    effectiveBadge: '효과적이고 게임 같은 학습',
-    effectiveTitle: '무료롭고 재미있으며 효과적인 언어 학습',
-    effectiveDesc: 'CATalouge는 일상 루틴과 활동에 자연스럽게 어우러지는 언어 레슨, 번역기, 미션, 글자 및 발음 학습을 결합합니다.',
-    translatorTitle: '번역기',
-    translatorDesc: '문맥을 인식하는 실시간 다국어 번역',
-    gamifiedTitle: '게임형 레슨',
-    gamifiedDesc: '하루 5분으로 한국어, 일본어, 영어 마스터',
-    chatbotTitle: 'AI 챗봇',
-    chatbotDesc: 'Kleo와 함께하는 실시간 회화 연습',
-    companionBadge: 'AI 동반자 레이어',
-    companionTitle: 'AI 샴고양이 동반자 Kleo와 함께 동기 부여 받으세요',
-    companionDesc: '미션 포인트를 획득하여 코스메틱 아이템을 얻고 AI 동반자의 레벨을 올려보세요. Kleo에게 한국어, 영어, 일본어로 질문할 수도 있습니다.',
-    ctaTitle: '오늘 CATalouge와 함께 새로운 언어를 배워보세요.',
-    ctaSubtitle: '한국어, 일본어, 영어 문자를 마스터하는 수천 명의 학습자와 함께하세요!',
+    englishSubtitle: '맥락별 회화',
+    effectiveBadge: '효과적이고 흥미진진한 학습',
+    effectiveTitle: '무료로 즐겁고 효과적으로 언어를 배워보세요',
+    effectiveDesc: 'AI 고양이 동반자 클레오와 함께 읽기, 듣기, 쓰기, 말하기를 습득하세요.',
+    translatorTitle: '실시간 AI 번역기',
+    translatorDesc: '높임말 레벨과 문장 구조 분석이 포함된 맥락 맞춤 번역.',
+    gamifiedTitle: '게임화된 성장 및 연속 학습',
+    gamifiedDesc: 'XP를 획득하고 클레오 의상을 해제하며 매일 연속 학습을 이어가세요.',
+    chatbotTitle: '상황 맞춤형 AI 대화',
+    chatbotDesc: '당신의 언어 수준에 맞춰 클레오와 자유롭게 대화 연습을 하세요.',
+    companionBadge: '나만의 AI 동반자',
+    companionTitle: '클레오와 함께 동기부여를 유지하세요',
+    companionDesc: '클레오와 함께 성장하세요! 의상을 꾸미고 유대감 XP를 쌓으세요.',
+    ctaTitle: '학습을 시작할 준비가 되셨나요?',
+    ctaSubtitle: '한국어, 일본어, 영어 학습자들과 함께 지금 시작하세요!',
     ctaButton: '지금 시작하기',
-    rights: '© 2026 CATalouge Platform. 모든 권리 보유.'
+    rights: '© 2026 CATalouge Platform. All rights reserved.'
   },
   JAPANESE: {
     siteLangLabel: 'サイト言語: 日本語',
     login: 'ログイン',
-    masterHeadline: '英語とアジアの言語を簡単かつ効果的にマスター',
-    getStarted: '始める',
-    alreadyAccount: 'すでにアカウントをお持ちの方',
+    masterHeadline: '英語とアジアの言語を簡単・効果的にマスターしよう',
+    getStarted: '今すぐ始める',
+    alreadyAccount: 'アカウントをお持ちの方',
     koreanTrack: '韓国語',
-    koreanSubtitle: 'ハングルと敬語',
+    koreanSubtitle: 'ハングル＆敬語',
     japaneseTrack: '日本語',
-    japaneseSubtitle: '仮名と漢字の部首',
+    japaneseSubtitle: '仮名＆漢字部首',
     englishTrack: '英語',
-    englishSubtitle: 'シチュエーション英会話',
-    effectiveBadge: '効果的でゲームのような学習',
-    effectiveTitle: '無料、楽しく、効果的な言語学習',
-    effectiveDesc: 'CATalougeは、毎日のルーティンや活動に自然に溶け込む言語レッスン、翻訳機、ミッション、文字、発音を組み合わせています。',
-    translatorTitle: '翻訳機',
-    translatorDesc: 'コンテキストを考慮したリアルタイム多言語翻訳',
-    gamifiedTitle: 'ゲーム化レッスン',
-    gamifiedDesc: '1日5分で韓国語、日本語、英語をマスター',
-    chatbotTitle: 'AIチャットボット',
-    chatbotDesc: 'Kleoとリアルタイムで会話練習',
-    companionBadge: 'AIコンパニオンレイヤー',
-    companionTitle: 'AIシャム猫コンパニオンのKleoと一緒にモチベーション維持',
-    companionDesc: 'ミッションでポイントを獲得してコスメアイテムをゲットし、AIコンパニオンのレベルを上げましょう。Kleoに韓国語、英語、日本語で質問することもできます。',
-    ctaTitle: '今日からCATalougeで新しい言語を学びましょう。',
+    englishSubtitle: '文脈英会話',
+    effectiveBadge: '効果的でゲーム感覚の学習',
+    effectiveTitle: '楽しく効果的な言語学習を無料で',
+    effectiveDesc: 'AI猫パートナーのクレオと一緒に、読む・聴く・書く・話すスキルを磨きましょう。',
+    translatorTitle: 'リアルタイムAI翻訳',
+    translatorDesc: '敬語レベルや文法分解機能を備えた文脈理解型翻訳。',
+    gamifiedTitle: 'ゲーム感覚の成長と連続記録',
+    gamifiedDesc: 'XPを獲得し、クレオの着せ替えアイテムをアンロック。',
+    chatbotTitle: '対話型AIパートナー',
+    chatbotDesc: 'あなたのレベルに合わせたクレオとの自然な会話練習。',
+    companionBadge: 'パートナーに会おう',
+    companionTitle: 'クレオと一緒にモチベーション維持',
+    companionDesc: 'クレオと一緒に成長！衣装をカスタマイズして親密度をアップ。',
+    ctaTitle: '学習を始める準備はできましたか？',
     ctaSubtitle: '韓国語、日本語、英語の文字をマスターする何千人もの学習者に加わりましょう！',
     ctaButton: '今すぐ始める',
     rights: '© 2026 CATalouge Platform. All rights reserved.'
@@ -136,17 +137,40 @@ const translations: Record<SiteLanguage, TranslationSchema> = {
 export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin }) => {
   const [selectedSiteLang, setSelectedSiteLang] = useState<SiteLanguage>('ENGLISH');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const t = translations[selectedSiteLang];
 
   const handleBrandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    window.location.reload();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 700);
   };
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#F97316]/20">
+      <AnimatePresence>
+        {isRefreshing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-md"
+          >
+            <div style={{ width: '220px', height: '220px' }}>
+              <DotLottieReact
+                src="https://lottie.host/1d9b3064-7e18-43ac-8329-64175e1f6827/uQnFW5Tt64.lottie"
+                loop
+                autoplay
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* 1. Top Header Navigation (Duolingo Style) */}
       <header className="h-20 border-b border-orange-400/30 px-6 md:px-12 flex items-center justify-between sticky top-0 bg-gradient-to-r from-[#F97316]/80 to-[#fb923c]/75 backdrop-blur-xl z-50 shadow-lg shadow-orange-500/10">
         {/* Brand Header & Cat Mascot Logo */}

@@ -30,7 +30,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   };
 
   const handleBrandClick = () => {
-    logout();
+    onSelectView('dashboard');
     window.location.reload();
   };
 
@@ -54,11 +54,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             : 'bg-white border-slate-200 text-slate-900 shadow-2xs'
         }`}
       >
-        {/* Brand Header & Cat Mascot Logo (Clicking logo logs out and returns to Landing Page) */}
+        {/* Brand Header & Cat Mascot Logo (Clicking logo reloads/refreshes the dashboard while staying logged in) */}
         <div
           onClick={handleBrandClick}
           className="mb-5 px-2 flex items-center gap-2.5 cursor-pointer group select-none"
-          title="Click to go to Landing Page"
+          title="Refresh Dashboard"
         >
           <motion.div
             whileHover={{ scale: 1.08, rotate: 5 }}

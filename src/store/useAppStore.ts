@@ -62,6 +62,9 @@ const DEFAULT_PROFILE: UserProfile = {
 interface AppStoreState {
   profile: UserProfile;
   isDarkMode: boolean;
+  isChatbotOpen: boolean;
+  toggleChatbot: () => void;
+  setIsChatbotOpen: (isOpen: boolean) => void;
   toggleThemeMode: () => void;
   selectLanguageTrack: (lang: LanguageTrack) => void;
   deductHeart: () => void;
@@ -87,6 +90,15 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   })(),
 
   isDarkMode: localStorage.getItem('catalouge_theme_dark') === 'true',
+  isChatbotOpen: false,
+
+  toggleChatbot: () => {
+    set((state) => ({ isChatbotOpen: !state.isChatbotOpen }));
+  },
+
+  setIsChatbotOpen: (isOpen: boolean) => {
+    set({ isChatbotOpen: isOpen });
+  },
 
   toggleThemeMode: () => {
     set((state) => {

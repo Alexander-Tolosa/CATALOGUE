@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { MessageSquare, X, Send, Sparkles, Bot, HelpCircle, BookOpen } from 'lucide-react';
+import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
+import { useAppStore } from '../../store/useAppStore';
 
 interface GlobalAIChatboxProps {
   currentLanguage: string;
@@ -17,13 +19,13 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
   currentLanguage,
   activeLessonTitle = 'Hangul Foundations'
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isChatbotOpen, setIsChatbotOpen } = useAppStore();
   const [inputMsg, setInputMsg] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       sender: 'ai',
-      text: `Meow! I'm your AI Language Coach & Kleo's Tutor! 🐾 Context active for lesson: "${activeLessonTitle}". Ask me any grammar, vocabulary, or culture questions!`,
+      text: `Meow~ 🐾 I'm Kleo, your Siamese cat AI Language Tutor for CATalouge! I'm here to help you learn Japanese, Korean, and English. Ask me any grammar, vocabulary, or translation questions!`,
       timestamp: 'Just now'
     }
   ]);
@@ -42,17 +44,50 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     setMessages(prev => [...prev, userMsgObj]);
     if (!userQuery) setInputMsg('');
 
-    // Contextual system prompt answer generation proxying Claude LLM endpoint
+    // Process query with strict Kleo guardrails and persona
     setTimeout(() => {
-      let replyText = `Regarding your study of ${currentLanguage === 'ko' ? 'Korean' : currentLanguage === 'ja' ? 'Japanese' : 'English'} in "${activeLessonTitle}":`;
+      let replyText = '';
 
-      const q = textToSend.toLowerCase();
-      if (q.includes('formal') || q.includes('polite') || q.includes('honorific')) {
-        replyText = "💡 **Grammar Context**: In Korean, adding '~요' (~yo) creates friendly polite speech (존댓말), while '~입니다' (~imnida) is used in formal situations. In Japanese, 'です' (desu) and 'ます' (masu) serve the exact same polite purpose!";
-      } else if (q.includes('quiz') || q.includes('test')) {
-        replyText = "🎯 **Quick Quiz**: What is the Korean word for Cat?\nA) 강아지 (Gangaji)\nB) 고양이 (Goyangi)\nC) 새 (Sae)";
+      if (!isAllowedTopic(textToSend)) {
+        replyText = STANDARD_REFUSAL_RESPONSE;
       } else {
-        replyText = `For "${textToSend}": Remember to practice writing script characters in our Script module, then review saved cards in your Review Deck! 🐾`;
+        const q = textToSend.toLowerCase();
+        if (q.includes('formal') || q.includes('polite') || q.includes('honorific')) {
+          replyText = `Meow~ 🐾 Here is a breakdown of polite speech in Asian languages:
+
+### 1. Korean (존댓말 - Jondaetmal)
+- **Informal/Friendly**: Add **~요** (~yo) to the verb stem (e.g., 고마워요 - Gomawoyo).
+- **Formal**: Use **~입니다** (~imnida) / **~습니까** (~seumnika) in official settings.
+
+### 2. Japanese (丁寧語 - Teineigo)
+- **Polite**: End sentences with **です** (desu) for nouns/adjectives or **ます** (masu) for verbs.
+
+Meow~ Practice using polite endings when speaking to teachers or elders! 🐾`;
+        } else if (q.includes('quiz') || q.includes('test')) {
+          replyText = `Meow~ 🐾 Time for a quick language quiz!
+
+**Question**: What is the Korean word for "Cat" (Kleo's family)?
+- A) 강아지 (Gangaji)
+- B) 고양이 (Goyangi)
+- C) 새 (Sae)
+
+*Reply with your answer!* 🐾`;
+        } else if (q.includes('translate') || q.includes('how do i say')) {
+          replyText = `Meow~ 🐾 In ${currentLanguage === 'ko' ? 'Korean' : currentLanguage === 'ja' ? 'Japanese' : 'English'}, here is how you express "${textToSend}":
+
+- **Japanese**: 抹茶ラテをお願いします (Matcha rate o onegaishimasu)
+- **Korean**: 말차 라떼 한 잔 주세요 (Malcha latte han jan juseyo)
+
+Meow! Try saving this phrase to your Review Deck! 🐾`;
+        } else {
+          replyText = `Meow~ 🐾 I'd love to help you master ${currentLanguage === 'ko' ? 'Korean' : currentLanguage === 'ja' ? 'Japanese' : 'English'}!
+
+- **Vocabulary**: Practice your daily words in the **Skill Tree** module.
+- **Writing**: Trace character strokes in the **Writing & Letters** module.
+- **Review**: Keep your streak strong by reviewing saved cards in your **Review Deck**!
+
+Ask me any specific grammar, pronunciation, or translation question! 🐾`;
+        }
       }
 
       const aiMsgObj: Message = {
@@ -62,10 +97,10 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, aiMsgObj]);
-    }, 700);
+    }, 600);
   };
 
-  if (!isOpen) return null;
+  if (!isChatbotOpen) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 w-full max-w-sm sm:max-w-md h-[540px] glass-panel border border-[#FF6B35]/40 shadow-2xl flex flex-col overflow-hidden animate-fadeIn bg-slate-950/95 rounded-3xl">
@@ -77,7 +112,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
           </div>
           <div>
             <h3 className="font-display font-black text-white text-sm flex items-center gap-1.5">
-              AI Tutor & Grammar Coach <span className="text-xs">🤖</span>
+              Kleo AI Language Tutor <span className="text-xs">🐾</span>
             </h3>
             <span className="text-[10px] text-emerald-400 font-bold block">
               ● Active Context: {activeLessonTitle}
@@ -85,7 +120,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
           </div>
         </div>
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={() => setIsChatbotOpen(false)}
           className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
         >
           <X size={18} />
@@ -144,7 +179,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
           value={inputMsg}
           onChange={e => setInputMsg(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSend()}
-          placeholder="Ask AI Tutor any grammar or vocabulary question..."
+          placeholder="Ask Kleo any Japanese, Korean, or English question..."
           className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FF6B35]"
         />
         <button

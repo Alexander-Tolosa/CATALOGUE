@@ -11,6 +11,7 @@ import { LearnView } from './components/Learn/LearnView';
 import { ScriptModuleView } from './components/Script/ScriptModuleView';
 import { TranslatorView } from './components/Translator/TranslatorView';
 import { KleoHubView } from './components/Kleo/KleoHubView';
+import { KleoChatRoomView } from './components/ChatRoom/KleoChatRoomView';
 import { GamifyHubView } from './components/Gamify/GamifyHubView';
 import { ReviewDeckView } from './components/Review/ReviewDeckView';
 import { SettingsView } from './components/Settings/SettingsView';
@@ -131,6 +132,12 @@ export const App: React.FC = () => {
               {activeView === 'kleo' && (
                 <div className="pt-20 px-4 md:px-8">
                   <KleoHubView />
+                </div>
+              )}
+
+              {activeView === 'chatbot' && (
+                <div className="pt-16">
+                  <KleoChatRoomView />
                 </div>
               )}
 

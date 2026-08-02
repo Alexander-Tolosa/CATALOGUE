@@ -42,6 +42,15 @@ export const TopAppBar: React.FC<HeaderProps> = ({
               <span className="font-bold text-xs">{profile.streakDays + 2} Day Streak</span>
             </div>
           </div>
+        ) : activeView === 'chatbot' ? (
+          <div className="flex items-center gap-3">
+            <h2 className={`font-display text-xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              AI Chat Room
+            </h2>
+            <span className="bg-[#FF6B35]/15 text-[#FF6B35] border border-[#FF6B35]/30 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">
+              Kleo LLM Active 🐾
+            </span>
+          </div>
         ) : null}
       </div>
 

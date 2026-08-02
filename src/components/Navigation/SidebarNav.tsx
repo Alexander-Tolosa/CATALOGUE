@@ -19,7 +19,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   onSelectView,
   reviewItemsDueCount
 }) => {
-  const { isDarkMode } = useAppStore();
+  const { isDarkMode, toggleChatbot, isChatbotOpen } = useAppStore();
   const { googleUser, isAuthenticated, logout } = useAuthStore();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
@@ -39,6 +39,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     { id: 'learn', label: 'Skill Tree', icon: 'school' },
     { id: 'letters', label: 'Writing & Letters', icon: 'translate' },
     { id: 'translator', label: 'Translator', icon: 'language' },
+    { id: 'chatbot', label: 'AI Chatbot', icon: 'smart_toy' },
     { id: 'gamify', label: 'Leaderboard & Stats', icon: 'leaderboard' },
     { id: 'review', label: 'Review Deck', icon: 'rebase_edit' },
     { id: 'settings', label: 'Settings', icon: 'settings' }
@@ -79,7 +80,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 space-y-2.5 overflow-y-visible pt-1 px-1">
+        <nav className="flex-1 space-y-2 overflow-y-auto pt-1 px-1">
           {navItems.map((item) => {
             const isActive = activeView === item.id;
             return (
@@ -88,7 +89,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 onClick={() => onSelectView(item.id)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
-                className={`relative overflow-visible w-full flex items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-xl transition-all duration-200 text-xs font-semibold cursor-pointer ${
+                className={`relative overflow-visible w-full flex items-center justify-between gap-2.5 px-3.5 py-2 rounded-xl transition-all duration-200 text-xs font-semibold cursor-pointer ${
                   isActive
                     ? 'text-[#f97316] bg-[#3a1c12] dark:bg-[#2e150a] border border-[#f97316] shadow-[0_0_20px_rgba(249,115,22,0.45)] font-bold scale-[1.02]'
                     : isDarkMode
@@ -136,34 +137,59 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           })}
         </nav>
 
-        {/* Sidebar AI Tutor & Coach Feature Card */}
-        <div className="my-3 px-1">
+        {/* Sidebar AI Chatbot Feature Card Button */}
+        <div className="my-2 px-1">
+          <motion.button
+            onClick={toggleChatbot}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className={`w-full p-2.5 rounded-xl border text-left flex items-center justify-between gap-2 transition-all duration-200 shadow-md cursor-pointer ${
+              isChatbotOpen
+                ? 'bg-[#f97316] text-white border-[#f97316] shadow-[0_0_20px_rgba(249,115,22,0.5)]'
+                : 'bg-gradient-to-r from-orange-500/10 to-amber-500/10 dark:bg-[#f97316]/10 border-[#f97316]/40 hover:border-[#f97316]'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                isChatbotOpen ? 'bg-white/20 text-white' : 'bg-[#f97316] text-white shadow-xs'
+              }`}>
+                <span className="material-symbols-outlined text-base">smart_toy</span>
+              </div>
+              <div className="flex flex-col">
+                <span className={`text-xs font-bold leading-tight ${
+                  isChatbotOpen ? 'text-white' : 'text-[#f97316]'
+                }`}>
+                  AI Chatbot
+                </span>
+                <span className={`text-[10px] ${
+                  isChatbotOpen ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'
+                }`}>
+                  Ask Kleo Anything 🐾
+                </span>
+              </div>
+            </div>
+            <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${
+              isChatbotOpen ? 'bg-white text-[#f97316]' : 'bg-[#f97316] text-white'
+            }`}>
+              {isChatbotOpen ? 'Active' : 'Chat'}
+            </span>
+          </motion.button>
+        </div>
+
+        {/* Sidebar AI Companion Hub Card */}
+        <div className="mb-2 px-1">
           <motion.button
             onClick={() => onSelectView('kleo')}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className={`relative overflow-visible w-full p-3 rounded-xl border text-left flex items-center gap-2.5 transition-all duration-200 shadow-md cursor-pointer ${
+            className={`relative overflow-visible w-full p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all duration-200 shadow-md cursor-pointer ${
               activeView === 'kleo'
                 ? 'bg-gradient-to-r from-[#f97316] to-[#ff7849] text-white border-[#f97316] shadow-[0_0_22px_rgba(249,115,22,0.5)] scale-[1.02]'
-                : 'bg-[#fff7ed] dark:bg-[#f97316]/10 border-[#f97316]/30 hover:border-[#f97316]'
+                : isDarkMode
+                ? 'bg-[#111827] border-[#1e293b] text-slate-300 hover:border-[#f97316]/50'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-[#f97316]/50'
             }`}
           >
-            <AnimatePresence>
-              {activeView === 'kleo' && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1, y: [0, -3, 0] }}
-                  exit={{ scale: 0 }}
-                  transition={{ y: { repeat: Infinity, duration: 1.4, ease: 'easeInOut' } }}
-                  className="absolute -top-2.5 -right-1 z-30 pointer-events-none text-[#f97316] dark:text-white drop-shadow-[0_2px_8px_rgba(249,115,22,0.6)]"
-                >
-                  <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    pets
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
               activeView === 'kleo' ? 'bg-white/20 text-white' : 'bg-[#f97316] text-white shadow-xs'
             }`}>
@@ -173,12 +199,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
               <span className={`text-xs font-bold leading-tight ${
                 activeView === 'kleo' ? 'text-white' : 'text-[#f97316]'
               }`}>
-                AI Tutor & Coach
+                Kleo Companion
               </span>
               <span className={`text-[10px] ${
                 activeView === 'kleo' ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'
               }`}>
-                Context-aware Kleo LLM
+                Wardrobe & Bond Level
               </span>
             </div>
           </motion.button>

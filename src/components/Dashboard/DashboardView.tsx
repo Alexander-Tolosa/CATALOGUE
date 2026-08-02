@@ -119,7 +119,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
               {/* Chat with Kleo Ghost Button */}
               <button
-                onClick={() => onNavigate('kleo')}
+                onClick={() => onNavigate('chatbot')}
                 className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all border ${isDarkMode
                     ? 'border-[#334155] text-slate-200 hover:bg-[#1e293b] hover:border-[#FF6B35]/50'
                     : 'border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900'

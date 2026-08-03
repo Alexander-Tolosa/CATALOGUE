@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { GoogleAuthModal } from './GoogleAuthModal';
-import { Lock, ArrowLeft, Eye, EyeOff, Sparkles, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Lock, Eye, EyeOff, Sparkles, ShieldCheck, ArrowRight } from 'lucide-react';
 import catalougeLogo from '../../assets/catalouge_logo.png';
 
 interface AuthScreenProps {
@@ -43,32 +43,28 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen bg-[#faf6f0] text-slate-900 font-sans flex flex-col lg:flex-row relative overflow-hidden selection:bg-[#FF6B35]/20">
-      {/* Top Left Back Arrow Button (Skeuomorphic Pill) */}
-      {onBack && (
-        <button
-          onClick={onBack}
-          className="fixed top-6 left-6 z-50 p-2.5 rounded-full bg-gradient-to-b from-white to-[#f5ebd9] hover:from-[#ffffff] hover:to-[#efe3cd] text-slate-700 hover:text-[#FF6B35] border border-orange-200/90 shadow-[0_4px_10px_rgba(0,0,0,0.08),_inset_0_1.5px_0_rgba(255,255,255,1)] transition-all duration-200 hover:scale-105 active:translate-y-[1px] cursor-pointer flex items-center gap-2 text-xs font-bold"
-          title="Back to Landing Page"
-        >
-          <ArrowLeft size={18} />
-          <span className="hidden sm:inline">Back</span>
-        </button>
-      )}
-
       {/* LEFT HALF: Brand Showcase & Value Proposition */}
       <div className="lg:w-1/2 p-8 lg:p-16 flex flex-col justify-between relative z-10 border-b lg:border-b-0 lg:border-r border-orange-200/50 bg-gradient-to-br from-[#fffdf9] via-[#faf5ec] to-[#f6eee2]">
         {/* Soft Ambient Smudge Light Glowing Auras */}
         <div className="absolute top-1/4 left-10 w-96 h-96 bg-[#FF6B35]/15 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-10 right-10 w-80 h-80 bg-amber-300/20 blur-[110px] rounded-full pointer-events-none" />
 
-        {/* Top Brand Logo */}
-        <div className="flex items-center gap-3 pt-8 lg:pt-0">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-b from-white to-[#f7eee1] border border-orange-200/80 flex items-center justify-center p-2.5 shadow-[0_6px_14px_rgba(180,100,30,0.12),_inset_0_1px_0_rgba(255,255,255,1)]">
-            <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
+        {/* Top Brand Logo - Clicking Logo returns to Landing Page */}
+        <div className="pt-2 lg:pt-0">
+          <div
+            onClick={onBack}
+            className={`inline-flex items-center gap-3 group transition-transform ${
+              onBack ? 'cursor-pointer select-none hover:scale-105 active:scale-95' : ''
+            }`}
+            title={onBack ? 'Click to return to Landing Page' : undefined}
+          >
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-b from-white to-[#f7eee1] border border-orange-200/80 flex items-center justify-center p-2 shadow-[0_6px_14px_rgba(180,100,30,0.12),_inset_0_1px_0_rgba(255,255,255,1)] group-hover:border-[#FF6B35]/60 transition-all">
+              <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
+            </div>
+            <span className="font-brand font-extrabold text-xl tracking-wider text-slate-900 uppercase drop-shadow-xs group-hover:text-[#FF6B35] transition-colors">
+              CATalogue
+            </span>
           </div>
-          <span className="font-brand font-extrabold text-xl tracking-wider text-slate-900 uppercase drop-shadow-xs">
-            CATalogue
-          </span>
         </div>
 
         {/* Center Tagline & Subtitle */}

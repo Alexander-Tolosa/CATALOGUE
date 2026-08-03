@@ -1,30 +1,68 @@
 import { LessonNode } from '../types';
 
 export const KOREAN_FOUNDATIONS = {
-  title: "Hangul (한글) Block-Building Logic",
-  subtitle: "Learn how consonants and vowels combine into syllable blocks",
+  title: "Hangul (한글) Syllables & Alphabet",
+  subtitle: "Master all 40 Korean consonants, vowels, double consonants & compound vowels",
   consonants: [
-    { char: 'ㄱ', name: 'Giyeok', sound: 'g/k', strokeGuide: "Top left to right, then down" },
+    { char: 'ㄱ', name: 'Giyeok', sound: 'g', strokeGuide: "Top left to right, then down" },
     { char: 'ㄴ', name: 'Nieun', sound: 'n', strokeGuide: "Down then right" },
-    { char: 'ㄷ', name: 'Digeut', sound: 'd/t', strokeGuide: "Top bar, then down and right" },
-    { char: 'ㄹ', name: 'Rieul', sound: 'r/l', strokeGuide: "Z-shaped stroke" },
+    { char: 'ㄷ', name: 'Digeut', sound: 'd', strokeGuide: "Top bar, then down and right" },
+    { char: 'ㄹ', name: 'Rieul', sound: 'r', strokeGuide: "Z-shaped stroke" },
     { char: 'ㅁ', name: 'Mieum', sound: 'm', strokeGuide: "Four-sided box" },
-    { char: 'ㅂ', name: 'Bieup', sound: 'b/p', strokeGuide: "Two vertical bars, two horizontal" },
+    { char: 'ㅂ', name: 'Bieup', sound: 'b', strokeGuide: "Two vertical bars, two horizontal" },
     { char: 'ㅅ', name: 'Siot', sound: 's', strokeGuide: "Inverted V shape" },
-    { char: 'ㅇ', name: 'Ieung', sound: 'silent/ng', strokeGuide: "Counter-clockwise circle" }
+    { char: 'ㅇ', name: 'Ieung', sound: 'ng', strokeGuide: "Counter-clockwise circle" },
+    { char: 'ㅈ', name: 'Jieut', sound: 'j', strokeGuide: "Top bar over inverted V" },
+    { char: 'ㅊ', name: 'Chieut', sound: 'ch', strokeGuide: "Top dot over Jieut" },
+    { char: 'ㅋ', name: 'Kieuk', sound: 'k', strokeGuide: "Giyeok with middle horizontal bar" },
+    { char: 'ㅌ', name: 'Tieut', sound: 't', strokeGuide: "Digeut with middle horizontal bar" },
+    { char: 'ㅍ', name: 'Pieup', sound: 'p', strokeGuide: "Top/bottom bars with two vertical lines" },
+    { char: 'ㅎ', name: 'Hieut', sound: 'h', strokeGuide: "Top line & dot over circle" },
+    // Double Consonants
+    { char: 'ㄲ', name: 'Ssang-giyeok', sound: 'kk', strokeGuide: "Double Giyeok" },
+    { char: 'ㄸ', name: 'Ssang-digeut', sound: 'tt', strokeGuide: "Double Digeut" },
+    { char: 'ㅃ', name: 'Ssang-bieup', sound: 'pp', strokeGuide: "Double Bieup" },
+    { char: 'ㅆ', name: 'Ssang-siot', sound: 'ss', strokeGuide: "Double Siot" },
+    { char: 'ㅉ', name: 'Ssang-jieut', sound: 'jj', strokeGuide: "Double Jieut" }
   ],
   vowels: [
-    { char: 'ㅏ', name: 'A', sound: 'ah', direction: 'vertical' },
-    { char: 'ㅓ', name: 'EO', sound: 'uh', direction: 'vertical' },
-    { char: 'ㅗ', name: 'O', sound: 'oh', direction: 'horizontal' },
-    { char: 'ㅜ', name: 'U', sound: 'oo', direction: 'horizontal' },
-    { char: 'ㅣ', name: 'I', sound: 'ee', direction: 'vertical' }
+    { char: 'ㅏ', name: 'A', sound: 'a', direction: 'vertical' },
+    { char: 'ㅐ', name: 'AE', sound: 'ae', direction: 'vertical' },
+    { char: 'ㅑ', name: 'YA', sound: 'ya', direction: 'vertical' },
+    { char: 'ㅒ', name: 'YAE', sound: 'yae', direction: 'vertical' },
+    { char: 'ㅓ', name: 'EO', sound: 'eo', direction: 'vertical' },
+    { char: 'ㅔ', name: 'E', sound: 'e', direction: 'vertical' },
+    { char: 'ㅕ', name: 'YEO', sound: 'yeo', direction: 'vertical' },
+    { char: 'ㅖ', name: 'YE', sound: 'ye', direction: 'vertical' },
+    { char: 'ㅗ', name: 'O', sound: 'o', direction: 'horizontal' },
+    { char: 'ㅘ', name: 'WA', sound: 'wa', direction: 'compound' },
+    { char: 'ㅙ', name: 'WAE', sound: 'wae', direction: 'compound' },
+    { char: 'ㅚ', name: 'OE', sound: 'oe', direction: 'compound' },
+    { char: 'ㅛ', name: 'YO', sound: 'yo', direction: 'horizontal' },
+    { char: 'ㅜ', name: 'U', sound: 'u', direction: 'horizontal' },
+    { char: 'ㅝ', name: 'WO', sound: 'wo', direction: 'compound' },
+    { char: 'ㅞ', name: 'WE', sound: 'we', direction: 'compound' },
+    { char: 'ㅟ', name: 'WI', sound: 'wi', direction: 'compound' },
+    { char: 'ㅠ', name: 'YU', sound: 'yu', direction: 'horizontal' },
+    { char: 'ㅡ', name: 'EU', sound: 'eu', direction: 'horizontal' },
+    { char: 'ㅢ', name: 'UI', sound: 'ui', direction: 'compound' },
+    { char: 'ㅣ', name: 'I', sound: 'i', direction: 'vertical' }
   ],
   sampleBlocks: [
     { block: '가', consonant: 'ㄱ', vowel: 'ㅏ', meaning: 'Go', roman: 'ga' },
     { block: '나', consonant: 'ㄴ', vowel: 'ㅏ', meaning: 'I / Me', roman: 'na' },
     { block: '다', consonant: 'ㄷ', vowel: 'ㅏ', meaning: 'All', roman: 'da' },
-    { block: '우', consonant: 'ㅇ', vowel: 'ㅜ', meaning: 'Up / Rain', roman: 'u' }
+    { block: '라', consonant: 'ㄹ', vowel: 'ㅏ', meaning: 'Net', roman: 'ra' },
+    { block: '마', consonant: 'ㅁ', vowel: 'ㅏ', meaning: 'Hemp / Yam', roman: 'ma' },
+    { block: '바', consonant: 'ㅂ', vowel: 'ㅏ', meaning: 'Sea / Bar', roman: 'ba' },
+    { block: '사', consonant: 'ㅅ', vowel: 'ㅏ', meaning: 'Four / Buy', roman: 'sa' },
+    { block: '아', consonant: 'ㅇ', vowel: 'ㅏ', meaning: 'Ah / Child', roman: 'a' },
+    { block: '자', consonant: 'ㅈ', vowel: 'ㅏ', meaning: 'Ruler / Sleep', roman: 'ja' },
+    { block: '차', consonant: 'ㅊ', vowel: 'ㅏ', meaning: 'Car / Tea', roman: 'cha' },
+    { block: '카', consonant: 'ㅋ', vowel: 'ㅏ', meaning: 'Card / Car', roman: 'ka' },
+    { block: '타', consonant: 'ㅌ', vowel: 'ㅏ', meaning: 'Ride', roman: 'ta' },
+    { block: '파', consonant: 'ㅍ', vowel: 'ㅏ', meaning: 'Green onion', roman: 'pa' },
+    { block: '하', consonant: 'ㅎ', vowel: 'ㅏ', meaning: 'Lower / Sun', roman: 'ha' }
   ]
 };
 
@@ -32,7 +70,7 @@ export const KOREAN_NODES: LessonNode[] = [
   {
     id: 'ko-node-1',
     title: 'Hangul Foundations',
-    description: 'Master consonants, vowels, and syllable block building',
+    description: 'Master all 40 consonants, vowels, and syllable block building',
     type: 'letters',
     unit: 1,
     order: 1,
@@ -55,115 +93,7 @@ export const KOREAN_NODES: LessonNode[] = [
         prompt: 'Which vowel makes the "ah" sound?',
         options: ['ㅏ', 'ㅓ', 'ㅗ', 'ㅜ'],
         correctAnswer: 'ㅏ',
-        explanation: 'ㅏ is pronounced "ah" like in "father".'
-      },
-      {
-        id: 'ko-ex-3',
-        type: 'sentence-assembly',
-        prompt: 'Assemble the block for "ga" (ㄱ + ㅏ)',
-        options: ['ㄱ', 'ㅏ', 'ㄴ'],
-        correctAnswer: ['ㄱ', 'ㅏ'],
-        explanation: 'Combining ㄱ (g) and ㅏ (a) forms the syllable block 가 (ga).'
-      },
-      {
-        id: 'ko-ex-4',
-        type: 'listening',
-        prompt: 'Listen and select the correct character: "Ieung" (Silent/NG)',
-        audioText: 'ㅇ',
-        options: ['ㅇ', 'ㅁ', 'ㄴ', 'ㄹ'],
-        correctAnswer: 'ㅇ',
-        explanation: 'ㅇ acts as a silent placeholder before vowels or "ng" at the bottom.'
-      }
-    ]
-  },
-  {
-    id: 'ko-node-2',
-    title: 'Basic Words',
-    description: 'Learn essential Korean greetings and everyday words',
-    type: 'words',
-    unit: 1,
-    order: 2,
-    xpReward: 25,
-    isUnlocked: false,
-    isCompleted: false,
-    exercises: [
-      {
-        id: 'ko-ex-5',
-        type: 'multiple-choice',
-        prompt: 'What does "안녕하세요" (Annyeonghaseyo) mean?',
-        targetScript: '안녕하세요',
-        romanization: 'Annyeonghaseyo',
-        options: ['Hello', 'Thank you', 'Goodbye', 'Delicious'],
-        correctAnswer: 'Hello',
-        culturalNote: '안녕하세요 is the standard polite greeting used throughout Korea.'
-      },
-      {
-        id: 'ko-ex-6',
-        type: 'multiple-choice',
-        prompt: 'Select the Korean word for "Cat"',
-        options: ['고양이 (Goyangi)', '강아지 (Gangaji)', '새 (Sae)', '호랑이 (Horangi)'],
-        correctAnswer: '고양이 (Goyangi)',
-        explanation: '고양이 (Goyangi) is Korean for cat — just like Kleo!'
-      },
-      {
-        id: 'ko-ex-7',
-        type: 'sentence-assembly',
-        prompt: 'Build the phrase: "Thank you"',
-        options: ['감사', '합니다', '안녕', '반가워요'],
-        correctAnswer: ['감사', '합니다'],
-        explanation: '감사합니다 (Gamsahamnida) is the polite way to express thanks.'
-      }
-    ]
-  },
-  {
-    id: 'ko-node-3',
-    title: 'Short Phrases & Politeness',
-    description: 'Understand polite endings and common expressions',
-    type: 'phrases',
-    unit: 2,
-    order: 3,
-    xpReward: 30,
-    isUnlocked: false,
-    isCompleted: false,
-    exercises: [
-      {
-        id: 'ko-ex-8',
-        type: 'multiple-choice',
-        prompt: 'Which polite ending is added to informal sentences?',
-        options: ['~요 (~yo)', '~입니다 (~imnida)', '~지 (~ji)', '~다 (~da)'],
-        correctAnswer: '~요 (~yo)',
-        culturalNote: 'Adding ~요 to standard verb stems turns casual speech into friendly, polite speech.'
-      },
-      {
-        id: 'ko-ex-9',
-        type: 'speaking',
-        prompt: 'Say "맛있어요" (It is delicious!)',
-        targetScript: '맛있어요',
-        romanization: 'Mas-iss-eoyo',
-        audioText: '맛있어요',
-        correctAnswer: '맛있어요',
-        explanation: 'Use this whenever you eat great Korean food!'
-      }
-    ]
-  },
-  {
-    id: 'ko-node-4',
-    title: 'Full Sentences & Dialogues',
-    description: 'Construct complete Korean sentences and practice conversations',
-    type: 'sentences',
-    unit: 2,
-    order: 4,
-    xpReward: 35,
-    isUnlocked: false,
-    isCompleted: false,
-    exercises: [
-      {
-        id: 'ko-ex-10',
-        type: 'sentence-assembly',
-        prompt: 'Assemble: "I am a student" (저는 학생입니다)',
-        options: ['저는', '학생입니다', '고양이', '감사합니다'],
-        correctAnswer: ['저는', '학생입니다'],
-        explanation: '저 (I) + 는 (topic marker) + 학생 (student) + 입니다 (is/am).'
+        explanation: 'ㅏ is pronounced "a" as in "father".'
       }
     ]
   }

@@ -1,19 +1,42 @@
 import { LessonNode } from '../types';
 
 export const ENGLISH_FOUNDATIONS = {
-  title: "English Alphabet, Phonics & Sound Pairings",
-  subtitle: "Learn letter pronunciations and phonics combinations",
-  vowels: [
-    { char: 'A', sound: 'ay / ah', example: 'Apple' },
-    { char: 'E', sound: 'ee / eh', example: 'Elephant' },
-    { char: 'I', sound: 'eye / ih', example: 'Igloo' },
-    { char: 'O', sound: 'oh / aw', example: 'Octopus' },
-    { char: 'U', sound: 'yoo / uh', example: 'Umbrella' }
+  title: "English Alphabet & Pronunciation (A-Z)",
+  subtitle: "Master all 26 letters with official IPA phonetic pronunciations and phonics",
+  alphabet: [
+    { char: 'A', lowerChar: 'a', ipa: '[eɪ]', sound: 'ei', example: 'Apple' },
+    { char: 'B', lowerChar: 'b', ipa: '[bi:]', sound: 'bee', example: 'Ball' },
+    { char: 'C', lowerChar: 'c', ipa: '[si:]', sound: 'see', example: 'Cat' },
+    { char: 'D', lowerChar: 'd', ipa: '[di:]', sound: 'dee', example: 'Dog' },
+    { char: 'E', lowerChar: 'e', ipa: '[i:]', sound: 'ee', example: 'Elephant' },
+    { char: 'F', lowerChar: 'f', ipa: '[ef]', sound: 'ef', example: 'Fish' },
+    { char: 'G', lowerChar: 'g', ipa: '[dʒi:]', sound: 'jee', example: 'Giraffe' },
+    { char: 'H', lowerChar: 'h', ipa: '[eɪtʃ]', sound: 'aitch', example: 'House' },
+    { char: 'I', lowerChar: 'i', ipa: '[aɪ]', sound: 'eye', example: 'Igloo' },
+    { char: 'J', lowerChar: 'j', ipa: '[dʒeɪ]', sound: 'jay', example: 'Jelly' },
+    { char: 'K', lowerChar: 'k', ipa: '[keɪ]', sound: 'kay', example: 'Kangaroo' },
+    { char: 'L', lowerChar: 'l', ipa: '[el]', sound: 'el', example: 'Lion' },
+    { char: 'M', lowerChar: 'm', ipa: '[em]', sound: 'em', example: 'Monkey' },
+    { char: 'N', lowerChar: 'n', ipa: '[en]', sound: 'en', example: 'Nest' },
+    { char: 'O', lowerChar: 'o', ipa: '[əʊ]', sound: 'oh', example: 'Octopus' },
+    { char: 'P', lowerChar: 'p', ipa: '[pi:]', sound: 'pee', example: 'Penguin' },
+    { char: 'Q', lowerChar: 'q', ipa: '[kju:]', sound: 'cue', example: 'Queen' },
+    { char: 'R', lowerChar: 'r', ipa: '[ɑ:]', sound: 'ar', example: 'Rabbit' },
+    { char: 'S', lowerChar: 's', ipa: '[es]', sound: 'es', example: 'Sun' },
+    { char: 'T', lowerChar: 't', ipa: '[ti:]', sound: 'tee', example: 'Tiger' },
+    { char: 'U', lowerChar: 'u', ipa: '[ju:]', sound: 'yoo', example: 'Umbrella' },
+    { char: 'V', lowerChar: 'v', ipa: '[vi:]', sound: 'vee', example: 'Violin' },
+    { char: 'W', lowerChar: 'w', ipa: "['dʌbəlju:]", sound: 'double-u', example: 'Whale' },
+    { char: 'X', lowerChar: 'x', ipa: '[eks]', sound: 'eks', example: 'Xylophone' },
+    { char: 'Y', lowerChar: 'y', ipa: '[waɪ]', sound: 'why', example: 'Yak' },
+    { char: 'Z', lowerChar: 'z', ipa: '[zed/zi:]', sound: 'zee', example: 'Zebra' }
   ],
   phonics: [
     { combo: 'TH', sound: 'Unvoiced / Voiced', example: 'Think, This' },
     { combo: 'SH', sound: 'Soft sh', example: 'Shine, Ship' },
-    { combo: 'CH', sound: 'Tch sound', example: 'Chair, Chat' }
+    { combo: 'CH', sound: 'Tch sound', example: 'Chair, Chat' },
+    { combo: 'PH', sound: 'F sound', example: 'Phone, Photo' },
+    { combo: 'WH', sound: 'W sound', example: 'Whale, White' }
   ]
 };
 
@@ -21,7 +44,7 @@ export const ENGLISH_NODES: LessonNode[] = [
   {
     id: 'en-node-1',
     title: 'Alphabet & Phonics',
-    description: 'Master letters, vowels, and essential phonics rules',
+    description: 'Master all 26 English letters, IPA pronunciations, and phonics',
     type: 'letters',
     unit: 1,
     order: 1,
@@ -32,40 +55,10 @@ export const ENGLISH_NODES: LessonNode[] = [
       {
         id: 'en-ex-1',
         type: 'multiple-choice',
-        prompt: 'Which word starts with the short "A" sound?',
+        prompt: 'Which word starts with the letter "A"?',
         options: ['Apple', 'Eagle', 'Ice', 'Open'],
         correctAnswer: 'Apple',
-        explanation: 'Apple begins with the short "A" sound (/æ/).'
-      },
-      {
-        id: 'en-ex-2',
-        type: 'listening',
-        prompt: 'Listen and select the word with "TH" sound',
-        audioText: 'Think',
-        options: ['Think', 'Sink', 'Pink', 'Wink'],
-        correctAnswer: 'Think',
-        explanation: '"TH" requires placing your tongue lightly between your teeth.'
-      }
-    ]
-  },
-  {
-    id: 'en-node-2',
-    title: 'Everyday Words & Greetings',
-    description: 'Learn common English expressions and everyday vocabulary',
-    type: 'words',
-    unit: 1,
-    order: 2,
-    xpReward: 25,
-    isUnlocked: false,
-    isCompleted: false,
-    exercises: [
-      {
-        id: 'en-ex-3',
-        type: 'sentence-assembly',
-        prompt: 'Assemble: "How are you today?"',
-        options: ['How', 'are', 'you', 'today?'],
-        correctAnswer: ['How', 'are', 'you', 'today?'],
-        explanation: 'Standard friendly greeting in English conversations.'
+        explanation: 'Apple begins with the letter A [eɪ].'
       }
     ]
   }

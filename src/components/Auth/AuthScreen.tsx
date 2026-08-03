@@ -53,9 +53,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
         <div className="pt-2 lg:pt-0">
           <div
             onClick={onBack}
-            className={`inline-flex items-center gap-3 group transition-transform ${
-              onBack ? 'cursor-pointer select-none hover:scale-105 active:scale-95' : ''
-            }`}
+            className={`inline-flex items-center gap-3 group transition-transform ${onBack ? 'cursor-pointer select-none hover:scale-105 active:scale-95' : ''
+              }`}
             title={onBack ? 'Click to return to Landing Page' : undefined}
           >
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-b from-white to-[#f7eee1] border border-orange-200/80 flex items-center justify-center p-2 shadow-[0_6px_14px_rgba(180,100,30,0.12),_inset_0_1px_0_rgba(255,255,255,1)] group-hover:border-[#FF6B35]/60 transition-all">
@@ -300,3 +299,4 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
     </div>
   );
 };
+

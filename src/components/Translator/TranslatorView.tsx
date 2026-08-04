@@ -578,8 +578,15 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
           <CustomLanguageDropdown
             value={fromLang}
             onChange={(newFrom) => {
-              setFromLang(newFrom);
-              if (inputText.trim()) performTranslation(inputText, newFrom, toLang);
+              if (newFrom === toLang) {
+                const prevFrom = fromLang;
+                setFromLang(newFrom);
+                setToLang(prevFrom);
+                if (inputText.trim()) performTranslation(inputText, newFrom, prevFrom);
+              } else {
+                setFromLang(newFrom);
+                if (inputText.trim()) performTranslation(inputText, newFrom, toLang);
+              }
             }}
             options={['English', 'Japanese', 'Korean']}
             isDarkMode={isDarkMode}
@@ -602,8 +609,15 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
           <CustomLanguageDropdown
             value={toLang}
             onChange={(newTo) => {
-              setToLang(newTo);
-              if (inputText.trim()) performTranslation(inputText, fromLang, newTo);
+              if (newTo === fromLang) {
+                const prevTo = toLang;
+                setToLang(newTo);
+                setFromLang(prevTo);
+                if (inputText.trim()) performTranslation(inputText, prevTo, newTo);
+              } else {
+                setToLang(newTo);
+                if (inputText.trim()) performTranslation(inputText, fromLang, newTo);
+              }
             }}
             options={['Japanese', 'Korean', 'English']}
             isDarkMode={isDarkMode}

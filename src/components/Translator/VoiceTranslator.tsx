@@ -109,7 +109,16 @@ export const VoiceTranslator: React.FC<VoiceTranslatorProps> = ({
         <div className="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
           <select
             value={sourceLang}
-            onChange={(e) => setSourceLang(e.target.value as LanguageTrack)}
+            onChange={(e) => {
+              const newSource = e.target.value as LanguageTrack;
+              if (newSource === targetLang) {
+                const prevSource = sourceLang;
+                setSourceLang(newSource);
+                setTargetLang(prevSource);
+              } else {
+                setSourceLang(newSource);
+              }
+            }}
             className="bg-slate-900 text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 text-sm font-semibold"
           >
             <option value="en">English 🇺🇸</option>
@@ -131,7 +140,16 @@ export const VoiceTranslator: React.FC<VoiceTranslatorProps> = ({
 
           <select
             value={targetLang}
-            onChange={(e) => setTargetLang(e.target.value as LanguageTrack)}
+            onChange={(e) => {
+              const newTarget = e.target.value as LanguageTrack;
+              if (newTarget === sourceLang) {
+                const prevTarget = targetLang;
+                setTargetLang(newTarget);
+                setSourceLang(prevTarget);
+              } else {
+                setTargetLang(newTarget);
+              }
+            }}
             className="bg-slate-900 text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 text-sm font-semibold"
           >
             <option value="ko">Korean 🇰🇷</option>

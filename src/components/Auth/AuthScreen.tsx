@@ -13,6 +13,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
   const [isRegisterMode, setIsRegisterMode] = useState(true);
 
   // Form Fields
+  const [displayName, setDisplayName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -24,9 +25,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
     e.preventDefault();
     if (!email || !password) return;
 
-    const fullName = isRegisterMode
-      ? `${firstName} ${lastName}`.trim() || email.split('@')[0]
-      : email.split('@')[0];
+    const fullName = displayName.trim() ||
+      (isRegisterMode ? `${firstName} ${lastName}`.trim() : '') ||
+      email.split('@')[0];
 
     // Authenticate user via session
     loginWithGoogle(
@@ -168,13 +169,26 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
 
             {/* Main Skeuomorphic Form Inputs */}
             <form onSubmit={handleEmailSubmit} className="space-y-4 text-left">
+              {/* Display Name Input Field */}
+              <div className="space-y-1">
+                <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider block">
+                  DISPLAY NAME
+                </label>
+                <input
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Enter your display name"
+                  className="w-full bg-[#f0e6d5] border border-orange-200/90 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 font-semibold shadow-[inset_0_2px_5px_rgba(0,0,0,0.09),_0_1px_0_rgba(255,255,255,0.8)] focus:outline-none focus:bg-white focus:border-[#FF6B35] focus:shadow-[inset_0_1px_3px_rgba(0,0,0,0.04),_0_0_10px_rgba(255,107,53,0.25)] transition-all"
+                />
+              </div>
+
               {/* Sign Up Mode: First Name & Last Name (Side by Side) */}
               {isRegisterMode && (
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider block flex items-center justify-between">
-                      <span>FIRST NAME</span>
-                      <span className="text-[9px] text-slate-400 font-normal">OPTIONAL</span>
+                    <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider block">
+                      FIRST NAME
                     </label>
                     <input
                       type="text"
@@ -186,9 +200,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider block flex items-center justify-between">
-                      <span>LAST NAME</span>
-                      <span className="text-[9px] text-slate-400 font-normal">OPTIONAL</span>
+                    <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider block">
+                      LAST NAME
                     </label>
                     <input
                       type="text"

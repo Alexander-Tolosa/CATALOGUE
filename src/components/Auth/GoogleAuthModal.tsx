@@ -18,6 +18,7 @@ interface GoogleAuthModalProps {
 
 export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClose }) => {
   const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
+  const [selectedDisplayName, setSelectedDisplayName] = useState('');
   const [clientId, setClientId] = useState(
     import.meta.env.VITE_GOOGLE_CLIENT_ID || '1088492049281-catalouge-sandbox.apps.googleusercontent.com'
   );
@@ -51,7 +52,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
       loginWithGoogle({
         googleSubId: decoded.sub,
         email: decoded.email,
-        name: decoded.name,
+        name: selectedDisplayName.trim() || decoded.name || 'Learner',
         picture: decoded.picture
       }, idToken);
       onClose();
@@ -65,7 +66,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
     loginWithGoogle({
       googleSubId: 'google-sub-1029384756',
       email: 'sensei@google.com',
-      name: 'Google Sensei',
+      name: selectedDisplayName.trim() || 'Learner',
       picture: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDpsPyAmyFX0-x7YmO2F6V-HYUNSkQZ9y5ZwiGTPRDuKh7w8NLjQdcf1Q2MivuhQ4D9qxOYSRakIe57czlU0OETFOGpsghOsax81R8YeFIC_QKmFDJ6W4koSBPBvEruskA_MQyZ4RgLhVW1PM3kb-l4J8Xn4WkSprmlTkQlvaOABYQ0SKUWhiFcEmtyH6yhDEmNEgnsyQMttVVfCDSSXR6Gw_JKdDikoKAyDWZ2yHGXkiNggh5IEs39Zg'
     }, 'mock-google-oidc-jwt-token');
     onClose();
@@ -102,8 +103,22 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
           </div>
         </div>
 
+        {/* Display Name Input Section */}
+        <div className="space-y-1.5 text-left bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+          <label className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">
+            DISPLAY NAME
+          </label>
+          <input
+            type="text"
+            value={selectedDisplayName}
+            onChange={(e) => setSelectedDisplayName(e.target.value)}
+            placeholder="Enter your display name"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-[#FF6B35] transition-all"
+          />
+        </div>
+
         {/* Duolingo 3D Style Google Sign In Button */}
-        <div className="space-y-4 pt-2">
+        <div className="space-y-4 pt-1">
           <button
             onClick={handleSandboxLogin}
             className="w-full flex items-center justify-center gap-3 py-3.5 px-5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-sm transition-all border-2 border-slate-200 shadow-[0_4px_0_0_#cbd5e1] active:translate-y-1 active:shadow-none cursor-pointer"

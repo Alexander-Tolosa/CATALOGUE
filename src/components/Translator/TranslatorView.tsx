@@ -85,7 +85,7 @@ function romanizeHangul(char: string): string {
 
 function generatePhonetic(text: string, lang: LangOption): string {
   if (!text.trim()) return '';
-  if (lang === 'English') return ''; // English target output does not need Romanization
+  if (lang === 'English') return '';
 
   if (PHONETIC_MAP[text.trim()]) return PHONETIC_MAP[text.trim()];
 
@@ -108,6 +108,29 @@ function generatePhonetic(text: string, lang: LangOption): string {
   }
 
   return '';
+}
+
+function detectFormality(text: string, lang: LangOption): string {
+  if (!text.trim()) return '';
+  if (lang === 'Japanese') {
+    if (/[です|ます|ください|ございます|お願いします|いたします]/.test(text)) {
+      return 'Polite / Formal (丁寧語)';
+    }
+    if (/[だ|る|ない|ね|よ]/.test(text)) {
+      return 'Casual Tone (日常会話)';
+    }
+    return 'Polite Tone';
+  }
+  if (lang === 'Korean') {
+    if (/[습니다|습니까|요|세요|입니다]/.test(text)) {
+      return 'Polite / Formal (존댓말)';
+    }
+    if (/[야|어|지|다|고]/.test(text)) {
+      return 'Casual Tone (반말)';
+    }
+    return 'Polite Tone';
+  }
+  return 'Conversational Context';
 }
 
 const OFFLINE_DICTIONARY: Record<string, Record<string, string>> = {
@@ -164,20 +187,20 @@ const CustomLanguageDropdown: React.FC<CustomLanguageDropdownProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all border cursor-pointer ${
+        className={`w-full flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all border cursor-pointer ${
           isOpen
-            ? 'border-[#FF6B35] shadow-[0_0_15px_rgba(255,107,53,0.25)]'
+            ? 'border-orange-500 shadow-[0_0_20px_rgba(255,107,53,0.3)] bg-orange-500/10 text-orange-400'
             : isDarkMode
-            ? 'bg-[#0b0f19]/80 border-[#1e293b] text-white hover:border-[#FF6B35]/50'
-            : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-slate-300'
+            ? 'bg-slate-800/90 border-white/10 text-white hover:border-orange-500/50 hover:bg-slate-800'
+            : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-orange-500/50 hover:bg-white'
         }`}
       >
         <span className="flex items-center gap-2.5">
           <FlagIcon code={LANG_CODES[value].code} size="sm" />
-          <span>{value}</span>
+          <span className="tracking-wide">{value}</span>
         </span>
         <span
-          className={`material-symbols-outlined text-base text-[#FF6B35] transition-transform duration-200 ${
+          className={`material-symbols-outlined text-base text-orange-400 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
         >
@@ -192,10 +215,10 @@ const CustomLanguageDropdown: React.FC<CustomLanguageDropdownProps> = ({
             animate={{ opacity: 1, y: 4, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className={`absolute left-0 right-0 top-full z-50 p-1.5 rounded-2xl border shadow-2xl ${
+            className={`absolute left-0 right-0 top-full z-50 p-1.5 rounded-2xl border shadow-2xl backdrop-blur-xl ${
               isDarkMode
-                ? 'bg-[#131b2e] border-[#1e293b] text-white'
-                : 'bg-white border-slate-200 text-slate-800'
+                ? 'bg-slate-900/95 border-white/10 text-white shadow-black/80'
+                : 'bg-white/95 border-slate-200 text-slate-800 shadow-slate-300/50'
             }`}
           >
             {options.map((opt) => {
@@ -208,12 +231,12 @@ const CustomLanguageDropdown: React.FC<CustomLanguageDropdownProps> = ({
                     onChange(opt);
                     setIsOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs md:text-sm font-bold transition-colors cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#FF6B35]/15 text-[#FF6B35]'
+                      ? 'bg-orange-500/15 text-orange-400 border border-orange-500/30'
                       : isDarkMode
-                      ? 'text-slate-200 hover:bg-[#1e293b]'
-                      : 'text-slate-700 hover:bg-slate-50'
+                      ? 'text-slate-200 hover:bg-slate-800/80 hover:text-white'
+                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
@@ -221,7 +244,7 @@ const CustomLanguageDropdown: React.FC<CustomLanguageDropdownProps> = ({
                     <span>{opt}</span>
                   </span>
                   {isSelected && (
-                    <span className="material-symbols-outlined text-base text-[#FF6B35]">
+                    <span className="material-symbols-outlined text-base text-orange-400">
                       check
                     </span>
                   )}
@@ -370,7 +393,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
         return;
       }
 
-      // Final fallback: Return input text if target equals source, otherwise set empty or input
+      // Final fallback
       if (source === target) {
         setTranslatedText(text);
         setPhoneticText(generatePhonetic(text, target));
@@ -396,7 +419,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
 
     debounceTimerRef.current = setTimeout(() => {
       performTranslation(text, fromLang, toLang);
-    }, 400);
+    }, 350);
   };
 
   // Immediate Translate Button Trigger
@@ -443,7 +466,6 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
   const speakText = (text: string, lang: LangOption, isSource: boolean) => {
     if (!text.trim()) return;
     if ('speechSynthesis' in window) {
-      // Toggle stop if already speaking
       if ((isSource && isSpeakingSource) || (!isSource && isSpeakingTarget)) {
         stopSpeaking();
         return;
@@ -457,18 +479,14 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
       if (isSource) setIsSpeakingSource(true);
       else setIsSpeakingTarget(true);
 
-      utterance.onend = () => {
-        stopSpeaking();
-      };
-      utterance.onerror = () => {
-        stopSpeaking();
-      };
+      utterance.onend = () => stopSpeaking();
+      utterance.onerror = () => stopSpeaking();
 
       window.speechSynthesis.speak(utterance);
     }
   };
 
-  // Stop Voice Input (Speech Recognition)
+  // Stop Voice Input
   const stopVoiceInput = () => {
     if (recognitionRef.current) {
       try {
@@ -480,7 +498,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
     setIsListening(false);
   };
 
-  // Speech-To-Text (Voice Input) with Toggle & Stop capability
+  // Speech-To-Text (Voice Input)
   const startVoiceInput = () => {
     if (isListening) {
       stopVoiceInput();
@@ -548,176 +566,192 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-6">
-      {/* Header & Branding */}
-      <div>
-        <h1
-          className={`text-2xl md:text-3xl font-black font-display tracking-tight flex items-center gap-2.5 ${
+    <div className={`min-h-screen p-4 md:p-8 relative overflow-hidden transition-colors duration-300 ${
+      isDarkMode ? 'bg-[#0d1117] text-slate-100' : 'bg-slate-50 text-slate-900'
+    }`}>
+      {/* Ambient Soft Orange Glow Mesh */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[380px] bg-gradient-to-r from-orange-500/20 via-amber-500/10 to-transparent rounded-full blur-[130px] pointer-events-none z-0" />
+      <div className="absolute top-2/3 right-1/4 w-[400px] h-[250px] bg-orange-600/10 rounded-full blur-[100px] pointer-events-none z-0" />
+
+      <div className="max-w-5xl mx-auto space-y-6 relative z-10">
+        {/* Centralized Hero Section */}
+        <div className="text-center flex flex-col items-center justify-center space-y-3 pt-2 pb-4">
+
+
+          {/* Bold Title */}
+          <h1 className={`text-3xl md:text-5xl font-extrabold tracking-tight ${
             isDarkMode ? 'text-white' : 'text-slate-900'
-          }`}
-        >
-          <span>AI Context Translator</span>
-          <span className="text-[#FF6B35] text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FF6B35]/10 border border-[#FF6B35]/20">
-            PRO
-          </span>
-        </h1>
-        <p className={`text-xs md:text-sm mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-          Translate phrase structures with native audio pronunciation & grammar breakdown.
-        </p>
-      </div>
+          }`}>
+            AI Context Translator
+          </h1>
 
-      {/* Main Translator Interface Box */}
-      <div className="space-y-3">
-        {/* Top Language Bar (Header Dropdowns + Swap Button) */}
-        <div
-          className={`flex items-center justify-between gap-2 p-2 rounded-2xl border shadow-sm ${
-            isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200'
-          }`}
-        >
-          {/* Source Language Dropdown (Left) */}
-          <CustomLanguageDropdown
-            value={fromLang}
-            onChange={(newFrom) => {
-              if (newFrom === toLang) {
-                const prevFrom = fromLang;
-                setFromLang(newFrom);
-                setToLang(prevFrom);
-                if (inputText.trim()) performTranslation(inputText, newFrom, prevFrom);
-              } else {
-                setFromLang(newFrom);
-                if (inputText.trim()) performTranslation(inputText, newFrom, toLang);
-              }
-            }}
-            options={['English', 'Japanese', 'Korean']}
-            isDarkMode={isDarkMode}
-          />
-
-          {/* Swap Button (<->) */}
-          <button
-            onClick={handleSwapLanguages}
-            className={`p-2.5 rounded-xl border transition-all duration-200 shrink-0 cursor-pointer ${
-              isDarkMode
-                ? 'bg-[#1e293b] border-[#334155] text-slate-300 hover:text-[#FF6B35] hover:border-[#FF6B35]/50'
-                : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-[#FF6B35] hover:border-[#FF6B35]/50'
-            }`}
-            title="Swap Languages (<->)"
-          >
-            <span className="material-symbols-outlined text-base md:text-lg block">swap_horiz</span>
-          </button>
-
-          {/* Target Language Dropdown (Right) */}
-          <CustomLanguageDropdown
-            value={toLang}
-            onChange={(newTo) => {
-              if (newTo === fromLang) {
-                const prevTo = toLang;
-                setToLang(newTo);
-                setFromLang(prevTo);
-                if (inputText.trim()) performTranslation(inputText, prevTo, newTo);
-              } else {
-                setToLang(newTo);
-                if (inputText.trim()) performTranslation(inputText, fromLang, newTo);
-              }
-            }}
-            options={['Japanese', 'Korean', 'English']}
-            isDarkMode={isDarkMode}
-          />
+          {/* Descriptive Subtitle */}
+          <p className={`text-xs md:text-sm max-w-lg leading-relaxed font-medium ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-600'
+          }`}>
+            Translate phrase structures with native audio pronunciation, formality insights & grammar breakdown.
+          </p>
         </div>
 
-        {/* 2-Column Side-by-Side Text Containers Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Left Container: Input Text Area */}
-          <div
-            className={`p-5 rounded-2xl border flex flex-col justify-between min-h-[280px] shadow-sm relative transition-all ${
-              isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200'
-            }`}
-          >
-            {/* Top Label & Clear ('X') Button */}
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <FlagIcon code={LANG_CODES[fromLang].code} size="sm" />
-                <span>{fromLang.toUpperCase()} INPUT</span>
-              </span>
+        {/* Cohesive Workspace Card */}
+        <div className={`p-4 md:p-6 rounded-3xl border shadow-2xl backdrop-blur-xl transition-all ${
+          isDarkMode
+            ? 'bg-slate-900/60 border-white/10 shadow-black/80'
+            : 'bg-white/80 border-slate-200/80 shadow-slate-200/50'
+        }`}>
+          {/* Fused Hero Control Bar (Language Selector & Swap Controls) */}
+          <div className={`flex items-center justify-between gap-3 p-2.5 md:p-3 rounded-2xl border shadow-inner mb-5 ${
+            isDarkMode
+              ? 'bg-slate-900/90 border-white/10'
+              : 'bg-slate-100/90 border-slate-200'
+          }`}>
+            {/* Left: Source Language */}
+            <CustomLanguageDropdown
+              value={fromLang}
+              onChange={(newFrom) => {
+                if (newFrom === toLang) {
+                  const prevFrom = fromLang;
+                  setFromLang(newFrom);
+                  setToLang(prevFrom);
+                  if (inputText.trim()) performTranslation(inputText, newFrom, prevFrom);
+                } else {
+                  setFromLang(newFrom);
+                  if (inputText.trim()) performTranslation(inputText, newFrom, toLang);
+                }
+              }}
+              options={['English', 'Japanese', 'Korean']}
+              isDarkMode={isDarkMode}
+            />
 
-              {inputText.length > 0 && (
-                <button
-                  onClick={handleClearText}
-                  className={`p-1 rounded-lg text-slate-400 hover:text-rose-500 transition-colors cursor-pointer ${
-                    isDarkMode ? 'hover:bg-[#1e293b]' : 'hover:bg-slate-100'
-                  }`}
-                  title="Clear text"
-                >
-                  <span className="material-symbols-outlined text-lg block">close</span>
-                </button>
-              )}
-            </div>
-
-            {/* Input Textarea */}
-            <div className="flex-1 my-3">
-              <textarea
-                value={inputText}
-                onChange={(e) => handleInputChange(e.target.value)}
-                rows={5}
-                placeholder={`Type or paste ${fromLang} text here...`}
-                className={`w-full h-full bg-transparent resize-none focus:outline-none text-base md:text-lg font-medium leading-relaxed ${
-                  isDarkMode
-                    ? 'text-white placeholder-slate-500'
-                    : 'text-slate-900 placeholder-slate-400'
-                }`}
-              />
-            </div>
-
-            {/* Bottom Actions Bar (Left Container) */}
-            <div
-              className={`flex items-center justify-between pt-3 border-t ${
-                isDarkMode ? 'border-[#1e293b]' : 'border-slate-100'
+            {/* Center: Swap Button (<->) */}
+            <button
+              onClick={handleSwapLanguages}
+              className={`p-2.5 rounded-xl border transition-all duration-200 shrink-0 cursor-pointer ${
+                isDarkMode
+                  ? 'bg-slate-800 border-white/10 text-slate-300 hover:text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/10'
+                  : 'bg-white border-slate-200 text-slate-600 hover:text-orange-500 hover:border-orange-500/50 hover:bg-orange-50'
               }`}
+              title="Swap Languages (<->)"
             >
-              {/* Left Action Icons: Voice Input & Speaker Icon */}
-              <div className="flex items-center gap-2">
-                {/* Voice Input Button */}
-                <button
-                  onClick={startVoiceInput}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                    isListening
-                      ? 'bg-rose-500 text-white border-rose-600 animate-pulse'
-                      : isDarkMode
-                      ? 'bg-[#1e293b] border-[#334155] text-slate-300 hover:text-white hover:border-[#FF6B35]/40'
-                      : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
-                  }`}
-                  title={isListening ? 'Click to stop listening' : 'Speak into Microphone'}
-                >
-                  <span className="material-symbols-outlined text-base">mic</span>
-                  <span>{isListening ? 'Listening...' : 'Voice Input'}</span>
-                </button>
+              <span className="material-symbols-outlined text-lg block transition-transform hover:rotate-180 duration-300">
+                swap_horiz
+              </span>
+            </button>
 
-                {/* Audio Speaker Icon for Source Text (Single tap: play, Double tap / tap while active: stop voice) */}
-                <button
-                  onClick={() => speakText(inputText, fromLang, true)}
-                  onDoubleClick={stopSpeaking}
-                  disabled={!inputText.trim()}
-                  className={`p-2 rounded-xl border transition-colors cursor-pointer ${
-                    isSpeakingSource
-                      ? 'bg-[#FF6B35]/20 text-[#FF6B35] border-[#FF6B35] animate-pulse'
-                      : isDarkMode
-                      ? 'bg-[#1e293b] border-[#334155] text-slate-300 hover:text-[#FF6B35] disabled:opacity-40'
-                      : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-[#FF6B35] disabled:opacity-40'
-                  }`}
-                  title="Single tap to listen • Double tap to stop voice"
-                >
-                  <span className="material-symbols-outlined text-base block">volume_up</span>
-                </button>
+            {/* Right: Target Language */}
+            <CustomLanguageDropdown
+              value={toLang}
+              onChange={(newTo) => {
+                if (newTo === fromLang) {
+                  const prevTo = toLang;
+                  setToLang(newTo);
+                  setFromLang(prevTo);
+                  if (inputText.trim()) performTranslation(inputText, prevTo, newTo);
+                } else {
+                  setToLang(newTo);
+                  if (inputText.trim()) performTranslation(inputText, fromLang, newTo);
+                }
+              }}
+              options={['Japanese', 'Korean', 'English']}
+              isDarkMode={isDarkMode}
+            />
+          </div>
+
+          {/* 2-Column Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Left: Input Panel */}
+            <div className={`p-5 rounded-2xl border flex flex-col justify-between min-h-[340px] shadow-sm relative transition-all ${
+              isDarkMode
+                ? 'bg-slate-800/80 border-white/10'
+                : 'bg-slate-50 border-slate-200'
+            }`}>
+              {/* Top Bar of Input Panel: Flag + Title on Left, Character Counter & Clear on Top Right */}
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                  <FlagIcon code={LANG_CODES[fromLang].code} size="sm" />
+                  <span>{fromLang} Input</span>
+                </span>
+
+                <div className="flex items-center gap-3">
+                  {/* Character Counter on Top Right */}
+                  <span className="text-xs font-mono font-bold text-slate-400 bg-slate-900/40 px-2.5 py-0.5 rounded-full border border-white/5">
+                    {inputText.length} / 500
+                  </span>
+
+                  {/* Clear Text 'X' Button */}
+                  {inputText.length > 0 && (
+                    <button
+                      onClick={handleClearText}
+                      className={`p-1 rounded-lg text-slate-400 hover:text-rose-500 transition-colors cursor-pointer ${
+                        isDarkMode ? 'hover:bg-slate-700/60' : 'hover:bg-slate-200'
+                      }`}
+                      title="Clear text"
+                    >
+                      <span className="material-symbols-outlined text-base block">close</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
-              {/* Right Action Items: Character Count & Translate Button */}
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] font-bold text-slate-400 font-mono">
-                  {inputText.length} / 500
-                </span>
+              {/* Text Area */}
+              <div className="flex-1 my-4">
+                <textarea
+                  value={inputText}
+                  onChange={(e) => handleInputChange(e.target.value)}
+                  rows={6}
+                  placeholder={`Type or paste ${fromLang} text here (live auto-translate)...`}
+                  className={`w-full h-full bg-transparent resize-none focus:outline-none text-base md:text-lg font-medium leading-relaxed ${
+                    isDarkMode
+                      ? 'text-white placeholder-slate-500'
+                      : 'text-slate-900 placeholder-slate-400'
+                  }`}
+                />
+              </div>
+
+              {/* Bottom Actions Bar (Input Panel) */}
+              <div className={`flex items-center justify-between pt-3 border-t ${
+                isDarkMode ? 'border-white/10' : 'border-slate-200'
+              }`}>
+                <div className="flex items-center gap-2">
+                  {/* Voice Input Button */}
+                  <button
+                    onClick={startVoiceInput}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                      isListening
+                        ? 'bg-rose-500 text-white border-rose-600 animate-pulse shadow-lg shadow-rose-500/30'
+                        : isDarkMode
+                        ? 'bg-slate-900/60 border-white/10 text-slate-300 hover:text-white hover:border-orange-500/40'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
+                    title={isListening ? 'Click to stop listening' : 'Speak into Microphone'}
+                  >
+                    <span className="material-symbols-outlined text-base">mic</span>
+                    <span>{isListening ? 'Listening...' : 'Voice Input'}</span>
+                  </button>
+
+                  {/* Source TTS Speaker Button */}
+                  <button
+                    onClick={() => speakText(inputText, fromLang, true)}
+                    onDoubleClick={stopSpeaking}
+                    disabled={!inputText.trim()}
+                    className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                      isSpeakingSource
+                        ? 'bg-orange-500/20 text-orange-400 border-orange-500 animate-pulse'
+                        : isDarkMode
+                        ? 'bg-slate-900/60 border-white/10 text-slate-300 hover:text-orange-400 disabled:opacity-30'
+                        : 'bg-white border-slate-200 text-slate-600 hover:text-orange-500 disabled:opacity-30'
+                    }`}
+                    title="Listen to source audio"
+                  >
+                    <span className="material-symbols-outlined text-base block">volume_up</span>
+                  </button>
+                </div>
+
+                {/* Primary CTA: Translate Button */}
                 <button
                   onClick={handleManualTranslate}
                   disabled={isLoading || !inputText.trim()}
-                  className="btn-vibrant-orange px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-lg shadow-orange-500/25 active:scale-95 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <span className="material-symbols-outlined text-sm animate-spin">refresh</span>
@@ -728,109 +762,115 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                 </button>
               </div>
             </div>
-          </div>
 
-          {/* Right Container: Output Translation Display */}
-          <div
-            className={`p-5 rounded-2xl border flex flex-col justify-between min-h-[280px] shadow-sm relative transition-all ${
-              isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200'
-            }`}
-          >
-            {/* Top Label */}
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-[#FF6B35] uppercase tracking-wider flex items-center gap-1.5">
-                <FlagIcon code={LANG_CODES[toLang].code} size="sm" />
-                <span>{toLang.toUpperCase()} RESULT</span>
-              </span>
-
-              {/* Toast Notification Badge for Copied Text */}
-              {copiedToast && (
-                <span className="bg-emerald-500 text-white font-bold text-[10px] px-2.5 py-0.5 rounded-full shadow-xs animate-bounce">
-                  Copied!
+            {/* Right: Output Panel */}
+            <div className={`p-5 rounded-2xl border flex flex-col justify-between min-h-[340px] shadow-sm relative transition-all ${
+              isDarkMode
+                ? 'bg-slate-800/80 border-white/10'
+                : 'bg-slate-50 border-slate-200'
+            }`}>
+              {/* Top Bar of Output Panel */}
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black text-orange-400 uppercase tracking-wider flex items-center gap-2">
+                  <FlagIcon code={LANG_CODES[toLang].code} size="sm" />
+                  <span>{toLang} Result</span>
                 </span>
-              )}
-            </div>
 
-            {/* Translation Output Display & Phonetic Romanization */}
-            <div className="flex-1 my-3 space-y-2">
-              {isLoading ? (
-                <div className="flex flex-col items-center justify-center h-full py-8 text-center space-y-2">
-                  <span className="material-symbols-outlined text-3xl text-[#FF6B35] animate-spin">
-                    sync
+                {/* Toast badge */}
+                {copiedToast && (
+                  <span className="bg-emerald-500 text-white font-bold text-[10px] px-2.5 py-0.5 rounded-full shadow-md animate-bounce">
+                    Copied!
                   </span>
-                  <p className="text-xs font-semibold text-slate-400">Contextual translation in progress...</p>
-                </div>
-              ) : translatedText ? (
-                <div className="space-y-2">
-                  <h2
-                    className={`text-xl md:text-2xl font-bold leading-relaxed ${
-                      isDarkMode ? 'text-white' : 'text-slate-900'
-                    }`}
-                  >
-                    {translatedText}
-                  </h2>
-                  {phoneticText && (
-                    <p className={`text-xs md:text-sm font-semibold italic ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                      Phonetic: {phoneticText}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <p className="text-sm font-medium text-slate-500 italic py-6">
-                  Translation will appear here...
-                </p>
-              )}
-            </div>
-
-            {/* Bottom Actions Bar (Right Container) */}
-            <div
-              className={`flex items-center justify-between pt-3 border-t ${
-                isDarkMode ? 'border-[#1e293b]' : 'border-slate-100'
-              }`}
-            >
-              {/* Left Action Icons: Copy & Speaker Icon for Output */}
-              <div className="flex items-center gap-2">
-                {/* Copy Button */}
-                <button
-                  onClick={handleCopyTranslated}
-                  disabled={!translatedText.trim()}
-                  className={`p-2 rounded-xl border transition-colors cursor-pointer ${
-                    isDarkMode
-                      ? 'bg-[#1e293b] border-[#334155] text-slate-300 hover:text-white hover:border-[#FF6B35]/40 disabled:opacity-40'
-                      : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900 disabled:opacity-40'
-                  }`}
-                  title="Copy Translation"
-                >
-                  <span className="material-symbols-outlined text-base block">content_copy</span>
-                </button>
-
-                {/* Audio Speaker Icon for Target Text (Single tap: play, Double tap / tap while active: stop voice) */}
-                <button
-                  onClick={() => speakText(translatedText, toLang, false)}
-                  onDoubleClick={stopSpeaking}
-                  disabled={!translatedText.trim()}
-                  className={`p-2 rounded-xl border transition-colors cursor-pointer ${
-                    isSpeakingTarget
-                      ? 'bg-[#FF6B35]/20 text-[#FF6B35] border-[#FF6B35] animate-pulse'
-                      : isDarkMode
-                      ? 'bg-[#1e293b] border-[#334155] text-slate-300 hover:text-[#FF6B35] disabled:opacity-40'
-                      : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-[#FF6B35] disabled:opacity-40'
-                  }`}
-                  title="Single tap to listen • Double tap to stop voice"
-                >
-                  <span className="material-symbols-outlined text-base block">volume_up</span>
-                </button>
+                )}
               </div>
 
-              {/* Right Badges & Save to Deck Action */}
-              <div className="flex items-center gap-3">
+              {/* Main Output Display */}
+              <div className="flex-1 my-4 flex flex-col">
+                {isLoading ? (
+                  <div className="flex flex-col items-center justify-center flex-1 py-8 space-y-3">
+                    <span className="material-symbols-outlined text-3xl text-orange-400 animate-spin">
+                      sync
+                    </span>
+                    <p className="text-xs font-semibold text-slate-400">Translating context...</p>
+                  </div>
+                ) : translatedText ? (
+                  <div className="space-y-3">
+                    <h2 className={`text-xl md:text-2xl font-bold leading-relaxed ${
+                      isDarkMode ? 'text-white' : 'text-slate-900'
+                    }`}>
+                      {translatedText}
+                    </h2>
+
+                    {phoneticText && (
+                      <p className={`text-xs md:text-sm font-semibold italic ${
+                        isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                      }`}>
+                        Phonetic: {phoneticText}
+                      </p>
+                    )}
+
+                    {/* Formality Pill */}
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                        <span className="material-symbols-outlined text-xs">record_voice_over</span>
+                        <span>{detectFormality(translatedText, toLang)}</span>
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-base md:text-lg font-medium text-slate-500 italic">
+                    Translation will appear here...
+                  </p>
+                )}
+              </div>
+
+              {/* Bottom Actions Bar (Output Panel) */}
+              <div className={`flex items-center justify-between pt-3 border-t ${
+                isDarkMode ? 'border-white/10' : 'border-slate-200'
+              }`}>
+                <div className="flex items-center gap-2">
+                  {/* Copy Button */}
+                  <button
+                    onClick={handleCopyTranslated}
+                    disabled={!translatedText.trim()}
+                    className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                      isDarkMode
+                        ? 'bg-slate-900/60 border-white/10 text-slate-300 hover:text-white hover:border-orange-500/40 disabled:opacity-30'
+                        : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 disabled:opacity-30'
+                    }`}
+                    title="Copy Translation"
+                  >
+                    <span className="material-symbols-outlined text-base block">content_copy</span>
+                  </button>
+
+                  {/* Target Audio Speaker Button */}
+                  <button
+                    onClick={() => speakText(translatedText, toLang, false)}
+                    onDoubleClick={stopSpeaking}
+                    disabled={!translatedText.trim()}
+                    className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                      isSpeakingTarget
+                        ? 'bg-orange-500/20 text-orange-400 border-orange-500 animate-pulse'
+                        : isDarkMode
+                        ? 'bg-slate-900/60 border-white/10 text-slate-300 hover:text-orange-400 disabled:opacity-30'
+                        : 'bg-white border-slate-200 text-slate-600 hover:text-orange-500 disabled:opacity-30'
+                    }`}
+                    title="Listen to target audio"
+                  >
+                    <span className="material-symbols-outlined text-base block">volume_up</span>
+                  </button>
+                </div>
+
+                {/* Secondary CTA: Save to Deck (Muted outline until active) */}
                 <button
                   onClick={handleSaveCard}
                   disabled={!translatedText.trim() || isSaved}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer disabled:opacity-50 ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                     isSaved
-                      ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/40'
-                      : 'btn-vibrant-orange'
+                      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40 cursor-default'
+                      : translatedText.trim()
+                      ? 'border-orange-500/40 text-orange-400 hover:bg-orange-500/10 shadow-sm'
+                      : 'border-white/10 text-slate-500 bg-transparent opacity-50 cursor-not-allowed'
                   }`}
                 >
                   <span className="material-symbols-outlined text-base">
@@ -846,3 +886,4 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
     </div>
   );
 };
+

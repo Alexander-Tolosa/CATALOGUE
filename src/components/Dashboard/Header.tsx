@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserProfile, LanguageTrack, AppView } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
+import { Globe } from 'lucide-react';
 
 interface HeaderProps {
   profile: UserProfile;
@@ -27,9 +28,12 @@ export const TopAppBar: React.FC<HeaderProps> = ({
       {/* Left Title / Language Track Switcher */}
       <div className="flex items-center gap-4">
         {activeView === 'translator' ? (
-          <h2 className={`font-display text-xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-            Translator
-          </h2>
+          <div className="flex items-center gap-2.5">
+            <Globe className="w-5.5 h-5.5 text-[#FF6B35]" />
+            <h2 className={`font-display text-xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Translator
+            </h2>
+          </div>
         ) : activeView === 'kleo' ? (
           <div className="flex items-center gap-3">
             <h2 className={`font-display text-xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>

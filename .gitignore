@@ -9,6 +9,16 @@ dist/
 .env.local
 .env.*.local
 
+# Databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite-journal
+
+# Cache & Temp
+.vite/
+.sentry-build-plugin/
+
 # Editor / IDE
 .vscode/
 .idea/

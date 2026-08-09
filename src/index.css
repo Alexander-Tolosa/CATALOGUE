@@ -5,18 +5,18 @@
 
 @layer base {
   :root {
-    /* Main Theme Palette (Linear / Notion / Duolingo Inspired) */
-    --color-bg-light: #f8fafc;
-    --color-card-light: #ffffff;
-    --color-border-light: #e2e8f0;
+    /* Warm Cream / Warm Off-White Light Mode Palette (Reference Design) */
+    --color-bg-light: #FAF6F0;
+    --color-card-light: #FFFFFF;
+    --color-border-light: #EDE5DA;
 
-    --color-accent-orange: #FF6B35;
-    --color-accent-orange-hover: #e85a24;
-    --color-accent-coral: #ff7849;
+    --color-accent-orange: #F06543;
+    --color-accent-orange-hover: #E05432;
+    --color-accent-coral: #F97316;
 
-    --color-text-main-light: #0f172a;
-    --color-text-muted-light: #475569;
-    --color-text-subtle-light: #64748b;
+    --color-text-main-light: #2B2725;
+    --color-text-muted-light: #7A736E;
+    --color-text-subtle-light: #9B928A;
 
     /* Dark Mode Theme Tokens */
     --color-bg-dark: #0b0f19;
@@ -39,25 +39,25 @@ body {
   line-height: 1;
 }
 
-/* Linear/Notion Style Cards */
+/* Warm Cream Soft Cards */
 .saas-card-light {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
-  border-radius: 1.25rem;
+  background-color: #FFFFFF;
+  border: 1px solid #EDE5DA;
+  box-shadow: 0 2px 8px rgba(43, 39, 37, 0.03);
+  border-radius: 1.5rem;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .saas-card-light:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  border-color: #E2D9CE;
+  box-shadow: 0 8px 24px rgba(43, 39, 37, 0.06);
 }
 
 .saas-card-dark {
   background-color: #131b2e;
   border: 1px solid #1e293b;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border-radius: 1.25rem;
+  border-radius: 1.5rem;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -66,18 +66,18 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* Vibrant Orange Primary CTA Button */
+/* Vibrant Coral Primary CTA Button */
 .btn-vibrant-orange {
-  background: linear-gradient(135deg, #FF6B35 0%, #ff7849 100%);
+  background-color: #F06543;
   color: #ffffff;
   font-weight: 700;
-  box-shadow: 0 4px 14px rgba(255, 107, 53, 0.35);
+  box-shadow: 0 4px 14px rgba(240, 101, 67, 0.28);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-vibrant-orange:hover {
-  background: linear-gradient(135deg, #e85a24 0%, #FF6B35 100%);
-  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+  background-color: #E05432;
+  box-shadow: 0 6px 18px rgba(240, 101, 67, 0.4);
   transform: translateY(-1px);
 }
 

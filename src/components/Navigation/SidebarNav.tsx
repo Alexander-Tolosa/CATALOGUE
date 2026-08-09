@@ -14,6 +14,60 @@ interface SidebarNavProps {
   reviewItemsDueCount: number;
 }
 
+// 3D Golden-Orange & Cream Cat Paw Vector Component (Matching User Reference Image)
+const Cat3DPawIcon: React.FC<{ size?: number; className?: string }> = ({ size = 28, className = '' }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`drop-shadow-[0_3px_8px_rgba(184,73,14,0.45)] ${className}`}
+  >
+    {/* 3D Base Shadow Layer */}
+    <path
+      d="M50 96C74 96 89 82 85 64C81 46 66 43 50 43C34 43 19 46 15 64C11 82 26 96 50 96Z"
+      fill="#A8430B"
+    />
+    {/* Main Golden-Orange Paw Base Body */}
+    <path
+      d="M50 90C72 90 86 78 82 60C78 44 64 40 50 40C36 40 22 44 18 60C14 78 28 90 50 90Z"
+      fill="#F97316"
+    />
+    {/* Highlighted Top Edge Layer */}
+    <path
+      d="M50 86C69 86 82 75 79 58C76 43 63 39 50 39C37 39 24 43 21 58C18 75 31 86 50 86Z"
+      fill="#FB923C"
+    />
+
+    {/* Main Palm Center Pad (Cream Yellow) */}
+    <path
+      d="M50 81C62 81 71 73 68 61C65 51 57 47 50 47C43 47 35 51 32 61C29 73 38 81 50 81Z"
+      fill="#FFFBEB"
+    />
+
+    {/* Toe Bean 1 (Leftmost) */}
+    <ellipse cx="27" cy="30" rx="9" ry="12" transform="rotate(-22 27 30)" fill="#A8430B" />
+    <ellipse cx="27" cy="28" rx="8.5" ry="11" transform="rotate(-22 27 28)" fill="#F97316" />
+    <ellipse cx="27" cy="27" rx="6.5" ry="8.5" transform="rotate(-22 27 27)" fill="#FFFBEB" />
+
+    {/* Toe Bean 2 (Mid Left) */}
+    <ellipse cx="42" cy="20" rx="9" ry="12" transform="rotate(-6 42 20)" fill="#A8430B" />
+    <ellipse cx="42" cy="18" rx="8.5" ry="11" transform="rotate(-6 42 18)" fill="#F97316" />
+    <ellipse cx="42" cy="17" rx="6.5" ry="8.5" transform="rotate(-6 42 17)" fill="#FFFBEB" />
+
+    {/* Toe Bean 3 (Mid Right) */}
+    <ellipse cx="58" cy="20" rx="9" ry="12" transform="rotate(6 58 20)" fill="#A8430B" />
+    <ellipse cx="58" cy="18" rx="8.5" ry="11" transform="rotate(6 58 18)" fill="#F97316" />
+    <ellipse cx="58" cy="17" rx="6.5" ry="8.5" transform="rotate(6 58 17)" fill="#FFFBEB" />
+
+    {/* Toe Bean 4 (Rightmost) */}
+    <ellipse cx="73" cy="30" rx="9" ry="12" transform="rotate(22 73 30)" fill="#A8430B" />
+    <ellipse cx="73" cy="28" rx="8.5" ry="11" transform="rotate(22 73 28)" fill="#F97316" />
+    <ellipse cx="73" cy="27" rx="6.5" ry="8.5" transform="rotate(22 73 27)" fill="#FFFBEB" />
+  </svg>
+);
+
 export const SidebarNav: React.FC<SidebarNavProps> = ({
   activeView,
   onSelectView,
@@ -49,10 +103,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     <>
       {/* Desktop Left Sidebar Navigation */}
       <aside
-        className={`h-screen w-64 fixed left-0 top-0 border-r flex flex-col py-4 px-3 z-50 transition-colors duration-150 ${
+        className={`h-screen w-64 fixed left-0 top-0 border-r flex flex-col py-4 pl-3 pr-5 z-50 transition-colors duration-150 ${
           isDarkMode
             ? 'bg-[#0b0f17] border-[#1e293b] text-white'
-            : 'bg-white border-slate-200 text-slate-900 shadow-2xs'
+            : 'bg-[#FFFDF9] border-[#EDE5DA] text-[#2B2725] shadow-2xs'
         }`}
       >
         {/* Brand Header & Cat Mascot Logo (Clicking logo reloads/refreshes the dashboard while staying logged in) */}
@@ -63,24 +117,24 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         >
           <motion.div
             whileHover={{ scale: 1.08, rotate: 5 }}
-            className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-slate-800 border border-[#f97316]/30 flex items-center justify-center p-1 shadow-xs shrink-0"
+            className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-slate-800 border border-[#F06543]/30 flex items-center justify-center p-1 shadow-xs shrink-0"
           >
             <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
           </motion.div>
           <div className="flex flex-col">
-            <h1 className={`font-display font-bold text-base tracking-tight leading-none group-hover:text-[#f97316] transition-colors ${
-              isDarkMode ? 'text-white' : 'text-slate-900'
+            <h1 className={`font-display font-bold text-base tracking-tight leading-none group-hover:text-[#F06543] transition-colors ${
+              isDarkMode ? 'text-white' : 'text-[#2B2725]'
             }`}>
               CATalouge
             </h1>
-            <span className="text-[10px] font-semibold text-[#f97316] uppercase tracking-wider mt-0.5">
+            <span className="text-[10px] font-bold text-[#F06543] uppercase tracking-wider mt-0.5">
               Mastering Language
             </span>
           </div>
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar pt-1 px-1">
+        <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar pt-2.5 pl-1 pr-3">
           {navItems.map((item) => {
             const isActive = activeView === item.id;
             return (
@@ -91,13 +145,13 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 whileTap={{ scale: 0.97 }}
                 className={`relative overflow-visible w-full flex items-center justify-between gap-2.5 px-3.5 py-2 rounded-xl transition-all duration-200 text-xs font-semibold cursor-pointer ${
                   isActive
-                    ? 'text-[#f97316] bg-[#3a1c12] dark:bg-[#2e150a] border border-[#f97316] shadow-[0_0_20px_rgba(249,115,22,0.45)] font-bold scale-[1.02]'
+                    ? 'text-white bg-[#F06543] border border-[#F06543] shadow-[0_4px_14px_rgba(240,101,67,0.35)] font-bold scale-[1.02]'
                     : isDarkMode
                     ? 'text-slate-300 hover:bg-[#111827] hover:text-white'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    : 'text-[#7A736E] hover:bg-[#FAF6F0] hover:text-[#2B2725]'
                 }`}
               >
-                {/* Standalone Bouncing Paw Symbol perched on Top Right Corner */}
+                {/* 3D Golden-Orange Cat Paw Icon perched on Top Right Corner */}
                 <AnimatePresence>
                   {isActive && (
                     <motion.div
@@ -108,27 +162,27 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                         y: { repeat: Infinity, duration: 1.4, ease: 'easeInOut' },
                         scale: { type: 'spring', stiffness: 400, damping: 25 }
                       }}
-                      className="absolute -top-2.5 -right-1 z-30 pointer-events-none text-[#f97316] drop-shadow-[0_2px_8px_rgba(249,115,22,0.6)]"
+                      className="absolute -top-3 -right-1.5 z-30 pointer-events-none"
                     >
-                      <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                        pets
-                      </span>
+                      <Cat3DPawIcon size={26} />
                     </motion.div>
                   )}
                 </AnimatePresence>
 
                 <div className="flex items-center gap-2.5">
                   <span
-                    className={`material-symbols-outlined text-lg ${isActive ? 'text-[#f97316]' : 'text-slate-400'}`}
+                    className={`material-symbols-outlined text-lg ${isActive ? 'text-white' : 'text-slate-400'}`}
                     style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                   >
                     {item.icon}
                   </span>
-                  <span className={isActive ? 'text-[#f97316] font-bold' : ''}>{item.label}</span>
+                  <span className={isActive ? 'text-white font-bold' : ''}>{item.label}</span>
                 </div>
 
                 {item.id === 'review' && reviewItemsDueCount > 0 && (
-                  <span className="bg-[#f97316] text-white font-bold text-[9px] px-1.5 py-0.5 rounded-full shadow-xs">
+                  <span className={`font-bold text-[9px] px-1.5 py-0.5 rounded-full shadow-xs ${
+                    isActive ? 'bg-white text-[#F06543]' : 'bg-[#F06543] text-white'
+                  }`}>
                     {reviewItemsDueCount}
                   </span>
                 )}

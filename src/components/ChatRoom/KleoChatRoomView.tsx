@@ -4,6 +4,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { useKleoStore } from '../../store/useKleoStore';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
+import { processAIChatMessage } from '../../lib/aiService';
 import {
   DocumentFile,
   DEFAULT_KNOWLEDGE_BASE,
@@ -11,6 +12,7 @@ import {
   retrieveContext,
   RAGRetrievalResult
 } from '../../lib/ragEngine';
+import { ChatScenario, InlineCorrection } from '../../types';
 
 interface CitedSource {
   docName: string;
@@ -25,11 +27,19 @@ interface Message {
   text: string;
   timestamp: string;
   citedSources?: CitedSource[];
+  corrections?: InlineCorrection[];
+  scenario?: ChatScenario;
 }
 
 export const KleoChatRoomView: React.FC = () => {
-  const { isDarkMode, profile, addXP } = useAppStore();
+  const { isDarkMode, profile, addXP, savePhraseToReview, addStruggledWords } = useAppStore();
   const { mood, equippedCosmetics, react, addBondXp } = useKleoStore();
+
+  // Selected Chat Roleplay Scenario State
+  const [selectedScenario, setSelectedScenario] = useState<ChatScenario>('free_chat');
+
+  // Auto TTS Speech Output Toggle
+  const [autoSpeak, setAutoSpeak] = useState(false);
 
   // Knowledge Base Documents State
   const [documents, setDocuments] = useState<DocumentFile[]>(() => {
@@ -67,11 +77,21 @@ export const KleoChatRoomView: React.FC = () => {
   const [expandedSources, setExpandedSources] = useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSpeakingId, setIsSpeakingId] = useState<string | null>(null);
+  const [savedCorrections, setSavedCorrections] = useState<Record<string, boolean>>({});
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const streamTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Scenarios Definition List
+  const scenariosList: Array<{ id: ChatScenario; label: string; icon: string; promptNote: string }> = [
+    { id: 'free_chat', label: 'Free Chat', icon: 'chat', promptNote: 'Ask any grammar or vocab question' },
+    { id: 'order_coffee', label: 'Order Coffee', icon: 'local_cafe', promptNote: 'Practice ordering drinks in a café' },
+    { id: 'job_interview', label: 'Job Interview', icon: 'work', promptNote: 'Bilingual interview practice' },
+    { id: 'hotel_checkin', label: 'Hotel Check-in', icon: 'hotel', promptNote: 'Check in & ask about hotel amenities' },
+    { id: 'airport_customs', label: 'Airport Customs', icon: 'flight_land', promptNote: 'Passport control & customs roleplay' }
+  ];
 
   // Persist documents & history
   useEffect(() => {
@@ -105,98 +125,79 @@ export const KleoChatRoomView: React.FC = () => {
   const activeLangName =
     profile.selectedLanguage === 'ko' ? 'Korean' : profile.selectedLanguage === 'ja' ? 'Japanese' : 'English';
 
-  // RAG Response Generation with Word-by-Word Streaming
-  const handleSend = (textInput?: string) => {
+  // Process message through Centralized Unified AI Service
+  const handleSend = async (textInput?: string) => {
     const text = textInput || inputMsg;
     if (!text.trim() || isStreaming) return;
 
+    // Strict guardrail check
+    if (!isAllowedTopic(text)) {
+      const userMsgObj: Message = {
+        id: 'u-' + Date.now(),
+        sender: 'user',
+        text,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      const aiRefusalMsg: Message = {
+        id: 'ai-' + Date.now(),
+        sender: 'ai',
+        text: STANDARD_REFUSAL_RESPONSE,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, userMsgObj, aiRefusalMsg]);
+      if (!textInput) setInputMsg('');
+      react('welcome');
+      return;
+    }
+
+    const userMsgId = 'u-' + Date.now();
     const userMsgObj: Message = {
-      id: 'u-' + Date.now(),
+      id: userMsgId,
       sender: 'user',
       text,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      scenario: selectedScenario
     };
 
     setMessages((prev) => [...prev, userMsgObj]);
     if (!textInput) setInputMsg('');
     setIsStreaming(true);
-
     react('correct');
 
-    // Perform RAG Vector / Keyword Search over active documents
-    const ragResult: RAGRetrievalResult = retrieveContext(text, documents, 3);
+    // Call Centralized Unified AI Service
+    const aiResult = await processAIChatMessage({
+      message: text,
+      scenario: selectedScenario,
+      language: profile.selectedLanguage,
+      userLevel: profile.level,
+      struggledVocab: profile.struggledVocab
+    });
 
-    // Determine AI response text based on query & context
-    let fullResponseText = '';
-    const q = text.toLowerCase();
-
-    if (!isAllowedTopic(text)) {
-      fullResponseText = STANDARD_REFUSAL_RESPONSE;
-      react('welcome');
-    } else {
-      addXP(10);
-      addBondXp(15);
-      react('celebrate');
-
-      if (ragResult.snippets.length > 0) {
-        // Cited RAG response
-        fullResponseText = `Meow~ 🐾 Based on your active Knowledge Base files (${ragResult.citedSources.map(s => s.docName).join(', ')}):
-
-${ragResult.snippets.map(s => `> "${s.text}"`).join('\n\n')}
-
-### RAG Summary & Grammar Breakdown:
-- **Core Concept**: The retrieved documents emphasize natural usage and structured markers in **${activeLangName}**.
-- **Usage Tip**: Remember to practice these structures in your daily lessons!
-
-Meow! Check the cited source badges below for exact page references! 🐾`;
-      } else if (q.includes('formal') || q.includes('polite') || q.includes('honorific')) {
-        fullResponseText = `Meow~ 🐾 Here is your complete guide to **Formal vs. Informal Speech** in Asian languages!
-
-### 1. Korean (존댓말 - Jondaetmal vs 반말 - Banmal)
-- **Friendly Polite (~요)**: Add **~요** to verb stems (e.g., 고마워요 *Gomawoyo* = Thank you).
-- **Formal Speech (~입니다)**: Used in broadcasting/news/business (e.g., 감사합니다 *Gamsahamnida*).
-- **Casual (반말)**: Used only with close peers or younger people (e.g., 고마워 *Gomawo*).
-
-### 2. Japanese (丁寧語 - Teineigo vs タメ口 - Tameguchi)
-- **Polite (です/ます)**: Use **です** (desu) for nouns/adjectives and **ます** (masu) for verbs.
-- **Casual**: Drop desu/masu (e.g., ありがとう *Arigatou* vs ありがとう御座います *Arigatou gozaimasu*).
-
-Meow~ 🐾 Always default to polite speech when talking to elders or strangers!`;
-      } else if (q.includes('quiz') || q.includes('test')) {
-        fullResponseText = `Meow~ 🐾 Time for a quick language challenge!
-
-**Question**: Which phrase is the polite way to say *"Excuse me / Where is the bathroom?"* in Japanese?
-- **A)** ラーメンを食べます (Ramen o tabemasu)
-- **B)** お手洗いはどこですか？ (O-tearai wa doko desu ka?)
-- **C)** 猫が好きです (Neko ga suki desu)
-
-*Reply with your answer and I'll score it for you!* 🐾`;
-      } else if (q.includes('particle') || q.includes('grammar')) {
-        fullResponseText = `Meow~ 🐾 Essential Japanese & Korean Particles Breakdown:
-
-### Japanese Core Particles:
-- **は (wa)**: Topic marker (e.g. 私は学生です - *Watashi wa gakusei desu*).
-- **を (o)**: Direct object marker (e.g. お茶を飲みます - *Ocha o nomimasu*).
-- **に (ni)**: Direction / Time marker (e.g. 東京に行きます - *Tokyo ni ikimasu*).
-
-### Korean Core Particles:
-- **은/는 (eun/neun)**: Topic markers.
-- **이/가 (i/ga)**: Subject markers.
-- **을/를 (eul/reul)**: Object markers.
-
-Meow! Master these markers to unlock natural sentence structures! 🐾`;
-      } else {
-        fullResponseText = `Meow~ 🐾 I'm Kleo, your expert RAG-enabled AI Language Coach for **${activeLangName}**!
-
-- **Knowledge Retrieval**: Upload PDF, Markdown, or text files using the (+) button to ask questions about custom grammar notes.
-- **Grammar & Sentence Analysis**: Ask me to break down verb conjugations or honorific endings.
-- **Interactive Practice**: Ask for a quick quiz or conversational dialogue exercise.
-
-How can I help you master ${activeLangName} today? 🐾`;
-      }
+    // Attach inline corrections to user message if present
+    if (aiResult.corrections && aiResult.corrections.length > 0) {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === userMsgId ? { ...m, corrections: aiResult.corrections } : m))
+      );
     }
 
-    // Stream word-by-word into chat
+    // Save detected struggled words into global user state for context reuse
+    if (aiResult.struggledWords && aiResult.struggledWords.length > 0) {
+      addStruggledWords(aiResult.struggledWords, `Identified in ${selectedScenario} roleplay`);
+    }
+
+    // Perform RAG citations check for documents
+    const ragResult: RAGRetrievalResult = retrieveContext(text, documents, 2);
+
+    addXP(10);
+    addBondXp(15);
+    react('celebrate');
+
+    let fullResponseText = aiResult.reply;
+    if (ragResult.snippets.length > 0) {
+      fullResponseText += `\n\n**RAG Reference** (${ragResult.citedSources.map(s => s.docName).join(', ')}):\n> "${ragResult.snippets[0].text.slice(0, 150)}..."`;
+    }
+
+    // Word-by-Word Streaming animation
     const words = fullResponseText.split(' ');
     let currentWordIdx = 0;
     const aiMsgId = 'ai-' + Date.now();
@@ -221,17 +222,20 @@ How can I help you master ${activeLangName} today? 🐾`;
       } else {
         if (streamTimerRef.current) clearInterval(streamTimerRef.current);
         setIsStreaming(false);
+
+        // Auto-Speak Response if TTS toggle is ON
+        if (autoSpeak) {
+          speakText(aiMsgId, fullResponseText);
+        }
       }
-    }, 40);
+    }, 35);
   };
 
-  // Stop Generating
   const handleStopStreaming = () => {
     if (streamTimerRef.current) clearInterval(streamTimerRef.current);
     setIsStreaming(false);
   };
 
-  // Regenerate Last Response
   const handleRegenerate = () => {
     if (isStreaming || messages.length === 0) return;
     const lastUserMsg = [...messages].reverse().find((m) => m.sender === 'user');
@@ -240,7 +244,6 @@ How can I help you master ${activeLangName} today? 🐾`;
     }
   };
 
-  // Clear Chat History
   const handleClearHistory = () => {
     if (confirm('Clear entire Kleo chat history?')) {
       setMessages([]);
@@ -248,7 +251,6 @@ How can I help you master ${activeLangName} today? 🐾`;
     }
   };
 
-  // File Upload Handler (PDF, TXT, DOCX, MD)
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -277,7 +279,6 @@ How can I help you master ${activeLangName} today? 🐾`;
     reader.readAsText(file);
   };
 
-  // Delete Document from Knowledge Base
   const handleDeleteDocument = (docId: string) => {
     setDocuments((prev) => prev.filter((d) => d.id !== docId));
   };
@@ -294,6 +295,7 @@ How can I help you master ${activeLangName} today? 🐾`;
     window.speechSynthesis.cancel();
     const cleanText = text.replace(/[#*`~_-]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = profile.selectedLanguage === 'ja' ? 'ja-JP' : profile.selectedLanguage === 'ko' ? 'ko-KR' : 'en-US';
     utterance.rate = 0.95;
     utterance.onend = () => setIsSpeakingId(null);
     utterance.onerror = () => setIsSpeakingId(null);
@@ -301,7 +303,6 @@ How can I help you master ${activeLangName} today? 🐾`;
     window.speechSynthesis.speak(utterance);
   };
 
-  // Copy to Clipboard
   const handleCopy = (id: string, text: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
@@ -314,7 +315,7 @@ How can I help you master ${activeLangName} today? 🐾`;
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert('Voice recognition is not supported in this browser. Please use Google Chrome or Edge.');
+      alert('Voice recognition is not supported in this browser. Please use Chrome or Edge.');
       return;
     }
 
@@ -333,6 +334,16 @@ How can I help you master ${activeLangName} today? 🐾`;
     recognition.start();
   };
 
+  const handleSaveCorrectionToReview = (corr: InlineCorrection) => {
+    savePhraseToReview({
+      term: corr.corrected,
+      translation: corr.explanation,
+      language: profile.selectedLanguage,
+      phonetic: ''
+    });
+    setSavedCorrections((prev) => ({ ...prev, [corr.id]: true }));
+  };
+
   return (
     <div className={`flex flex-col h-[calc(100vh-80px)] max-h-screen overflow-hidden ${
       isDarkMode ? 'bg-[#0b0f17] text-white' : 'bg-slate-50 text-slate-900'
@@ -341,7 +352,6 @@ How can I help you master ${activeLangName} today? 🐾`;
       <header className={`px-4 py-3 border-b flex items-center justify-between gap-4 shrink-0 shadow-xs backdrop-blur-md ${
         isDarkMode ? 'bg-[#111827]/90 border-[#1e293b]' : 'bg-white/90 border-slate-200'
       }`}>
-        {/* Left Avatar & Status Indicator */}
         <div className="flex items-center gap-3">
           <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FF6B35]/20 to-[#FF6B35]/5 border border-[#FF6B35]/40 flex items-center justify-center p-1 shadow-md">
             <KleoAvatar mood={mood} equippedCosmetics={equippedCosmetics} size={40} />
@@ -350,525 +360,331 @@ How can I help you master ${activeLangName} today? 🐾`;
 
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <h2 className="font-display font-black text-base md:text-lg tracking-tight text-white flex items-center gap-1.5">
-                Kleo AI Chat Room <span className="text-sm">🐾</span>
-              </h2>
-              <span className="bg-[#FF6B35]/15 text-[#FF6B35] border border-[#FF6B35]/30 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">
-                RAG Vector Engine Active
+              <h2 className="font-display text-sm font-bold tracking-tight">Kleo AI Tutor</h2>
+              <span className="bg-orange-500/10 border border-orange-500/30 text-[#f97316] font-bold text-[9px] uppercase px-1.5 py-0.5 rounded-full">
+                Unified AI Pipeline
               </span>
             </div>
-            <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Active Context: {activeLangName} Foundations ({documents.length} Docs Loaded)
+            <span className={`text-[11px] font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              Level {profile.level} • {activeLangName} • RAG Vector Store Active
             </span>
           </div>
         </div>
 
-        {/* Right Header Utilities & Knowledge Base Drawer Toggle */}
+        {/* Action Controls */}
         <div className="flex items-center gap-2">
-          {/* Knowledge Base Drawer Toggle Button */}
+          {/* TTS Auto-Speak Toggle */}
           <button
-            onClick={() => setIsContextDrawerOpen(!isContextDrawerOpen)}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              isContextDrawerOpen
-                ? 'bg-[#FF6B35] text-white border-[#FF6B35]'
+            onClick={() => setAutoSpeak(!autoSpeak)}
+            className={`px-2.5 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              autoSpeak
+                ? 'bg-orange-500/10 border-orange-500/40 text-orange-500 font-bold'
                 : isDarkMode
-                ? 'bg-[#1e293b] border-[#334155] text-slate-200 hover:border-[#FF6B35]'
-                : 'bg-slate-100 border-slate-200 text-slate-700 hover:border-[#FF6B35]'
+                ? 'bg-[#1e293b] border-slate-800 text-slate-400'
+                : 'bg-slate-100 border-slate-200 text-slate-600'
             }`}
+            title="Toggle Auto Voice Output on AI Replies"
           >
-            <span className="material-symbols-outlined text-base">description</span>
-            <span>Knowledge Base ({documents.length})</span>
+            <span className="material-symbols-outlined text-sm">{autoSpeak ? 'volume_up' : 'volume_off'}</span>
+            <span className="hidden sm:inline">Auto TTS</span>
           </button>
 
-          {/* Clear History Button */}
-          {messages.length > 0 && (
-            <button
-              onClick={handleClearHistory}
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
-              title="Clear Chat History"
-            >
-              <span className="material-symbols-outlined text-base">delete_sweep</span>
-            </button>
-          )}
+          {/* Context Files Drawer Toggle */}
+          <button
+            onClick={() => setIsContextDrawerOpen(true)}
+            className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              isDarkMode
+                ? 'bg-[#1e293b] border-slate-800 text-slate-200 hover:bg-slate-800'
+                : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <span className="material-symbols-outlined text-sm text-[#f97316]">folder_open</span>
+            <span className="hidden sm:inline">RAG Knowledge</span>
+            <span className="bg-[#f97316] text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+              {documents.length}
+            </span>
+          </button>
+
+          {/* Clear History */}
+          <button
+            onClick={handleClearHistory}
+            className={`p-2 rounded-xl border text-slate-400 hover:text-rose-500 transition-colors cursor-pointer ${
+              isDarkMode ? 'bg-[#1e293b] border-slate-800' : 'bg-slate-100 border-slate-200'
+            }`}
+            title="Clear Chat History"
+          >
+            <span className="material-symbols-outlined text-sm">delete_outline</span>
+          </button>
         </div>
       </header>
 
-      {/* Active Knowledge Base Drawer Panel */}
-      <AnimatePresence>
-        {isContextDrawerOpen && (
-          <motion.aside
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className={`px-4 py-3 border-b text-xs overflow-hidden shrink-0 ${
-              isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-amber-50 border-amber-200'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-bold text-[#FF6B35] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-sm">folder_open</span>
-                Active Knowledge Base Files (RAG Context Window)
-              </span>
-              <button
-                onClick={() => setIsUploadModalOpen(true)}
-                className="btn-vibrant-orange px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-xs">upload_file</span>
-                Upload Document
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-              {documents.map((doc) => (
-                <div
-                  key={doc.id}
-                  className={`p-2.5 rounded-xl border flex items-center justify-between gap-2 ${
-                    isDarkMode ? 'bg-[#0b0f17] border-[#1e293b]' : 'bg-white border-slate-200'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="material-symbols-outlined text-[#FF6B35] text-base shrink-0">
-                      description
-                    </span>
-                    <div className="flex flex-col min-w-0">
-                      <span className="font-bold text-white truncate text-[11px]">{doc.name}</span>
-                      <span className="text-[9px] text-slate-400">
-                        {doc.chunks.length} Chunks • {(doc.size / 1024).toFixed(1)} KB
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleDeleteDocument(doc.id)}
-                    className="p-1 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
-                    title="Remove from RAG index"
-                  >
-                    <span className="material-symbols-outlined text-xs">close</span>
-                  </button>
-                </div>
-              ))}
-            </div>
-          </motion.aside>
-        )}
-      </AnimatePresence>
-
-      {/* Main Canvas Area */}
-      <main className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
-        {messages.length === 0 ? (
-          /* Empty / Welcome State (Claude-like centered layout) */
-          <div className="max-w-2xl mx-auto my-6 flex flex-col items-center text-center space-y-6 animate-fadeIn">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className="relative w-28 h-28 rounded-full border-4 border-[#FF6B35]/30 p-2 bg-[#161b2b] flex items-center justify-center shadow-2xl"
+      {/* Scenario / Persona Selection Toolbar */}
+      <div className={`px-4 py-2.5 border-b flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0 ${
+        isDarkMode ? 'bg-[#0f1422] border-[#1e293b]' : 'bg-slate-100/80 border-slate-200'
+      }`}>
+        <span className="text-[11px] font-bold text-orange-500 uppercase tracking-wider shrink-0 flex items-center gap-1">
+          <span className="material-symbols-outlined text-sm">theater_comedy</span>
+          Roleplay Persona:
+        </span>
+        {scenariosList.map((sc) => {
+          const isActive = selectedScenario === sc.id;
+          return (
+            <button
+              key={sc.id}
+              onClick={() => setSelectedScenario(sc.id)}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                isActive
+                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold shadow-md shadow-orange-500/20 scale-[1.02]'
+                  : isDarkMode
+                  ? 'bg-slate-800/80 border border-slate-700/60 text-slate-300 hover:bg-slate-700'
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
+              title={sc.promptNote}
             >
-              <KleoAvatar mood="happy" equippedCosmetics={equippedCosmetics} size={90} />
-              <span className="absolute -bottom-2 bg-[#FF6B35] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-md uppercase">
-                RAG Engine 🐾
-              </span>
-            </motion.div>
+              <span className="material-symbols-outlined text-sm">{sc.icon}</span>
+              <span>{sc.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
-            <div className="space-y-2">
-              <h1 className="font-display font-black text-2xl md:text-3xl text-white tracking-tight">
-                Good day! How can Kleo assist your language learning today? 🐾
-              </h1>
-              <p className="text-xs md:text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
-                Your AI Siamese Cat Language Tutor for **{activeLangName}**, Japanese, and English. Ask questions or upload documents for custom RAG knowledge retrieval!
-              </p>
+      {/* Chat Stream Window */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
+        {messages.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-3">
+            <div className="w-16 h-16 rounded-3xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center p-2 shadow-lg">
+              <KleoAvatar mood="happy" equippedCosmetics={equippedCosmetics} size={54} />
             </div>
-
-            {/* Quick Suggested Prompt Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full pt-2 text-left">
+            <h3 className={`font-display text-lg font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Start Roleplaying with Kleo! 🐾
+            </h3>
+            <p className={`text-xs max-w-md ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+              Select a scenario above like ☕ <b>Order Coffee</b> or 💼 <b>Job Interview</b>. Kleo will roleplay with you in {activeLangName}, provide inline grammar corrections, and track vocabulary you struggle with!
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center pt-2">
               <button
-                onClick={() => handleSend('Explain Japanese particles & sentence structure')}
-                className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2 ${
-                  isDarkMode
-                    ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/60 hover:bg-[#192238]'
-                    : 'bg-white border-slate-200 hover:border-[#FF6B35]/60 hover:bg-slate-50 shadow-xs'
-                }`}
+                onClick={() => handleSend(profile.selectedLanguage === 'ko' ? '안녕하세요! 커피 주문하고 싶어요.' : profile.selectedLanguage === 'ja' ? 'こんにちは！コーヒーを注文したいです。' : 'Hello! I would like to order a coffee.')}
+                className="px-3.5 py-1.5 rounded-xl border border-orange-500/40 text-orange-500 text-xs font-semibold hover:bg-orange-500/10 transition-colors"
               >
-                <div className="flex items-center gap-2 text-[#FF6B35] font-bold text-sm">
-                  <span className="material-symbols-outlined text-lg">auto_awesome</span>
-                  <span>Explain Japanese Particles</span>
-                </div>
-                <p className="text-xs text-slate-400">
-                  Break down は, を, に, and で with natural example sentences.
-                </p>
+                ☕ Try Coffee Order Greeting
               </button>
-
               <button
-                onClick={() => handleSend('Practice Korean greetings & polite speech')}
-                className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2 ${
-                  isDarkMode
-                    ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/60 hover:bg-[#192238]'
-                    : 'bg-white border-slate-200 hover:border-[#FF6B35]/60 hover:bg-slate-50 shadow-xs'
-                }`}
+                onClick={() => handleSend(profile.selectedLanguage === 'ko' ? '존댓말과 반말의 차이를 설명해 줘!' : profile.selectedLanguage === 'ja' ? '丁寧語の使い方を教えて！' : 'Explain formal vs informal speech!')}
+                className="px-3.5 py-1.5 rounded-xl border border-amber-500/40 text-amber-500 text-xs font-semibold hover:bg-amber-500/10 transition-colors"
               >
-                <div className="flex items-center gap-2 text-[#FF6B35] font-bold text-sm">
-                  <span className="material-symbols-outlined text-lg">forum</span>
-                  <span>Practice Korean Greetings</span>
-                </div>
-                <p className="text-xs text-slate-400">
-                  Learn polite 존댓말 speech and daily expressions.
-                </p>
-              </button>
-
-              <button
-                onClick={() => handleSend('Give me a vocabulary quiz for active lesson')}
-                className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2 ${
-                  isDarkMode
-                    ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/60 hover:bg-[#192238]'
-                    : 'bg-white border-slate-200 hover:border-[#FF6B35]/60 hover:bg-slate-50 shadow-xs'
-                }`}
-              >
-                <div className="flex items-center gap-2 text-[#FF6B35] font-bold text-sm">
-                  <span className="material-symbols-outlined text-lg">quiz</span>
-                  <span>Review Active Vocabulary</span>
-                </div>
-                <p className="text-xs text-slate-400">
-                  Test your recall with interactive multiple-choice questions.
-                </p>
-              </button>
-
-              <button
-                onClick={() => handleSend('Explain formal vs informal honorifics')}
-                className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2 ${
-                  isDarkMode
-                    ? 'bg-[#131b2e] border-[#1e293b] hover:border-[#FF6B35]/60 hover:bg-[#192238]'
-                    : 'bg-white border-slate-200 hover:border-[#FF6B35]/60 hover:bg-slate-50 shadow-xs'
-                }`}
-              >
-                <div className="flex items-center gap-2 text-[#FF6B35] font-bold text-sm">
-                  <span className="material-symbols-outlined text-lg">school</span>
-                  <span>Formal vs Informal Honorifics</span>
-                </div>
-                <p className="text-xs text-slate-400">
-                  Understand social hierarchy and polite speech rules.
-                </p>
+                💡 Ask Grammar Question
               </button>
             </div>
           </div>
         ) : (
-          /* Active Chat Stream View */
-          <div className="max-w-3xl mx-auto space-y-5">
-            {messages.map((m) => (
-              <motion.div
-                key={m.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-                className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`flex gap-3 max-w-[90%] md:max-w-[85%] ${m.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  {m.sender === 'ai' && (
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF6B35]/20 to-[#FF6B35]/5 border border-[#FF6B35]/40 flex items-center justify-center p-0.5 shrink-0 shadow-sm">
-                      <KleoAvatar mood="happy" equippedCosmetics={equippedCosmetics} size={32} />
+          messages.map((msg) => (
+            <div key={msg.id} className="space-y-2">
+              <div className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                {msg.sender === 'ai' && (
+                  <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center p-0.5 shrink-0 shadow-xs">
+                    <KleoAvatar mood={mood} equippedCosmetics={equippedCosmetics} size={28} />
+                  </div>
+                )}
+
+                <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl p-4 shadow-sm space-y-2 relative group ${
+                  msg.sender === 'user'
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-tr-none'
+                    : isDarkMode
+                    ? 'bg-[#111827] border border-[#1e293b] text-slate-100 rounded-tl-none'
+                    : 'bg-white border border-slate-200 text-slate-900 rounded-tl-none'
+                }`}>
+                  {/* Sender & Timestamp */}
+                  <div className="flex items-center justify-between gap-3 text-[10px] opacity-80 border-b border-black/10 dark:border-white/10 pb-1.5 mb-1">
+                    <span className="font-bold uppercase tracking-wider">
+                      {msg.sender === 'user' ? 'You' : 'Kleo AI'}
+                    </span>
+                    <span>{msg.timestamp}</span>
+                  </div>
+
+                  {/* Message Content */}
+                  <div className="text-xs leading-relaxed whitespace-pre-wrap font-sans">
+                    {msg.text}
+                  </div>
+
+                  {/* Cited RAG Sources Badge */}
+                  {msg.citedSources && msg.citedSources.length > 0 && (
+                    <div className="pt-2 border-t border-slate-700/20 dark:border-slate-800 space-y-1.5">
+                      <span className="text-[10px] font-bold text-orange-400 uppercase tracking-wider flex items-center gap-1">
+                        <span className="material-symbols-outlined text-xs">auto_awesome</span>
+                        Cited RAG Knowledge Sources:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {msg.citedSources.map((src, i) => (
+                          <span
+                            key={i}
+                            className="bg-orange-500/10 border border-orange-500/30 text-orange-400 text-[10px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1"
+                          >
+                            <span className="material-symbols-outlined text-xs">description</span>
+                            <span>{src.docName} (p.{src.pageNumber || 1})</span>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
 
-                  <div className={`p-4 rounded-2xl space-y-3 text-xs md:text-sm leading-relaxed ${
-                    m.sender === 'user'
-                      ? 'bg-gradient-to-r from-[#FF6B35] to-[#ff7849] text-white font-medium rounded-tr-none shadow-lg'
-                      : isDarkMode
-                      ? 'bg-[#131b2e] border border-[#1e293b] text-slate-200 rounded-tl-none shadow-md'
-                      : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'
+                  {/* Assistant Controls (TTS Speak, Copy) */}
+                  {msg.sender === 'ai' && (
+                    <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-700/20 dark:border-slate-800">
+                      <button
+                        onClick={() => speakText(msg.id, msg.text)}
+                        className={`p-1 rounded-lg text-slate-400 hover:text-orange-500 transition-colors cursor-pointer ${
+                          isSpeakingId === msg.id ? 'text-orange-500 animate-pulse' : ''
+                        }`}
+                        title="Speak Message (TTS)"
+                      >
+                        <span className="material-symbols-outlined text-base">
+                          {isSpeakingId === msg.id ? 'volume_up' : 'volume_mute'}
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => handleCopy(msg.id, msg.text)}
+                        className="p-1 rounded-lg text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+                        title="Copy to Clipboard"
+                      >
+                        <span className="material-symbols-outlined text-base">
+                          {copiedId === msg.id ? 'check' : 'content_copy'}
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Inline Correction Bubbles (Rendered right beneath User Messages when mistakes are caught) */}
+              {msg.corrections && msg.corrections.length > 0 && (
+                <div className="flex justify-end pr-2">
+                  <div className={`max-w-[85%] md:max-w-[75%] p-3.5 rounded-2xl border backdrop-blur-md space-y-2 shadow-md ${
+                    isDarkMode
+                      ? 'bg-[#1e1412]/90 border-rose-500/40 text-slate-200'
+                      : 'bg-rose-50 border-rose-200 text-slate-900'
                   }`}>
-                    {/* Message Content */}
-                    <div className="whitespace-pre-line leading-relaxed font-sans">{m.text}</div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold text-rose-500 uppercase tracking-wider flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm">auto_fix_high</span>
+                        Inline Correction Bubble
+                      </span>
+                      <span className="bg-rose-500/10 border border-rose-500/30 text-rose-500 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        Grammar & Politeness
+                      </span>
+                    </div>
 
-                    {/* Cited Source Badges (RAG Context) */}
-                    {m.citedSources && m.citedSources.length > 0 && (
-                      <div className="pt-2 border-t border-[#FF6B35]/20">
-                        <button
-                          onClick={() => setExpandedSources(prev => ({ ...prev, [m.id]: !prev[m.id] }))}
-                          className="flex items-center gap-1.5 text-[11px] font-bold text-[#FF6B35] hover:underline cursor-pointer"
-                        >
-                          <span className="material-symbols-outlined text-sm">bookmark</span>
-                          <span>Referenced Context ({m.citedSources.length} Document Sources)</span>
-                          <span className="material-symbols-outlined text-xs">
-                            {expandedSources[m.id] ? 'expand_less' : 'expand_more'}
-                          </span>
-                        </button>
-
-                        <AnimatePresence>
-                          {expandedSources[m.id] && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              className="mt-2 space-y-1.5"
-                            >
-                              {m.citedSources.map((src, idx) => (
-                                <div
-                                  key={idx}
-                                  className="p-2 rounded-xl bg-[#0b0f19]/80 border border-[#1e293b] text-[10px] text-slate-300 space-y-1"
-                                >
-                                  <div className="flex items-center justify-between font-bold text-[#FF6B35]">
-                                    <span>📄 {src.docName}</span>
-                                    <span>Page {src.pageNumber || 1}</span>
-                                  </div>
-                                  <p className="italic text-slate-400">"{src.previewText}"</p>
-                                </div>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    )}
-
-                    {/* Message Actions Bar */}
-                    <div className="flex items-center justify-between pt-2 border-t border-white/10 text-[10px] opacity-80">
-                      <span>{m.timestamp}</span>
-
-                      {m.sender === 'ai' && (
+                    {msg.corrections.map((corr) => (
+                      <div key={corr.id} className="space-y-1 text-xs">
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => speakText(m.id, m.text)}
-                            className={`p-1 rounded-md transition-colors cursor-pointer ${
-                              isSpeakingId === m.id
-                                ? 'text-[#FF6B35] font-bold animate-pulse'
-                                : 'text-slate-400 hover:text-white'
-                            }`}
-                            title="Read Aloud (TTS)"
-                          >
-                            <span className="material-symbols-outlined text-sm">
-                              {isSpeakingId === m.id ? 'volume_up' : 'volume_mute'}
-                            </span>
-                          </button>
+                          <span className="material-symbols-outlined text-rose-500 text-sm">close</span>
+                          <span className="line-through text-rose-400">{corr.original}</span>
+                          <span className="material-symbols-outlined text-emerald-500 text-sm">arrow_forward</span>
+                          <span className="font-bold text-emerald-500">{corr.corrected}</span>
+                        </div>
+                        <p className={`text-[11px] pl-5 border-l-2 border-orange-500 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                          💡 {corr.explanation}
+                        </p>
 
+                        <div className="flex justify-end pt-1">
                           <button
-                            onClick={() => handleCopy(m.id, m.text)}
-                            className="p-1 rounded-md text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center gap-1"
-                            title="Copy text"
+                            onClick={() => handleSaveCorrectionToReview(corr)}
+                            disabled={savedCorrections[corr.id]}
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border flex items-center gap-1 transition-all cursor-pointer ${
+                              savedCorrections[corr.id]
+                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500'
+                                : 'bg-orange-500/10 border-orange-500/30 text-orange-500 hover:bg-orange-500 hover:text-white'
+                            }`}
                           >
-                            <span className="material-symbols-outlined text-sm">content_copy</span>
-                            {copiedId === m.id && (
-                              <span className="text-[9px] text-emerald-400 font-bold">Copied!</span>
-                            )}
+                            <span className="material-symbols-outlined text-xs">
+                              {savedCorrections[corr.id] ? 'check' : 'bookmark_add'}
+                            </span>
+                            <span>{savedCorrections[corr.id] ? 'Saved to Review' : 'Save to Flashcard Review'}</span>
                           </button>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </motion.div>
-            ))}
-
-            {isStreaming && (
-              <div className="flex items-center gap-3 text-slate-400 text-xs animate-pulse">
-                <div className="w-8 h-8 rounded-xl bg-[#FF6B35]/20 border border-[#FF6B35]/40 flex items-center justify-center p-0.5">
-                  <KleoAvatar mood="curious" equippedCosmetics={equippedCosmetics} size={28} />
-                </div>
-                <span>Kleo is streaming response with RAG context... 🐾</span>
-              </div>
-            )}
-
-            <div ref={messagesEndRef} />
-          </div>
-        )}
-      </main>
-
-      {/* Bottom Floating Input Bar & Utilities */}
-      <footer className={`p-4 border-t shrink-0 ${
-        isDarkMode ? 'bg-[#0b0f17] border-[#1e293b]' : 'bg-slate-100 border-slate-200'
-      }`}>
-        <div className="max-w-3xl mx-auto space-y-2">
-          {/* Stop / Regenerate Utilities Bar */}
-          <div className="flex items-center justify-center gap-3 text-xs font-bold">
-            {isStreaming ? (
-              <button
-                onClick={handleStopStreaming}
-                className="px-3.5 py-1.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 hover:bg-rose-500 hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
-              >
-                <span className="material-symbols-outlined text-sm">stop_circle</span>
-                <span>Stop Generating</span>
-              </button>
-            ) : messages.length > 0 ? (
-              <button
-                onClick={handleRegenerate}
-                className="px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:border-[#FF6B35] hover:text-[#FF6B35] transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
-              >
-                <span className="material-symbols-outlined text-sm">refresh</span>
-                <span>Regenerate Response</span>
-              </button>
-            ) : null}
-          </div>
-
-          <div className={`p-2 rounded-2xl border flex items-center gap-2 shadow-2xl transition-all ${
-            isDarkMode
-              ? 'bg-[#131b2e] border-[#1e293b] focus-within:border-[#FF6B35] focus-within:shadow-[0_0_20px_rgba(255,107,53,0.25)]'
-              : 'bg-white border-slate-200 focus-within:border-[#FF6B35]'
-          }`}>
-            {/* Attachment (+) File Upload Button */}
-            <button
-              onClick={() => setIsUploadModalOpen(true)}
-              className="p-2 rounded-xl text-slate-400 hover:text-[#FF6B35] hover:bg-slate-800/40 transition-colors cursor-pointer shrink-0"
-              title="Upload PDF, DOCX, or MD to Knowledge Base"
-            >
-              <span className="material-symbols-outlined text-xl">add_circle</span>
-            </button>
-
-            {/* Model Switcher Dropdown */}
-            <div className="relative" ref={dropdownRef}>
-              <button
-                type="button"
-                onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-all ${
-                  isDarkMode
-                    ? 'bg-[#0b0f19] border-[#1e293b] text-slate-300 hover:border-[#FF6B35]'
-                    : 'bg-slate-100 border-slate-200 text-slate-700 hover:border-[#FF6B35]'
-                }`}
-              >
-                <span className="material-symbols-outlined text-sm text-[#FF6B35]">psychology</span>
-                <span>
-                  {selectedModel === 'rag'
-                    ? 'RAG Vector Engine'
-                    : selectedModel === 'pro'
-                    ? 'Kleo Tutor Pro'
-                    : 'Kleo Fast'}
-                </span>
-                <span className="material-symbols-outlined text-xs">expand_more</span>
-              </button>
-
-              <AnimatePresence>
-                {isModelDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 4 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    className={`absolute bottom-full left-0 mb-2 w-52 p-1.5 rounded-xl border shadow-2xl z-50 text-xs ${
-                      isDarkMode ? 'bg-[#131b2e] border-[#1e293b] text-white' : 'bg-white border-slate-200 text-slate-800'
-                    }`}
-                  >
-                    <button
-                      onClick={() => { setSelectedModel('rag'); setIsModelDropdownOpen(false); }}
-                      className="w-full text-left px-3 py-2 rounded-lg font-bold hover:bg-[#FF6B35]/15 hover:text-[#FF6B35] transition-colors flex items-center justify-between"
-                    >
-                      <span>RAG Vector Engine</span>
-                      {selectedModel === 'rag' && <span className="material-symbols-outlined text-sm text-[#FF6B35]">check</span>}
-                    </button>
-                    <button
-                      onClick={() => { setSelectedModel('pro'); setIsModelDropdownOpen(false); }}
-                      className="w-full text-left px-3 py-2 rounded-lg font-bold hover:bg-[#FF6B35]/15 hover:text-[#FF6B35] transition-colors flex items-center justify-between"
-                    >
-                      <span>Kleo Tutor Pro</span>
-                      {selectedModel === 'pro' && <span className="material-symbols-outlined text-sm text-[#FF6B35]">check</span>}
-                    </button>
-                    <button
-                      onClick={() => { setSelectedModel('fast'); setIsModelDropdownOpen(false); }}
-                      className="w-full text-left px-3 py-2 rounded-lg font-bold hover:bg-[#FF6B35]/15 hover:text-[#FF6B35] transition-colors flex items-center justify-between"
-                    >
-                      <span>Kleo Fast Engine</span>
-                      {selectedModel === 'fast' && <span className="material-symbols-outlined text-sm text-[#FF6B35]">check</span>}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              )}
             </div>
-
-            {/* Input Text Area */}
-            <input
-              type="text"
-              value={inputMsg}
-              onChange={(e) => setInputMsg(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder={`Ask Kleo or search RAG context for ${activeLangName}...`}
-              className={`flex-1 bg-transparent px-2 py-2 text-xs md:text-sm font-medium focus:outline-none ${
-                isDarkMode ? 'text-white placeholder-slate-500' : 'text-slate-900 placeholder-slate-400'
-              }`}
-            />
-
-            {/* Microphone Button */}
-            <button
-              onClick={startVoiceInput}
-              className={`p-2 rounded-xl transition-all cursor-pointer shrink-0 ${
-                isListening
-                  ? 'bg-rose-500 text-white animate-pulse'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-              }`}
-              title="Voice Speech-to-Text Input"
-            >
-              <span className="material-symbols-outlined text-xl">mic</span>
-            </button>
-
-            {/* Orange Send Button */}
-            <button
-              onClick={() => handleSend()}
-              disabled={!inputMsg.trim() || isStreaming}
-              className="btn-vibrant-orange p-2.5 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-40 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-lg">send</span>
-            </button>
-          </div>
-        </div>
-      </footer>
-
-      {/* Hidden File Input for Document Upload */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".pdf,.txt,.docx,.md"
-        className="hidden"
-        onChange={handleFileUpload}
-      />
-
-      {/* Upload Document Modal */}
-      <AnimatePresence>
-        {isUploadModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className={`w-full max-w-md p-6 rounded-3xl border shadow-2xl space-y-5 ${
-                isDarkMode ? 'bg-[#131b2e] border-[#1e293b] text-white' : 'bg-white border-slate-200 text-slate-800'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#FF6B35] text-xl">
-                    upload_file
-                  </span>
-                  <h3 className="font-display font-bold text-base">
-                    Upload to Kleo Knowledge Base
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setIsUploadModalOpen(false)}
-                  className="p-1 text-slate-400 hover:text-white"
-                >
-                  <span className="material-symbols-outlined text-lg">close</span>
-                </button>
-              </div>
-
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-[#FF6B35]/40 hover:border-[#FF6B35] p-8 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer space-y-3 bg-[#0b0f19]/60 hover:bg-[#0b0f19] transition-all"
-              >
-                <div className="w-12 h-12 rounded-2xl bg-[#FF6B35]/20 border border-[#FF6B35]/40 flex items-center justify-center text-[#FF6B35]">
-                  <span className="material-symbols-outlined text-2xl">cloud_upload</span>
-                </div>
-                <div>
-                  <p className="font-bold text-sm text-white">Click to upload document</p>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Supports PDF, TXT, DOCX, and Markdown (.md) files
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  onClick={() => setIsUploadModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800 transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </div>
+          ))
         )}
-      </AnimatePresence>
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input Bar & Controls */}
+      <footer className={`p-4 border-t shrink-0 shadow-lg ${
+        isDarkMode ? 'bg-[#111827] border-[#1e293b]' : 'bg-white border-slate-200'
+      }`}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+          className="flex items-center gap-2"
+        >
+          {/* STT Microphone Voice Button */}
+          <button
+            type="button"
+            onClick={startVoiceInput}
+            className={`p-2.5 rounded-xl border transition-all cursor-pointer relative ${
+              isListening
+                ? 'bg-rose-500 text-white border-rose-400 shadow-lg shadow-rose-500/30 animate-pulse'
+                : isDarkMode
+                ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:border-orange-500'
+                : 'bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-orange-500'
+            }`}
+            title="Speak Message (Voice STT Input)"
+          >
+            <span className="material-symbols-outlined text-xl">{isListening ? 'mic' : 'mic_none'}</span>
+            {isListening && (
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping" />
+            )}
+          </button>
+
+          {/* Text Input Box */}
+          <input
+            type="text"
+            value={inputMsg}
+            onChange={(e) => setInputMsg(e.target.value)}
+            placeholder={
+              isListening
+                ? 'Listening to speech...'
+                : `Type in ${activeLangName} or English (${selectedScenario} roleplay)...`
+            }
+            className={`flex-1 px-4 py-3 rounded-xl border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all ${
+              isDarkMode
+                ? 'bg-[#0b0f17] border-slate-800 text-white placeholder-slate-500'
+                : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
+            }`}
+          />
+
+          {/* Submit / Stop Button */}
+          {isStreaming ? (
+            <button
+              type="button"
+              onClick={handleStopStreaming}
+              className="p-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-md transition-colors cursor-pointer"
+              title="Stop Generating"
+            >
+              <span className="material-symbols-outlined text-xl">stop</span>
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={!inputMsg.trim()}
+              className={`p-3 rounded-xl font-bold text-white shadow-lg transition-all cursor-pointer ${
+                !inputMsg.trim()
+                  ? 'bg-slate-600 opacity-50 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-orange-500/25 active:scale-95'
+              }`}
+              title="Send Message"
+            >
+              <span className="material-symbols-outlined text-xl">send</span>
+            </button>
+          )}
+        </form>
+      </footer>
     </div>
   );
 };

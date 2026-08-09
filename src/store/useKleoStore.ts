@@ -13,13 +13,12 @@ interface KleoStoreState {
     skin?: string;
   };
   unlockedCosmetics: string[];
-  react: (event: 'correct' | 'error' | 'streak' | 'lapsed' | 'celebrate' | 'welcome' | 'petting') => void;
+  react: (event: 'correct' | 'error' | 'streak' | 'lapsed' | 'celebrate' | 'welcome') => void;
   equipCosmetic: (category: 'hat' | 'scarf' | 'glasses' | 'skin', cosmeticId?: string) => void;
   addBondXp: (amount: number) => void;
-  petKleo: () => void;
 }
 
-export const useKleoStore = create<KleoStoreState>((set, get) => ({
+export const useKleoStore = create<KleoStoreState>((set) => ({
   mood: 'happy',
   speechText: "Meow! Welcome back! Ready to master a new script today?",
   bondXp: 245,
@@ -29,14 +28,6 @@ export const useKleoStore = create<KleoStoreState>((set, get) => ({
 
   react: (event) => {
     switch (event) {
-      case 'petting':
-        set((state) => ({
-          mood: 'nuzzling',
-          speechText: "Purrrrrr! 🐾 Kleo loves being petted! Comfort level 100%!",
-          bondXp: state.bondXp + 5,
-          bondLevel: Math.floor((state.bondXp + 5) / 50) + 1
-        }));
-        break;
       case 'correct':
         set({
           mood: 'happy',
@@ -92,9 +83,5 @@ export const useKleoStore = create<KleoStoreState>((set, get) => ({
       const nextLevel = Math.floor(nextXp / 50) + 1;
       return { bondXp: nextXp, bondLevel: nextLevel };
     });
-  },
-
-  petKleo: () => {
-    get().react('petting');
   }
 }));

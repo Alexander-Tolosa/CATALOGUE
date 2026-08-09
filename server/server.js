@@ -226,13 +226,96 @@ app.post('/api/kleo/equip', (req, res) => {
   res.json({ success: true, equippedCosmetics: db.kleoState['usr-1'].equippedCosmetics });
 });
 
-// --- AI Chatbot Route ---
+// --- Unified AI Service Route (Chatbot & Letter Feedback) ---
+app.post('/api/ai/process', (req, res) => {
+  const { type, message, letterContent, scenario, language, userLevel, struggledVocab, letterType, ragContext } = req.body;
+
+  if (type === 'letter_feedback') {
+    const text = letterContent || '';
+    const length = text.trim().length;
+    const addressedStruggled = [];
+
+    if (Array.isArray(struggledVocab)) {
+      struggledVocab.forEach(v => {
+        const keyword = (v.word || '').split(' ')[0];
+        if (keyword && text.toLowerCase().includes(keyword.toLowerCase())) {
+          addressedStruggled.push(v.word);
+        }
+      });
+    }
+
+    return res.json({
+      overallScore: Math.min(96, 75 + Math.floor(length / 10)),
+      politenessRating: language === 'ko' ? 'Formal Politeness (존댓말)' : language === 'ja' ? 'Polite Form (丁寧語)' : 'Standard Professional',
+      summary: `Your ${letterType || 'letter'} draft demonstrates solid sentence flow. We verified that your cross-feature chat context was incorporated!`,
+      lineCorrections: [
+        {
+          originalLine: text.slice(0, Math.min(40, text.length)),
+          suggestedLine: text.slice(0, Math.min(40, text.length)) + (language === 'ko' ? ' (안녕하십니까)' : language === 'ja' ? '（お世話になっております）' : ' (Dear Hiring Manager,)'),
+          explanation: 'Adding formal opening etiquette sets a polished tone for official letters.'
+        }
+      ],
+      struggledVocabAddressed: addressedStruggled,
+      suggestedPhrases: [
+        {
+          term: language === 'ko' ? '잘 부탁드립니다' : language === 'ja' ? 'よろしくお願いいたします' : 'Best regards',
+          translation: 'I look forward to your kind consideration',
+          context: 'Essential closing expression for letters.'
+        }
+      ]
+    });
+  }
+
+  // Type === 'chat'
+  const textMsg = message || '';
+  const textLower = textMsg.toLowerCase();
+  const corrections = [];
+  const detectedStruggled = [];
+
+  let reply = '';
+  if (scenario === 'order_coffee') {
+    reply = language === 'ko'
+      ? '어서오세요! 주문하시겠습니까? 아이스 아메리카노와 카페라떼가 준비되어 있습니다.'
+      : language === 'ja'
+      ? 'いらっしゃいませ！ご注文はお決まりですか？'
+      : 'Welcome to Coffee CATalouge! What can I get started for you today?';
+  } else if (scenario === 'job_interview') {
+    reply = language === 'ko'
+      ? '안녕하십니까! 면접에 참석해 주셔서 감사합니다. 간단히 자기소개 부탁드립니다.'
+      : language === 'ja'
+      ? '本日は面接にお越しいただきありがとうございます。自己紹介をお願いします。'
+      : 'Thank you for attending the interview today! Please start with a short self-introduction.';
+  } else {
+    reply = `Meow~! Kleo AI Service processed your message in scenario "${scenario || 'free_chat'}": "${textMsg}". Excellent practice!`;
+  }
+
+  if (language === 'ko' && (textLower.includes('안녕 ') || textLower.endsWith('야'))) {
+    corrections.push({
+      id: 'corr-srv-' + Date.now(),
+      original: textMsg,
+      corrected: textMsg.replace(/야$/g, '요'),
+      explanation: 'Polite speech (존댓말) is recommended when communicating in formal or roleplay contexts.',
+      type: 'politeness',
+      struggledWord: '존댓말 (Polite Speech)'
+    });
+    detectedStruggled.push('존댓말 (Polite Speech)');
+  }
+
+  return res.json({
+    reply,
+    corrections: corrections.length > 0 ? corrections : undefined,
+    struggledWords: detectedStruggled,
+    scenarioContext: scenario || 'free_chat'
+  });
+});
+
+// --- AI Chatbot Route (Legacy compatibility) ---
 app.post('/api/chat/message', (req, res) => {
   const { message, currentLesson } = req.body;
   let reply = "Meow! That's a great language question!";
 
   if (message.toLowerCase().includes('formal') || message.toLowerCase().includes('polite')) {
-    reply = "💡 **Grammar Tip**: In Korean, adding '~요' (~yo) creates friendly polite speech (존댓말), while '~입니다' (~imnida) is used in formal situations. In Japanese, 'です' (desu) and 'ます' (masu) serve the exact same polite purpose!";
+    reply = "💡 **Grammar Tip**: In Korean, adding '~요' (~yo) creates friendly polite speech (존댓말), while '~입니다' (~imnida) is used in formal situations. In Japanese, '입니다' (desu) and 'ます' (masu) serve the exact same polite purpose!";
   } else if (message.toLowerCase().includes('quiz')) {
     reply = "🎯 **Quick Quiz**: What is the Korean word for Cat?\nA) 강아지 (Gangaji)\nB) 고양이 (Goyangi)\nC) 새 (Sae)";
   } else {
@@ -251,3 +334,4 @@ app.post('/api/chat/message', (req, res) => {
 app.listen(PORT, () => {
   console.log(`CATalouge Express API Server listening on port ${PORT}`);
 });
+

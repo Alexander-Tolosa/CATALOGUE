@@ -56,7 +56,11 @@ const DEFAULT_PROFILE: UserProfile = {
       nextReviewAt: new Date().toISOString().split('T')[0]
     }
   ],
-  completedNodeIds: ['ko-node-1']
+  completedNodeIds: ['ko-node-1'],
+  struggledVocab: [
+    { word: '존댓말 (Honorifics)', language: 'ko', context: 'Used casual banmal with elder in chat', timestamp: new Date().toISOString() },
+    { word: 'です / ます (Polite Form)', language: 'ja', context: 'Omitted polite verb ending in roleplay', timestamp: new Date().toISOString() }
+  ]
 };
 
 interface AppStoreState {
@@ -72,6 +76,8 @@ interface AppStoreState {
   addXP: (amount: number) => void;
   completeLessonNode: (nodeId: string, xpReward: number) => void;
   savePhraseToReview: (item: Omit<ReviewItem, 'id' | 'interval' | 'easeFactor' | 'nextReviewAt'>) => void;
+  addStruggledWords: (words: string[], context?: string) => void;
+  clearStruggledWords: () => void;
   equipCosmetic: (category: 'hat' | 'scarf' | 'glasses' | 'skin', cosmeticId?: string) => void;
   getActiveNodes: () => typeof KOREAN_NODES;
 }
@@ -180,6 +186,32 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     });
   },
 
+  addStruggledWords: (words, context) => {
+    set((state) => {
+      const currentList = state.profile.struggledVocab || [];
+      const newItems = words.map(w => ({
+        word: w,
+        language: state.profile.selectedLanguage,
+        context: context || 'Identified in AI practice session',
+        timestamp: new Date().toISOString()
+      }));
+      // Filter duplicates
+      const filteredExisting = currentList.filter(existing => !words.includes(existing.word));
+      const updatedList = [...newItems, ...filteredExisting].slice(0, 20); // Keep top 20 recent
+      const updated = { ...state.profile, struggledVocab: updatedList };
+      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      return { profile: updated };
+    });
+  },
+
+  clearStruggledWords: () => {
+    set((state) => {
+      const updated = { ...state.profile, struggledVocab: [] };
+      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      return { profile: updated };
+    });
+  },
+
   equipCosmetic: (category, cosmeticId) => {
     set((state) => {
       const updated = {
@@ -204,3 +236,4 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     }
   }
 }));
+

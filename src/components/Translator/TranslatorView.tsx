@@ -674,7 +674,11 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
 
                 <div className="flex items-center gap-3">
                   {/* Character Counter on Top Right */}
-                  <span className="text-xs font-mono font-bold text-slate-400 bg-slate-900/40 px-2.5 py-0.5 rounded-full border border-white/5">
+                  <span className={`text-xs font-mono font-bold px-2.5 py-1 rounded-full border ${
+                    isDarkMode
+                      ? 'bg-slate-900/60 border-white/10 text-slate-300'
+                      : 'bg-[#FAF6F0] border-[#EDE5DA] text-[#7A736E]'
+                  }`}>
                     {inputText.length} / 500
                   </span>
 

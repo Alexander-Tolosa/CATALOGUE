@@ -25,7 +25,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     {
       id: '1',
       sender: 'ai',
-      text: `Meow~ 🐾 I'm Kleo, your Siamese cat AI Language Tutor for CATalouge! I'm here to help you learn Japanese, Korean, and English. Ask me any grammar, vocabulary, or translation questions!`,
+      text: `Meow~ I'm Kleo, your Siamese cat AI Language Tutor for CATalouge! I'm here to help you learn Japanese, Korean, and English. Ask me any grammar, vocabulary, or translation questions!`,
       timestamp: 'Just now'
     }
   ]);
@@ -53,7 +53,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
       } else {
         const q = textToSend.toLowerCase();
         if (q.includes('formal') || q.includes('polite') || q.includes('honorific')) {
-          replyText = `Meow~ 🐾 Here is a breakdown of polite speech in Asian languages:
+          replyText = `Meow~ Here is a breakdown of polite speech in Asian languages:
 
 ### 1. Korean (존댓말 - Jondaetmal)
 - **Informal/Friendly**: Add **~요** (~yo) to the verb stem (e.g., 고마워요 - Gomawoyo).
@@ -62,31 +62,31 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
 ### 2. Japanese (丁寧語 - Teineigo)
 - **Polite**: End sentences with **です** (desu) for nouns/adjectives or **ます** (masu) for verbs.
 
-Meow~ Practice using polite endings when speaking to teachers or elders! 🐾`;
+Meow~ Practice using polite endings when speaking to teachers or elders!`;
         } else if (q.includes('quiz') || q.includes('test')) {
-          replyText = `Meow~ 🐾 Time for a quick language quiz!
+          replyText = `Meow~ Time for a quick language quiz!
 
 **Question**: What is the Korean word for "Cat" (Kleo's family)?
 - A) 강아지 (Gangaji)
 - B) 고양이 (Goyangi)
 - C) 새 (Sae)
 
-*Reply with your answer!* 🐾`;
+*Reply with your answer!*`;
         } else if (q.includes('translate') || q.includes('how do i say')) {
-          replyText = `Meow~ 🐾 In ${currentLanguage === 'ko' ? 'Korean' : currentLanguage === 'ja' ? 'Japanese' : 'English'}, here is how you express "${textToSend}":
+          replyText = `Meow~ In ${currentLanguage === 'ko' ? 'Korean' : currentLanguage === 'ja' ? 'Japanese' : 'English'}, here is how you express "${textToSend}":
 
 - **Japanese**: 抹茶ラテをお願いします (Matcha rate o onegaishimasu)
 - **Korean**: 말차 라떼 한 잔 주세요 (Malcha latte han jan juseyo)
 
-Meow! Try saving this phrase to your Review Deck! 🐾`;
+Meow! Try saving this phrase to your Review Deck!`;
         } else {
-          replyText = `Meow~ 🐾 I'd love to help you master ${currentLanguage === 'ko' ? 'Korean' : currentLanguage === 'ja' ? 'Japanese' : 'English'}!
+          replyText = `Meow~ I'd love to help you master ${currentLanguage === 'ko' ? 'Korean' : currentLanguage === 'ja' ? 'Japanese' : 'English'}!
 
 - **Vocabulary**: Practice your daily words in the **Skill Tree** module.
 - **Writing**: Trace character strokes in the **Writing & Letters** module.
 - **Review**: Keep your streak strong by reviewing saved cards in your **Review Deck**!
 
-Ask me any specific grammar, pronunciation, or translation question! 🐾`;
+Ask me any specific grammar, pronunciation, or translation question!`;
         }
       }
 

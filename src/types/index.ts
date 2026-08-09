@@ -63,6 +63,48 @@ export type Badge = {
   isEarned: boolean;
 };
 
+export type ChatScenario = 'free_chat' | 'order_coffee' | 'job_interview' | 'hotel_checkin' | 'airport_customs';
+
+export interface InlineCorrection {
+  id: string;
+  original: string;
+  corrected: string;
+  explanation: string;
+  type: 'grammar' | 'vocab' | 'politeness' | 'spelling';
+  struggledWord?: string;
+}
+
+export interface AIChatResponse {
+  reply: string;
+  corrections?: InlineCorrection[];
+  struggledWords?: string[];
+  scenarioContext?: string;
+}
+
+export interface AILetterFeedbackResponse {
+  overallScore: number;
+  politenessRating: string;
+  summary: string;
+  lineCorrections: Array<{
+    originalLine: string;
+    suggestedLine: string;
+    explanation: string;
+  }>;
+  struggledVocabAddressed: string[];
+  suggestedPhrases: Array<{
+    term: string;
+    translation: string;
+    context: string;
+  }>;
+}
+
+export interface StruggledWordItem {
+  word: string;
+  language: LanguageTrack;
+  context?: string;
+  timestamp: string;
+}
+
 export type UserProfile = {
   name: string;
   lifecycleState: UserLifecycleState;
@@ -84,4 +126,6 @@ export type UserProfile = {
     skin?: string;
   };
   savedPhrases: ReviewItem[];
+  struggledVocab?: StruggledWordItem[];
 };
+

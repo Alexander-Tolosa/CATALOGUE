@@ -19,7 +19,7 @@ export const AIChatbox: React.FC<AIChatboxProps> = ({ currentLanguage }) => {
     {
       id: '1',
       sender: 'ai',
-      text: `Hello! I'm your AI Language Coach & Kleo's Tutor Assistant! 🐾 Ask me anything about ${
+      text: `Hello! I'm your AI Language Coach & Kleo's Tutor Assistant! Ask me anything about ${
         currentLanguage === 'ko' ? 'Korean' : currentLanguage === 'ja' ? 'Japanese' : 'English'
       } grammar, cultural honorifics, or word usage!`,
       timestamp: 'Just now'
@@ -46,11 +46,11 @@ export const AIChatbox: React.FC<AIChatboxProps> = ({ currentLanguage }) => {
 
       const queryLower = textToSend.toLowerCase();
       if (queryLower.includes('formal') || queryLower.includes('polite') || queryLower.includes('honorific')) {
-        replyText = "💡 **Formal Speech Tip**: In Korean, adding '~요' (~yo) to verb stems makes your speech politely casual (존댓말). For official settings or speaking to elders, use '~입니다' (~imnida). In Japanese, adding 'です' (desu) or 'ます' (masu) serves the exact same polite purpose!";
+        replyText = "**Formal Speech Tip**: In Korean, adding '~요' (~yo) to verb stems makes your speech politely casual (존댓말). For official settings or speaking to elders, use '~입니다' (~imnida). In Japanese, adding 'です' (desu) or 'ます' (masu) serves the exact same polite purpose!";
       } else if (queryLower.includes('cat') || queryLower.includes('kleo')) {
-        replyText = "🐾 Cat in Korean is 고양이 (Goyangi, pronounced go-yang-ee). In Japanese, it is 猫 (Neko)! Kleo is a Siamese cat with bright blue sapphire eyes!";
+        replyText = "Cat in Korean is 고양이 (Goyangi, pronounced go-yang-ee). In Japanese, it is 猫 (Neko)! Kleo is a Siamese cat with bright blue sapphire eyes!";
       } else if (queryLower.includes('quiz') || queryLower.includes('test')) {
-        replyText = "🎯 **Quick Quiz**: How do you say 'Thank you' politely in Korean?\nA) 감사해요 (Gamsahaeyo)\nB) 감사합니다 (Gamsahamnida)\nReply with your pick!";
+        replyText = "**Quick Quiz**: How do you say 'Thank you' politely in Korean?\nA) 감사해요 (Gamsahaeyo)\nB) 감사합니다 (Gamsahamnida)\nReply with your pick!";
       } else {
         replyText = `Regarding "${textToSend}": Remember to practice writing the script characters first in our Foundations module, then assemble basic syllable blocks! Feel free to ask more!`;
       }

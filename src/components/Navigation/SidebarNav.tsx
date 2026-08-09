@@ -134,7 +134,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar pt-2.5 pl-1 pr-3">
+        <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar pt-4 pb-3 pl-1 pr-3">
           {navItems.map((item) => {
             const isActive = activeView === item.id;
             return (
@@ -156,15 +156,15 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                   {isActive && (
                     <motion.div
                       initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1, y: [0, -3, 0] }}
+                      animate={{ scale: 1, opacity: 1, y: [0, -2, 0] }}
                       exit={{ scale: 0, opacity: 0 }}
                       transition={{
                         y: { repeat: Infinity, duration: 1.4, ease: 'easeInOut' },
                         scale: { type: 'spring', stiffness: 400, damping: 25 }
                       }}
-                      className="absolute -top-3 -right-1.5 z-30 pointer-events-none"
+                      className="absolute -top-1.5 right-1 z-30 pointer-events-none"
                     >
-                      <Cat3DPawIcon size={26} />
+                      <Cat3DPawIcon size={24} />
                     </motion.div>
                   )}
                 </AnimatePresence>

@@ -1,10 +1,10 @@
-# 🐾 CATalouge
+#  CATalouge
 
 **CATalouge** is an AI-powered language learning platform inspired by gamified, habit-building applications like Duolingo. Guided by **Kleo**, your AI cat companion, CATalouge helps users master languages (Korean, Japanese, English) through interactive lessons, stroke tracing, spaced-repetition flashcards, and real-time voice translation.
 
 ---
 
-## ✨ Features
+##  Features
 
 - 🐱 **Kleo AI Companion**: An interactive cat mascot that provides real-time tutoring, grammar tips, customizable wardrobe, and mood reactions.
 - 🌳 **Interactive Skill Tree & Lessons**: Unit-based learning paths for letters, foundational vocabulary, short phrases, and script tracing.
@@ -22,7 +22,7 @@
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -60,7 +60,7 @@
 
 ---
 
-## 📦 Scripts
+##  Scripts
 
 - `npm run dev`: Starts Vite local development server.
 - `npm run build`: Typechecks with `tsc` and builds production assets with Vite.
@@ -68,6 +68,4 @@
 
 ---
 
-## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).

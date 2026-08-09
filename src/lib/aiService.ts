@@ -69,12 +69,16 @@ User's Recently Struggled Vocabulary Context: [${vocabListStr}]
 
 ${scenarioDesc}
 
-INSTRUCTIONS:
-1. Respond in character for the selected scenario in ${langName} (with English translation/notes if helpful for Level ${userLevel}).
-2. Analyze the user's input for any grammar, vocabulary, politeness (formal vs informal), or spelling errors.
-3. If errors are found, include inline corrections with the exact original snippet, corrected version, and explanation.
-4. Extract any words the user struggled with to update their learning record.
-5. EMOJI RULE: Do NOT include any emojis in your response text. Write clean, natural, human text without emojis.`;
+INSTRUCTIONS & OUTPUT RULES:
+1. Immediately provide the requested translation, explanation, or scenario response directly.
+2. When answering language queries or translations:
+   a. State the native script translation directly.
+   b. Provide the Romanization.
+   c. Provide a brief breakdown of the phrase/grammar rule.
+3. NEVER repeat, rephrase, or echo the user's prompt back to them (e.g. NEVER state "Regarding '...'" or "You asked about '...'").
+4. Respond in character for the selected scenario in ${langName}.
+5. If grammar errors are detected, include inline corrections with the exact original snippet, corrected version, and explanation.
+6. EMOJI RULE: Do NOT include any emojis in your response text. Write clean, natural, human text without emojis.`;
 }
 
 /**
@@ -221,13 +225,31 @@ function generateClientChatFallback(options: AIServiceChatOptions, ragContext: s
       reply = 'Passport and customs control. What is the main purpose of your visit today, and how long will you be staying?';
     }
   } else {
-    // Free chat
+    // Free chat direct answer generator (No meta-echoing)
     if (language === 'ko') {
-      reply = `야옹~! "${message}"에 대해 말씀하셨군요! 언어 공부를 아주 잘하고 계십니다. 궁금한 문법이나 단어가 있으면 무엇이든 물어보세요.`;
+      if (textLower.includes('hi') || textLower.includes('hello') || textLower.includes('안녕')) {
+        reply = `안녕하세요 (Annyeonghaseyo)\n\nRomanization: Annyeonghaseyo\nBreakdown: Standard polite greeting used in Korean to say "Hello" or "Good day".`;
+      } else if (textLower.includes('thank')) {
+        reply = `감사합니다 (Gamsahamnida)\n\nRomanization: Gamsahamnida\nBreakdown: Formal and polite expression for "Thank you".`;
+      } else if (textLower.includes('nice to meet')) {
+        reply = `반갑습니다 (Bangapseumnida)\n\nRomanization: Bangapseumnida\nBreakdown: Polite expression used when meeting someone for the first time.`;
+      } else {
+        reply = `안녕하세요! 무엇이든 물어보세요. 문법, 단어, 회화 연습까지 친절하게 답변해 드릴게요.`;
+      }
     } else if (language === 'ja') {
-      reply = `ニャー〜！「${message}」ですね！とても素晴らしい練習です。文法や単語の質問があれば、何でも聞いてくださいね。`;
+      if (textLower.includes('hi') || textLower.includes('hello') || textLower.includes('こんにちは')) {
+        reply = `こんにちは (Konnichiwa)\n\nRomanization: Konnichiwa\nBreakdown: Standard daytime greeting used in Japanese.`;
+      } else if (textLower.includes('thank')) {
+        reply = `ありがとうございます (Arigatou gozaimasu)\n\nRomanization: Arigatou gozaimasu\nBreakdown: Polite expression for "Thank you very much".`;
+      } else {
+        reply = `こんにちは！日本語の文法や単語、日常会話について気兼ねなく質問してくださいね。`;
+      }
     } else {
-      reply = `Meow~! Regarding "${message}": You're doing a fantastic job practicing! Ask me any questions about grammar, vocabulary, or culture.`;
+      if (textLower.includes('hi') || textLower.includes('hello')) {
+        reply = `Hello! How can I assist you with your English practice today?`;
+      } else {
+        reply = `Hello! Ask me any question about vocabulary, grammar patterns, or conversation practice.`;
+      }
     }
   }
 

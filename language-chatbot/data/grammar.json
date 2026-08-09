@@ -1,0 +1,47 @@
+[
+  {
+    "id": "te-iru",
+    "language": "ja",
+    "pattern": "て-form + いる",
+    "keywords": ["te iru", "ている", "progressive", "ongoing"],
+    "meaning": "Describes an ongoing action or a resulting state, similar to English '-ing' or a completed change of state.",
+    "level": "N5",
+    "examples": [
+      { "sentence": "本を読んでいる。", "translation": "I am reading a book (ongoing action)." },
+      { "sentence": "窓が開いている。", "translation": "The window is open (resulting state)." }
+    ]
+  },
+  {
+    "id": "causative-passive-ja",
+    "language": "ja",
+    "pattern": "causative-passive (せられる/される form)",
+    "keywords": ["causative passive", "saserareru", "sareru", "させられる"],
+    "meaning": "Expresses being forced or made to do something against one's will.",
+    "level": "N3",
+    "examples": [
+      { "sentence": "毎朝走らされる。", "translation": "I am made to run every morning." }
+    ]
+  },
+  {
+    "id": "honorific-speech-ko",
+    "language": "ko",
+    "pattern": "존댓말 (honorific speech)",
+    "keywords": ["honorific", "존댓말", "formal", "respect"],
+    "meaning": "Korean uses distinct vocabulary and verb endings to show respect toward elders, strangers, or superiors — not just a formality suffix, but often entirely different words (e.g. 먹다 → 드시다).",
+    "level": "TOPIK 2",
+    "examples": [
+      { "sentence": "선생님께서 말씀하세요.", "translation": "The teacher speaks (honorific)." }
+    ]
+  },
+  {
+    "id": "present-continuous-en",
+    "language": "en",
+    "pattern": "present continuous (be + verb-ing)",
+    "keywords": ["present continuous", "progressive", "-ing"],
+    "meaning": "Used for actions happening right now or temporary ongoing situations.",
+    "level": "A2",
+    "examples": [
+      { "sentence": "I am studying Japanese this year.", "translation": null }
+    ]
+  }
+]

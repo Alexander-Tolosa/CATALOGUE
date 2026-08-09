@@ -66,48 +66,53 @@ export const TopAppBar: React.FC<HeaderProps> = ({
             <h2 className={`font-display text-xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#2B2725]'}`}>
               AI Chat Room
             </h2>
-            <span className="bg-[#F06543]/15 text-[#F06543] border border-[#F06543]/30 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">
-              Kleo LLM Active 🐾
-            </span>
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span>Online</span>
+            </div>
           </div>
         ) : null}
       </div>
 
       {/* Right Controls Bar */}
       <div className="flex items-center gap-3 md:gap-4">
-        {/* Streak Flame Pill */}
-        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border shadow-2xs ${
-          isDarkMode
-            ? 'bg-[#131b2e] border-[#1e293b] text-amber-400'
-            : 'bg-[#FFF4EE] border-[#FDE3D5] text-[#F06543]'
-        }`}>
-          <span className="material-symbols-outlined text-base streak-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>
-            local_fire_department
-          </span>
-          <span className="font-extrabold text-xs">{profile.streakDays} Day Streak</span>
-        </div>
+        {activeView !== 'chatbot' && (
+          <>
+            {/* Streak Flame Pill */}
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border shadow-2xs ${
+              isDarkMode
+                ? 'bg-[#131b2e] border-[#1e293b] text-amber-400'
+                : 'bg-[#FFF4EE] border-[#FDE3D5] text-[#F06543]'
+            }`}>
+              <span className="material-symbols-outlined text-base streak-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>
+                local_fire_department
+              </span>
+              <span className="font-extrabold text-xs">{profile.streakDays} Day Streak</span>
+            </div>
 
-        {/* Hearts Pill */}
-        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border shadow-2xs ${
-          isDarkMode
-            ? 'bg-[#131b2e] border-[#1e293b] text-rose-400'
-            : 'bg-rose-50 border-rose-200 text-rose-500'
-        }`}>
-          <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>
-            favorite
-          </span>
-          <span className="font-extrabold text-xs">{profile.hearts}</span>
-        </div>
+            {/* Hearts Pill */}
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border shadow-2xs ${
+              isDarkMode
+                ? 'bg-[#131b2e] border-[#1e293b] text-rose-400'
+                : 'bg-rose-50 border-rose-200 text-rose-500'
+            }`}>
+              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>
+                favorite
+              </span>
+              <span className="font-extrabold text-xs">{profile.hearts}</span>
+            </div>
 
-        {/* Level & XP Progress Bar */}
-        <div className="hidden sm:flex items-center gap-2.5">
-          <span className={`text-xs font-bold ${isDarkMode ? 'text-slate-300' : 'text-[#7A736E]'}`}>
-            Lv. {profile.level}
-          </span>
-          <div className={`w-24 h-2 rounded-full overflow-hidden border ${isDarkMode ? 'bg-[#1e293b] border-[#334155]' : 'bg-[#FAF6F0] border-[#EDE5DA]'}`}>
-            <div className="h-full bg-gradient-to-r from-[#F06543] to-[#F97316]" style={{ width: `${Math.min(100, profile.xp % 100)}%` }}></div>
-          </div>
-        </div>
+            {/* Level & XP Progress Bar */}
+            <div className="hidden sm:flex items-center gap-2.5">
+              <span className={`text-xs font-bold ${isDarkMode ? 'text-slate-300' : 'text-[#7A736E]'}`}>
+                Lv. {profile.level}
+              </span>
+              <div className={`w-24 h-2 rounded-full overflow-hidden border ${isDarkMode ? 'bg-[#1e293b] border-[#334155]' : 'bg-[#FAF6F0] border-[#EDE5DA]'}`}>
+                <div className="h-full bg-gradient-to-r from-[#F06543] to-[#F97316]" style={{ width: `${Math.min(100, profile.xp % 100)}%` }}></div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Investor Pitch Deck Launcher */}
         <button

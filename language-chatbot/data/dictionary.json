@@ -1,0 +1,61 @@
+[
+  {
+    "word": "食べる",
+    "language": "ja",
+    "reading": "たべる",
+    "romaji": "taberu",
+    "meaning": "to eat",
+    "level": "N5",
+    "pos": "verb (ichidan)",
+    "examples": [
+      { "sentence": "林檎を食べる。", "translation": "I eat an apple." }
+    ]
+  },
+  {
+    "word": "食べさせられる",
+    "language": "ja",
+    "reading": "たべさせられる",
+    "romaji": "tabesaserareru",
+    "meaning": "to be made to eat (causative-passive of 食べる)",
+    "level": "N3",
+    "pos": "verb (causative-passive)",
+    "examples": [
+      { "sentence": "子供の頃、野菜を食べさせられた。", "translation": "As a kid, I was made to eat vegetables." }
+    ]
+  },
+  {
+    "word": "먹다",
+    "language": "ko",
+    "reading": "먹다",
+    "romanization": "meokda",
+    "meaning": "to eat",
+    "level": "TOPIK 1",
+    "pos": "verb",
+    "examples": [
+      { "sentence": "저는 밥을 먹어요.", "translation": "I eat rice / a meal." }
+    ]
+  },
+  {
+    "word": "드시다",
+    "language": "ko",
+    "reading": "드시다",
+    "romanization": "deusida",
+    "meaning": "to eat (honorific form of 먹다, used for elders/superiors)",
+    "level": "TOPIK 2",
+    "pos": "verb (honorific)",
+    "examples": [
+      { "sentence": "할아버지께서 진지를 드세요.", "translation": "Grandfather eats his meal." }
+    ]
+  },
+  {
+    "word": "eat",
+    "language": "en",
+    "reading": "eat",
+    "meaning": "to put food in the mouth and swallow it",
+    "level": "A1",
+    "pos": "verb",
+    "examples": [
+      { "sentence": "I eat breakfast at 7am.", "translation": null }
+    ]
+  }
+]

@@ -14,7 +14,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Frontend**: React 19, Vite, TypeScript, TailwindCSS v4, Framer Motion, Lucide Icons, Canvas Confetti
 - **Backend / DB**: Node.js, Express, Prisma (SQLite), Convex

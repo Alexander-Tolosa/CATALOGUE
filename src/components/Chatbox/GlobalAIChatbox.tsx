@@ -13,12 +13,7 @@ import {
   Volume2,
   Copy,
   Check,
-  RotateCcw,
-  Coffee,
-  Briefcase,
-  Hotel,
-  Plane,
-  MessageCircle
+  RotateCcw
 } from 'lucide-react';
 import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
 import { useAppStore } from '../../store/useAppStore';
@@ -48,7 +43,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
   const { react } = useKleoStore();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [selectedScenario, setSelectedScenario] = useState<ChatScenario>('free_chat');
+  const [selectedScenario] = useState<ChatScenario>('free_chat');
   const [inputMsg, setInputMsg] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -58,21 +53,13 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     {
       id: '1',
       sender: 'ai',
-      text: `Meow~ I'm Kleo, your Siamese cat AI Language Tutor for CATalouge! 🐾\nI am ready to practice Japanese, Korean, or English with you. Ask me grammar rules, vocabulary breakdowns, or try our roleplay scenarios!`,
+      text: `Meow~ I'm Kleo, your Siamese cat AI Language Tutor for CATalouge! 🐾\nI am ready to practice Japanese, Korean, or English with you. Ask me any grammar rules, vocabulary breakdowns, or translation questions!`,
       timestamp: 'Just now',
       scenario: 'free_chat'
     }
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scenariosList: Array<{ id: ChatScenario; label: string; icon: React.ReactNode; prompt: string }> = [
-    { id: 'free_chat', label: 'Free Chat', icon: <MessageCircle size={14} />, prompt: 'Free conversation & grammar questions' },
-    { id: 'order_coffee', label: 'Order Coffee', icon: <Coffee size={14} />, prompt: 'Roleplay ordering drinks at a café' },
-    { id: 'job_interview', label: 'Job Interview', icon: <Briefcase size={14} />, prompt: 'Bilingual job interview roleplay' },
-    { id: 'hotel_checkin', label: 'Hotel Check-in', icon: <Hotel size={14} />, prompt: 'Check-in & hotel receptionist roleplay' },
-    { id: 'airport_customs', label: 'Airport Customs', icon: <Plane size={14} />, prompt: 'Customs & passport inspection practice' }
-  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -181,19 +168,6 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     }
   };
 
-  const handleScenarioChange = (s: ChatScenario) => {
-    setSelectedScenario(s);
-    const targetPrompt = scenariosList.find(item => item.id === s)?.prompt || '';
-    const welcomeMsg: Message = {
-      id: 'ai-' + Date.now(),
-      sender: 'ai',
-      text: `Meow~ Switched mode to [${s.replace('_', ' ').toUpperCase()}]! 🐾\n${targetPrompt}. Let's get started!`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      scenario: s
-    };
-    setMessages(prev => [...prev, welcomeMsg]);
-  };
-
   // If chatbot is closed, show floating button at bottom-right of dashboard
   if (!isChatbotOpen) {
     return (
@@ -275,27 +249,6 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
               <X size={18} />
             </button>
           </div>
-        </div>
-
-        {/* Roleplay Scenarios Bar */}
-        <div className="p-2 bg-slate-900/60 border-b border-slate-800/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
-          {scenariosList.map(s => {
-            const isSelected = selectedScenario === s.id;
-            return (
-              <button
-                key={s.id}
-                onClick={() => handleScenarioChange(s.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 cursor-pointer ${
-                  isSelected
-                    ? 'bg-gradient-to-r from-[#FF6B35] to-[#f97316] text-white shadow-md shadow-orange-500/20'
-                    : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white'
-                }`}
-              >
-                {s.icon}
-                <span>{s.label}</span>
-              </button>
-            );
-          })}
         </div>
 
         {/* Message Stream Feed */}

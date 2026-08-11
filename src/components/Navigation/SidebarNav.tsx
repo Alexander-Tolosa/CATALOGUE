@@ -93,7 +93,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     { id: 'learn', label: 'Skill Tree', icon: 'school' },
     { id: 'letters', label: 'Writing & Letters', icon: 'translate' },
     { id: 'translator', label: 'Translator', icon: 'language' },
-    { id: 'chatbot', label: 'AI Chatbot', icon: 'smart_toy' },
     { id: 'gamify', label: 'Leaderboard & Stats', icon: 'leaderboard' },
     { id: 'review', label: 'Review Deck', icon: 'rebase_edit' },
     { id: 'settings', label: 'Settings', icon: 'settings' }

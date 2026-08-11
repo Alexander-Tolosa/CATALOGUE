@@ -4,6 +4,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { useKleoStore } from '../../store/useKleoStore';
 import { processAILetterFeedback } from '../../lib/aiService';
 import { AILetterFeedbackResponse } from '../../types';
+import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 
 export const LetterFeedbackView: React.FC = () => {
   const { isDarkMode, profile, savePhraseToReview } = useAppStore();
@@ -40,12 +41,21 @@ export const LetterFeedbackView: React.FC = () => {
   const handleAnalyze = async () => {
     if (!letterContent.trim() || isAnalyzing) return;
 
+    const check = checkAndCensorText(letterContent);
+    if (check.hasInappropriate) {
+      triggerEthicalWarning();
+    }
+    const cleanContent = check.censoredText;
+    if (cleanContent !== letterContent) {
+      setLetterContent(cleanContent);
+    }
+
     setIsAnalyzing(true);
     react('correct');
 
     try {
       const result = await processAILetterFeedback({
-        letterContent,
+        letterContent: cleanContent,
         language: profile.selectedLanguage,
         userLevel: profile.level,
         struggledVocab: profile.struggledVocab,

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MessageSquare, X, Send, Sparkles, Bot, HelpCircle, BookOpen } from 'lucide-react';
 import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
 import { useAppStore } from '../../store/useAppStore';
+import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 
 interface GlobalAIChatboxProps {
   currentLanguage: string;
@@ -31,8 +32,14 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
   ]);
 
   const handleSend = (userQuery?: string) => {
-    const textToSend = userQuery || inputMsg;
-    if (!textToSend.trim()) return;
+    const rawText = userQuery || inputMsg;
+    if (!rawText.trim()) return;
+
+    const check = checkAndCensorText(rawText);
+    if (check.hasInappropriate) {
+      triggerEthicalWarning();
+    }
+    const textToSend = check.censoredText;
 
     const userMsgObj: Message = {
       id: 'u-' + Date.now(),

@@ -4,6 +4,7 @@ import { useKleoStore } from '../../store/useKleoStore';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
 import { processAIChatMessage } from '../../lib/aiService';
+import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 import {
   DocumentFile,
   DEFAULT_KNOWLEDGE_BASE,
@@ -116,8 +117,15 @@ export const KleoChatRoomView: React.FC = () => {
 
   // Process message through Centralized Unified AI Service
   const handleSend = async (textInput?: string) => {
-    const text = textInput || inputMsg;
-    if (!text.trim() || isStreaming) return;
+    const rawText = textInput || inputMsg;
+    if (!rawText.trim() || isStreaming) return;
+
+    // Check ethical censorship (# replacement) & trigger warning toast if needed
+    const check = checkAndCensorText(rawText);
+    if (check.hasInappropriate) {
+      triggerEthicalWarning();
+    }
+    const text = check.censoredText;
 
     // Strict guardrail check
     if (!isAllowedTopic(text)) {

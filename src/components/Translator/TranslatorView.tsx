@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LanguageTrack, ReviewItem } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
 import { FlagIcon } from '../Common/FlagIcon';
+import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 
 interface TranslatorViewProps {
   onSaveToReview: (item: Omit<ReviewItem, 'id' | 'interval' | 'easeFactor' | 'nextReviewAt'>) => void;
@@ -407,7 +408,13 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
   );
 
   // Debounced auto-translate on text change
-  const handleInputChange = (text: string) => {
+  const handleInputChange = (rawText: string) => {
+    const check = checkAndCensorText(rawText);
+    if (check.hasInappropriate) {
+      triggerEthicalWarning();
+    }
+    const text = check.censoredText;
+
     setInputText(text);
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
 

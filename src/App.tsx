@@ -19,6 +19,7 @@ import { GlobalAIChatbox } from './components/Chatbox/GlobalAIChatbox';
 import { InvestorPitchModal } from './components/Investor/InvestorPitchModal';
 import { AuthScreen } from './components/Auth/AuthScreen';
 import { LandingPage } from './components/Landing/LandingPage';
+import { EthicalAlertToast } from './components/Common/EthicalAlertToast';
 
 export const App: React.FC = () => {
   const { isAuthenticated, token } = useAuthStore();
@@ -181,6 +182,9 @@ export const App: React.FC = () => {
 
       {/* Persistent Global AI Chatbox */}
       <GlobalAIChatbox currentLanguage={profile.selectedLanguage} />
+
+      {/* Global Ethical Restriction Toast Notification */}
+      <EthicalAlertToast />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MessageSquare, X, Send, Sparkles, Bot, User, HelpCircle, BookOpen } from 'lucide-react';
+import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 
 interface AIChatboxProps {
   currentLanguage: string;
@@ -27,8 +28,14 @@ export const AIChatbox: React.FC<AIChatboxProps> = ({ currentLanguage }) => {
   ]);
 
   const handleSend = (userQuery?: string) => {
-    const textToSend = userQuery || inputMsg;
-    if (!textToSend.trim()) return;
+    const rawText = userQuery || inputMsg;
+    if (!rawText.trim()) return;
+
+    const check = checkAndCensorText(rawText);
+    if (check.hasInappropriate) {
+      triggerEthicalWarning();
+    }
+    const textToSend = check.censoredText;
 
     const userMsgObj: Message = {
       id: 'u-' + Date.now(),

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LanguageTrack, ReviewItem } from '../../types';
 import { Mic, Volume2, Bookmark, BookmarkCheck, ArrowRightLeft, Sparkles, X } from 'lucide-react';
+import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 
 interface VoiceTranslatorProps {
   isOpen: boolean;
@@ -23,10 +24,20 @@ export const VoiceTranslator: React.FC<VoiceTranslatorProps> = ({
 
   if (!isOpen) return null;
 
-  const handleTranslate = () => {
+  const handleTranslate = (textOverride?: string) => {
+    const raw = textOverride !== undefined ? textOverride : inputText;
+    const check = checkAndCensorText(raw);
+    if (check.hasInappropriate) {
+      triggerEthicalWarning();
+    }
+    const cleanInput = check.censoredText;
+    if (cleanInput !== inputText) {
+      setInputText(cleanInput);
+    }
+
     // Simulated instant translation engine for popular English/Japanese/Korean phrases
     if (sourceLang === 'en' && targetLang === 'ko') {
-      if (inputText.toLowerCase().includes('hello') || inputText.toLowerCase().includes('cat')) {
+      if (cleanInput.toLowerCase().includes('hello') || cleanInput.toLowerCase().includes('cat')) {
         setTranslatedText('안녕하세요, 귀여운 고양이입니다!');
         setPhonetic('Annyeonghaseyo, gwiyeoun goyangi-imnida!');
       } else {
@@ -63,8 +74,7 @@ export const VoiceTranslator: React.FC<VoiceTranslatorProps> = ({
       recognition.onend = () => setIsListening(false);
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
-        setInputText(transcript);
-        handleTranslate();
+        handleTranslate(transcript);
       };
       recognition.start();
     } catch (e) {
@@ -183,7 +193,7 @@ export const VoiceTranslator: React.FC<VoiceTranslatorProps> = ({
         </div>
 
         <button
-          onClick={handleTranslate}
+          onClick={() => handleTranslate()}
           className="w-full glass-button btn-primary py-2.5 text-sm justify-center"
         >
           Translate Phrase

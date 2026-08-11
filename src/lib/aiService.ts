@@ -13,6 +13,7 @@ import {
   StruggledWordItem
 } from '../types';
 import { retrieveContext, DEFAULT_KNOWLEDGE_BASE } from './ragEngine';
+import { checkAndCensorText, triggerEthicalWarning } from './ethicalGuard';
 
 export interface AIServiceChatOptions {
   message: string;
@@ -110,7 +111,17 @@ INSTRUCTIONS:
  * Centralized Chatbot Service Call
  */
 export async function processAIChatMessage(options: AIServiceChatOptions): Promise<AIChatResponse> {
-  const { message, scenario, language, userLevel, struggledVocab } = options;
+  const check = checkAndCensorText(options.message);
+  if (check.hasInappropriate) {
+    triggerEthicalWarning();
+  }
+
+  const sanitizedOptions = {
+    ...options,
+    message: check.censoredText
+  };
+
+  const { message, scenario, language, userLevel, struggledVocab } = sanitizedOptions;
   const ragResult = retrieveContext(message, DEFAULT_KNOWLEDGE_BASE, 2);
 
   try {
@@ -137,14 +148,24 @@ export async function processAIChatMessage(options: AIServiceChatOptions): Promi
   }
 
   // --- Dynamic Client-Side Fallback Generator ---
-  return generateClientChatFallback(options, ragResult.contextPromptString);
+  return generateClientChatFallback(sanitizedOptions, ragResult.contextPromptString);
 }
 
 /**
  * Centralized Letter Feedback Service Call
  */
 export async function processAILetterFeedback(options: AIServiceLetterOptions): Promise<AILetterFeedbackResponse> {
-  const { letterContent, language, userLevel, struggledVocab, letterType } = options;
+  const check = checkAndCensorText(options.letterContent);
+  if (check.hasInappropriate) {
+    triggerEthicalWarning();
+  }
+
+  const sanitizedOptions = {
+    ...options,
+    letterContent: check.censoredText
+  };
+
+  const { letterContent, language, userLevel, struggledVocab, letterType } = sanitizedOptions;
   const ragResult = retrieveContext(letterContent, DEFAULT_KNOWLEDGE_BASE, 2);
 
   try {

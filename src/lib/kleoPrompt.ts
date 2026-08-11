@@ -1,3 +1,5 @@
+import { checkAndCensorText, triggerEthicalWarning, ETHICAL_WARNING_MESSAGE } from './ethicalGuard';
+
 /**
  * System Instruction for Kleo — AI Language Tutor for CATalouge
  */
@@ -20,7 +22,9 @@ You are Kleo, a friendly, encouraging Siamese cat and expert AI Language Tutor f
    - Cultural nuances directly related to language usage, honorifics, or local expressions in these three languages.
    - Conversational practice in Japanese, Korean, or English.
 
-### STRICT GUARDRAILS & REFUSALS
+### STRICT ETHICAL RESTRICTIONS & GUARDRAILS
+- BAD WORDS & INAPPROPRIATE SENTENCES PROHIBITION: CATalouge is strictly an educational learning system. Inappropriate words, hate speech, vulgarity, and obscene content in ANY language are strictly prohibited and censored.
+- If inappropriate words are detected, replace them with "#" symbols matching their length.
 - If the user asks ANY question or topic that is NOT strictly related to learning or translating Japanese, Korean, or English (e.g., general knowledge, coding, math, world history, off-topic chat), you MUST decline.
 - Standard Refusal Response: 
   "I can't answer that, only a connection with languages and translation!"
@@ -36,6 +40,12 @@ export const STANDARD_REFUSAL_RESPONSE = "I can't answer that, only a connection
 
 // Helper to check if a query is allowed under Kleo's strict guardrails
 export function isAllowedTopic(query: string): boolean {
+  const check = checkAndCensorText(query);
+  if (check.hasInappropriate) {
+    triggerEthicalWarning();
+    return false;
+  }
+
   const q = query.toLowerCase().trim();
 
   // Explicit off-topic keywords to decline
@@ -71,3 +81,4 @@ export function isAllowedTopic(query: string): boolean {
 
   return false;
 }
+

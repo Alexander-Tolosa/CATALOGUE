@@ -184,11 +184,11 @@ const CustomLanguageDropdown: React.FC<CustomLanguageDropdownProps> = ({
   }, []);
 
   return (
-    <div className="relative flex-1" ref={dropdownRef}>
+    <div className="relative flex-1 min-w-0" ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all border cursor-pointer ${
+        className={`w-full flex items-center justify-between gap-1 sm:gap-2.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all border cursor-pointer min-w-0 ${
           isOpen
             ? 'border-orange-500 shadow-[0_0_20px_rgba(255,107,53,0.3)] bg-orange-500/10 text-orange-400'
             : isDarkMode
@@ -196,12 +196,12 @@ const CustomLanguageDropdown: React.FC<CustomLanguageDropdownProps> = ({
             : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-orange-500/50 hover:bg-white'
         }`}
       >
-        <span className="flex items-center gap-2.5">
+        <span className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 overflow-hidden">
           <FlagIcon code={LANG_CODES[value].code} size="sm" />
-          <span className="tracking-wide">{value}</span>
+          <span className="tracking-wide truncate text-[11px] sm:text-xs md:text-sm">{value}</span>
         </span>
         <span
-          className={`material-symbols-outlined text-base text-orange-400 transition-transform duration-200 ${
+          className={`material-symbols-outlined text-sm sm:text-base text-orange-400 shrink-0 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
         >
@@ -573,7 +573,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
   };
 
   return (
-    <div className={`min-h-screen p-4 md:p-8 relative overflow-hidden transition-colors duration-300 ${
+    <div className={`min-h-screen p-2.5 sm:p-6 md:p-8 pt-16 sm:pt-20 pb-24 md:pb-8 relative overflow-hidden transition-colors duration-300 ${
       isDarkMode ? 'bg-[#0d1117] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       {/* Ambient Soft Orange Glow Mesh */}
@@ -586,7 +586,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
 
 
           {/* Bold Title */}
-          <h1 className={`text-3xl md:text-5xl font-extrabold tracking-tight ${
+          <h1 className={`text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight ${
             isDarkMode ? 'text-white' : 'text-slate-900'
           }`}>
             AI Context Translator
@@ -601,13 +601,13 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
         </div>
 
         {/* Cohesive Workspace Card */}
-        <div className={`p-4 md:p-6 rounded-3xl border shadow-2xl backdrop-blur-xl transition-all ${
+        <div className={`p-3 sm:p-5 md:p-6 rounded-3xl border shadow-2xl backdrop-blur-xl transition-all ${
           isDarkMode
             ? 'bg-slate-900/60 border-white/10 shadow-black/80'
             : 'bg-white/80 border-slate-200/80 shadow-slate-200/50'
         }`}>
           {/* Fused Hero Control Bar (Language Selector & Swap Controls) */}
-          <div className={`flex items-center justify-between gap-3 p-2.5 md:p-3 rounded-2xl border shadow-inner mb-5 ${
+          <div className={`flex items-center justify-between gap-1.5 sm:gap-3 p-1.5 sm:p-3 rounded-2xl border shadow-inner mb-5 min-w-0 ${
             isDarkMode
               ? 'bg-slate-900/90 border-white/10'
               : 'bg-slate-100/90 border-slate-200'
@@ -633,7 +633,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
             {/* Center: Swap Button (<->) */}
             <button
               onClick={handleSwapLanguages}
-              className={`p-2.5 rounded-xl border transition-all duration-200 shrink-0 cursor-pointer ${
+              className={`p-1.5 sm:p-2.5 rounded-xl border transition-all duration-200 shrink-0 cursor-pointer ${
                 isDarkMode
                   ? 'bg-slate-800 border-white/10 text-slate-300 hover:text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/10'
                   : 'bg-white border-slate-200 text-slate-600 hover:text-orange-500 hover:border-orange-500/50 hover:bg-orange-50'

@@ -168,10 +168,10 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     }
   };
 
-  // If chatbot is closed, show floating button at bottom-right of dashboard
+  // If chatbot is closed, show floating button at bottom-right of dashboard (positioned above mobile bottom nav on mobile)
   if (!isChatbotOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50">
         <motion.button
           onClick={() => setIsChatbotOpen(true)}
           whileHover={{ scale: 1.08 }}
@@ -207,7 +207,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
         className={`fixed z-[999] border border-[#FF6B35]/40 shadow-2xl flex flex-col overflow-hidden bg-slate-950/95 backdrop-blur-2xl transition-all duration-300 ${
           isFullscreen
             ? 'inset-3 sm:inset-6 rounded-3xl'
-            : 'bottom-6 right-6 w-full max-w-sm sm:max-w-md h-[580px] rounded-3xl'
+            : 'bottom-20 right-2 left-2 sm:left-auto sm:right-6 sm:bottom-6 sm:w-full max-w-sm sm:max-w-md h-[540px] rounded-3xl'
         }`}
       >
         {/* Header Bar */}

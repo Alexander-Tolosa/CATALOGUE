@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 import { AppView } from '../../types';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useAppStore } from '../../store/useAppStore';
@@ -73,10 +74,17 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   onSelectView,
   reviewItemsDueCount
 }) => {
-  const { isDarkMode, toggleChatbot, isChatbotOpen } = useAppStore();
+  const { isDarkMode } = useAppStore();
   const { googleUser, isAuthenticated, logout } = useAuthStore();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    const handleToggle = () => setIsMobileDrawerOpen(prev => !prev);
+    window.addEventListener('catalouge:toggle-mobile-drawer', handleToggle);
+    return () => window.removeEventListener('catalouge:toggle-mobile-drawer', handleToggle);
+  }, []);
 
   const handleConfirmLogout = () => {
     logout();
@@ -100,9 +108,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
   return (
     <>
-      {/* Desktop Left Sidebar Navigation */}
+      {/* Desktop Left Sidebar Navigation (Hidden on mobile <768px, visible on md+) */}
       <aside
-        className={`h-screen w-64 fixed left-0 top-0 border-r flex flex-col py-4 pl-3 pr-5 z-50 transition-colors duration-150 ${
+        className={`hidden md:flex h-screen w-64 fixed left-0 top-0 border-r flex-col py-4 pl-3 pr-5 z-50 transition-colors duration-150 ${
           isDarkMode
             ? 'bg-[#0b0f17] border-[#1e293b] text-white'
             : 'bg-[#FFFDF9] border-[#EDE5DA] text-[#2B2725] shadow-2xs'
@@ -274,6 +282,95 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           )}
         </div>
       </aside>
+
+      {/* Mobile Drawer Overlay (<768px) */}
+      <AnimatePresence>
+        {isMobileDrawerOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileDrawerOpen(false)}
+              className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-[60]"
+            />
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className={`md:hidden fixed top-0 left-0 bottom-0 w-72 z-[70] flex flex-col py-4 px-4 shadow-2xl ${
+                isDarkMode ? 'bg-[#0b0f17] text-white border-r border-[#1e293b]' : 'bg-[#FFFDF9] text-[#2B2725] border-r border-[#EDE5DA]'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-700/40">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-orange-500/20 p-1 flex items-center justify-center">
+                    <img src={catalougeLogo} alt="Logo" className="w-full h-full object-contain" />
+                  </div>
+                  <span className="font-bold text-sm tracking-tight">CATalouge</span>
+                </div>
+                <button
+                  onClick={() => setIsMobileDrawerOpen(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-white"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <nav className="flex-1 space-y-1.5 overflow-y-auto">
+                {navItems.map((item) => {
+                  const isActive = activeView === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        onSelectView(item.id);
+                        setIsMobileDrawerOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                        isActive
+                          ? 'bg-[#F06543] text-white shadow-md'
+                          : isDarkMode ? 'text-slate-300 hover:bg-slate-900' : 'text-slate-700 hover:bg-slate-100'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-lg">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </nav>
+
+              <div className="pt-3 border-t border-slate-700/40 space-y-2">
+                <button
+                  onClick={() => {
+                    onSelectView('kleo');
+                    setIsMobileDrawerOpen(false);
+                  }}
+                  className="w-full p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs flex items-center gap-2 shadow-md"
+                >
+                  <span className="material-symbols-outlined text-base">auto_awesome</span>
+                  <span>Kleo Companion Hub</span>
+                </button>
+
+                {isAuthenticated && googleUser && (
+                  <button
+                    onClick={() => {
+                      setIsLogoutModalOpen(true);
+                      setIsMobileDrawerOpen(false);
+                    }}
+                    className="w-full py-2 text-center text-xs font-bold text-rose-500 bg-rose-500/10 rounded-xl"
+                  >
+                    Log Out
+                  </button>
+                )}
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Bottom Bar (< 768px) */}
       <div className={`md:hidden fixed bottom-0 left-0 right-0 border-t p-2 z-50 flex items-center justify-around backdrop-blur-md ${

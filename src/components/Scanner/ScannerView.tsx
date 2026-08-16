@@ -573,8 +573,15 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
               label="Scan From"
               value={fromLang}
               onChange={(newFrom) => {
-                setFromLang(newFrom);
-                if (scannedText) performTranslation(scannedText, newFrom, toLang);
+                if (newFrom === toLang) {
+                  const prevFrom = fromLang;
+                  setFromLang(newFrom);
+                  setToLang(prevFrom);
+                  if (scannedText) performTranslation(scannedText, newFrom, prevFrom);
+                } else {
+                  setFromLang(newFrom);
+                  if (scannedText) performTranslation(scannedText, newFrom, toLang);
+                }
               }}
               options={ALL_LANGS}
               isDarkMode={isDarkMode}
@@ -583,7 +590,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
             {/* Swap Button */}
             <button
               onClick={handleSwapLanguages}
-              className="mt-4 p-2 rounded-xl border border-orange-500/30 text-[#F06543] hover:bg-orange-500/10 transition-colors"
+              className="mt-4 p-2 rounded-xl border border-orange-500/30 text-[#F06543] hover:bg-orange-500/10 transition-colors cursor-pointer"
               title="Swap Languages"
             >
               <ArrowRightLeft size={16} />
@@ -594,8 +601,15 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
               label="Translate To"
               value={toLang}
               onChange={(newTo) => {
-                setToLang(newTo);
-                if (scannedText) performTranslation(scannedText, fromLang, newTo);
+                if (newTo === fromLang) {
+                  const prevTo = toLang;
+                  setToLang(newTo);
+                  setFromLang(prevTo);
+                  if (scannedText) performTranslation(scannedText, prevTo, newTo);
+                } else {
+                  setToLang(newTo);
+                  if (scannedText) performTranslation(scannedText, fromLang, newTo);
+                }
               }}
               options={ALL_LANGS}
               isDarkMode={isDarkMode}

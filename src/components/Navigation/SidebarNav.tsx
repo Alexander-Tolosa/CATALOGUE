@@ -119,25 +119,26 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         {/* Brand Header & Cat Mascot Logo (Clicking logo reloads/refreshes the dashboard while staying logged in) */}
         <div
           onClick={handleBrandClick}
-          className="mb-5 px-2 flex items-center gap-2.5 cursor-pointer group select-none"
+          className="mb-5 w-full flex flex-col items-center justify-center cursor-pointer group select-none py-1"
           title="Refresh Dashboard"
         >
           <motion.div
-            whileHover={{ scale: 1.08, rotate: 5 }}
-            className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-slate-800 border border-[#F06543]/30 flex items-center justify-center p-1 shadow-xs shrink-0"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            className="w-20 h-20 flex items-center justify-center shrink-0"
           >
-            <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
+            <img
+              src={catalougeLogo}
+              alt="CATALOUGE Logo"
+              className="w-full h-full object-contain drop-shadow-[0_4px_16px_rgba(240,101,67,0.25)]"
+            />
           </motion.div>
-          <div className="flex flex-col">
-            <h1 className={`font-display font-bold text-base tracking-tight leading-none group-hover:text-[#F06543] transition-colors ${
-              isDarkMode ? 'text-white' : 'text-[#2B2725]'
-            }`}>
-              CATalouge
-            </h1>
-            <span className="text-[10px] font-bold text-[#F06543] uppercase tracking-wider mt-0.5">
-              Mastering Language
-            </span>
-          </div>
+          <h1 className={`mt-2.5 font-display font-extrabold text-base tracking-wider leading-none text-center group-hover:text-[#F06543] transition-colors ${
+            isDarkMode ? 'text-white' : 'text-[#2B2725]'
+          }`}>
+            CATALOUGE
+          </h1>
         </div>
 
         {/* Navigation Items */}
@@ -306,9 +307,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-700/40">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-orange-500/20 p-1 flex items-center justify-center">
-                    <img src={catalougeLogo} alt="Logo" className="w-full h-full object-contain" />
+                    <img src={catalougeLogo} alt="CATALOUGE Logo" className="w-full h-full object-contain" />
                   </div>
-                  <span className="font-bold text-sm tracking-tight">CATalouge</span>
+                  <span className="font-bold text-sm tracking-wider">CATALOUGE</span>
                 </div>
                 <button
                   onClick={() => setIsMobileDrawerOpen(false)}

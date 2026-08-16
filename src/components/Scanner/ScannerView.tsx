@@ -90,31 +90,6 @@ function generatePhonetic(text: string, lang: LangOption): string {
   return '';
 }
 
-// Sample presets for instant testing
-const SAMPLE_PRESETS: Array<{ title: string; flagCode: 'jp' | 'kr' | 'us'; lang: LangOption; text: string; description: string }> = [
-  {
-    title: 'Japanese Cafe Menu',
-    flagCode: 'jp',
-    lang: 'Japanese',
-    text: 'おいしい 抹茶 ラテ を お願い します',
-    description: 'Delicious Matcha Latte Order'
-  },
-  {
-    title: 'Korean Signboard',
-    flagCode: 'kr',
-    lang: 'Korean',
-    text: '안녕하세요 만나서 반갑습니다',
-    description: 'Hello, nice to meet you greeting'
-  },
-  {
-    title: 'English Phrase',
-    flagCode: 'us',
-    lang: 'English',
-    text: 'Welcome to CATALOUGE language learning academy',
-    description: 'Academy Welcome Greeting'
-  }
-];
-
 const ALL_LANGS: LangOption[] = ['Japanese', 'Korean', 'English'];
 
 interface CustomLanguageDropdownProps {
@@ -449,15 +424,6 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
     reader.readAsDataURL(file);
   };
 
-  // Preset Sample Loader
-  const handleLoadSample = (preset: typeof SAMPLE_PRESETS[0]) => {
-    setFromLang(preset.lang);
-    setToLang(preset.lang === 'English' ? 'Japanese' : 'English');
-    setScannedText(preset.text);
-    setCapturedImage(null);
-    performTranslation(preset.text, preset.lang, preset.lang === 'English' ? 'Japanese' : 'English');
-  };
-
   // Translate Single Word on Click
   const handleSelectWord = async (word: string) => {
     const cleanWord = word.replace(/[.,!?;:"'(){}\[\]]/g, '').trim();
@@ -634,25 +600,6 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
               options={ALL_LANGS}
               isDarkMode={isDarkMode}
             />
-          </div>
-
-          {/* Quick Presets */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-            <span className="text-[10px] font-bold text-slate-400 mr-1 hidden sm:inline">Try Sample:</span>
-            {SAMPLE_PRESETS.map((preset, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleLoadSample(preset)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all cursor-pointer shrink-0 ${
-                  isDarkMode
-                    ? 'bg-[#1e293b]/80 border-slate-700 text-slate-300 hover:border-orange-500/50 hover:text-white'
-                    : 'bg-slate-100 border-slate-200 text-slate-700 hover:border-orange-500/50 hover:text-orange-600'
-                }`}
-              >
-                <FlagIcon code={preset.flagCode} size="sm" />
-                <span>{preset.title}</span>
-              </button>
-            ))}
           </div>
         </div>
       </div>

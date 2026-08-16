@@ -95,7 +95,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
 
           <div className="space-y-1">
             <h3 className="font-display font-black text-2xl text-slate-900 tracking-tight">
-              Sign in to CATalouge
+              Sign in to CATALOUGE
             </h3>
             <p className="text-xs font-medium text-slate-500 max-w-xs mx-auto leading-relaxed">
               Use Google Identity Services (OAuth 2.0 & OIDC) for real-time cloud sync with Convex.

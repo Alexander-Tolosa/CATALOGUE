@@ -189,7 +189,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
           </div>
           <div onClick={handleBrandClick} className="cursor-pointer">
             <h1 className="font-display font-black text-2xl tracking-tight leading-none text-white group-hover:text-orange-100 transition-colors drop-shadow-sm">
-              CATalouge
+              CATALOUGE
             </h1>
             <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest block mt-0.5">
               Mastering Language

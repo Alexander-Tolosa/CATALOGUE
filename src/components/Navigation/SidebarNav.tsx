@@ -15,57 +15,107 @@ interface SidebarNavProps {
   reviewItemsDueCount: number;
 }
 
-// 3D Golden-Orange & Cream Cat Paw Vector Component (Matching User Reference Image)
-const Cat3DPawIcon: React.FC<{ size?: number; className?: string }> = ({ size = 28, className = '' }) => (
+// Authentic 3D Fluffy Cat Paw Vector Component with Jelly Beans
+const Cat3DPawIcon: React.FC<{ size?: number; className?: string }> = ({ size = 26, className = '' }) => (
   <svg
     width={size}
     height={size}
     viewBox="0 0 100 100"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className={`drop-shadow-[0_3px_8px_rgba(184,73,14,0.45)] ${className}`}
+    className={`drop-shadow-[0_2px_8px_rgba(240,101,67,0.4)] ${className}`}
   >
-    {/* 3D Base Shadow Layer */}
+    <defs>
+      <linearGradient id="pawFurGrad" x1="50" y1="10" x2="50" y2="90" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="70%" stopColor="#FFF5F0" />
+        <stop offset="100%" stopColor="#FDDEC9" />
+      </linearGradient>
+
+      <linearGradient id="pawPadGrad" x1="50" y1="20" x2="50" y2="85" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor="#FFAA80" />
+        <stop offset="40%" stopColor="#FF6B4A" />
+        <stop offset="100%" stopColor="#E04824" />
+      </linearGradient>
+    </defs>
+
+    {/* 3D Base Shadow Edge */}
     <path
-      d="M50 96C74 96 89 82 85 64C81 46 66 43 50 43C34 43 19 46 15 64C11 82 26 96 50 96Z"
-      fill="#A8430B"
+      d="M 24 38
+         C 16 34, 16 20, 26 18
+         C 33 17, 35 24, 37 26
+         C 39 18, 44 10, 52 10
+         C 60 10, 65 18, 67 25
+         C 69 18, 74 12, 82 15
+         C 91 19, 89 33, 82 40
+         C 89 50, 88 72, 78 82
+         C 68 91, 35 91, 25 82
+         C 15 72, 15 50, 24 38 Z"
+      fill="#E5BCA8"
     />
-    {/* Main Golden-Orange Paw Base Body */}
+
+    {/* Main Fluffy White Chubby Paw Body */}
     <path
-      d="M50 90C72 90 86 78 82 60C78 44 64 40 50 40C36 40 22 44 18 60C14 78 28 90 50 90Z"
-      fill="#F97316"
+      d="M 24 36
+         C 16 32, 16 18, 26 16
+         C 33 15, 35 22, 37 24
+         C 39 16, 44 8, 52 8
+         C 60 8, 65 16, 67 23
+         C 69 16, 74 10, 82 13
+         C 91 17, 89 31, 82 38
+         C 89 48, 88 70, 78 80
+         C 68 89, 35 89, 25 80
+         C 15 70, 15 48, 24 36 Z"
+      fill="url(#pawFurGrad)"
+      stroke="#FFFFFF"
+      strokeWidth="1.5"
     />
-    {/* Highlighted Top Edge Layer */}
+
+    {/* Main Tri-lobed Cat Palm Pad */}
     <path
-      d="M50 86C69 86 82 75 79 58C76 43 63 39 50 39C37 39 24 43 21 58C18 75 31 86 50 86Z"
-      fill="#FB923C"
+      d="M 52 42
+         C 38 42, 28 50, 28 62
+         C 28 72, 36 78, 43 78
+         C 48 78, 50 74, 52 74
+         C 54 74, 56 78, 61 78
+         C 68 78, 76 72, 76 62
+         C 76 50, 66 42, 52 42 Z"
+      fill="url(#pawPadGrad)"
     />
 
-    {/* Main Palm Center Pad (Cream Yellow) */}
+    {/* Palm Pad Glossy Shine */}
     <path
-      d="M50 81C62 81 71 73 68 61C65 51 57 47 50 47C43 47 35 51 32 61C29 73 38 81 50 81Z"
-      fill="#FFFBEB"
+      d="M 46 46
+         C 39 46, 33 50, 33 56
+         C 33 59, 35 60, 37 59
+         C 39 55, 43 53, 48 53
+         C 50 53, 51 51, 49 49
+         C 48 47, 47 46, 46 46 Z"
+      fill="#FFFFFF"
+      opacity="0.65"
     />
+    <circle cx="63" cy="68" r="2.2" fill="#FFFFFF" opacity="0.45" />
 
-    {/* Toe Bean 1 (Leftmost) */}
-    <ellipse cx="27" cy="30" rx="9" ry="12" transform="rotate(-22 27 30)" fill="#A8430B" />
-    <ellipse cx="27" cy="28" rx="8.5" ry="11" transform="rotate(-22 27 28)" fill="#F97316" />
-    <ellipse cx="27" cy="27" rx="6.5" ry="8.5" transform="rotate(-22 27 27)" fill="#FFFBEB" />
+    {/* 4 Chubby Toe Beans */}
+    <g transform="rotate(-28 26 26)">
+      <ellipse cx="26" cy="26" rx="6.5" ry="8.5" fill="url(#pawPadGrad)" />
+      <ellipse cx="24.5" cy="23" rx="2" ry="3.2" fill="#FFFFFF" opacity="0.75" />
+    </g>
 
-    {/* Toe Bean 2 (Mid Left) */}
-    <ellipse cx="42" cy="20" rx="9" ry="12" transform="rotate(-6 42 20)" fill="#A8430B" />
-    <ellipse cx="42" cy="18" rx="8.5" ry="11" transform="rotate(-6 42 18)" fill="#F97316" />
-    <ellipse cx="42" cy="17" rx="6.5" ry="8.5" transform="rotate(-6 42 17)" fill="#FFFBEB" />
+    <g transform="rotate(-9 43 17)">
+      <ellipse cx="43" cy="17" rx="7" ry="9.5" fill="url(#pawPadGrad)" />
+      <ellipse cx="41.5" cy="13.5" rx="2.3" ry="3.5" fill="#FFFFFF" opacity="0.75" />
+    </g>
 
-    {/* Toe Bean 3 (Mid Right) */}
-    <ellipse cx="58" cy="20" rx="9" ry="12" transform="rotate(6 58 20)" fill="#A8430B" />
-    <ellipse cx="58" cy="18" rx="8.5" ry="11" transform="rotate(6 58 18)" fill="#F97316" />
-    <ellipse cx="58" cy="17" rx="6.5" ry="8.5" transform="rotate(6 58 17)" fill="#FFFBEB" />
+    <g transform="rotate(9 61 17)">
+      <ellipse cx="61" cy="17" rx="7" ry="9.5" fill="url(#pawPadGrad)" />
+      <ellipse cx="59.5" cy="13.5" rx="2.3" ry="3.5" fill="#FFFFFF" opacity="0.75" />
+    </g>
 
-    {/* Toe Bean 4 (Rightmost) */}
-    <ellipse cx="73" cy="30" rx="9" ry="12" transform="rotate(22 73 30)" fill="#A8430B" />
-    <ellipse cx="73" cy="28" rx="8.5" ry="11" transform="rotate(22 73 28)" fill="#F97316" />
-    <ellipse cx="73" cy="27" rx="6.5" ry="8.5" transform="rotate(22 73 27)" fill="#FFFBEB" />
+    <g transform="rotate(28 78 26)">
+      <ellipse cx="78" cy="26" rx="6.5" ry="8.5" fill="url(#pawPadGrad)" />
+      <ellipse cx="76.5" cy="23" rx="2" ry="3.2" fill="#FFFFFF" opacity="0.75" />
+    </g>
   </svg>
 );
 

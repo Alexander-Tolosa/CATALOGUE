@@ -10,6 +10,7 @@ import { DashboardView } from './components/Dashboard/DashboardView';
 import { LearnView } from './components/Learn/LearnView';
 import { ScriptModuleView } from './components/Script/ScriptModuleView';
 import { TranslatorView } from './components/Translator/TranslatorView';
+import { ScannerView } from './components/Scanner/ScannerView';
 import { KleoHubView } from './components/Kleo/KleoHubView';
 import { KleoChatRoomView } from './components/ChatRoom/KleoChatRoomView';
 import { GamifyHubView } from './components/Gamify/GamifyHubView';
@@ -127,6 +128,12 @@ export const App: React.FC = () => {
               {activeView === 'translator' && (
                 <div className="pt-20 px-4 md:px-8">
                   <TranslatorView onSaveToReview={savePhraseToReview} />
+                </div>
+              )}
+
+              {activeView === 'scanner' && (
+                <div className="pt-20 px-4 md:px-8">
+                  <ScannerView onSaveToReview={savePhraseToReview} />
                 </div>
               )}
 

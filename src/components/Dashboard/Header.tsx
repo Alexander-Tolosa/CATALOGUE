@@ -63,6 +63,15 @@ export const TopAppBar: React.FC<HeaderProps> = ({
               Translator
             </h2>
           </div>
+        ) : activeView === 'scanner' ? (
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#F06543] text-xl shrink-0">
+              document_scanner
+            </span>
+            <h2 className={`font-display text-base sm:text-xl font-bold tracking-tight truncate ${isDarkMode ? 'text-white' : 'text-[#2B2725]'}`}>
+              Scan & Translate
+            </h2>
+          </div>
         ) : activeView === 'kleo' ? (
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <h2 className={`font-display text-base sm:text-xl font-bold tracking-tight truncate ${isDarkMode ? 'text-white' : 'text-[#2B2725]'}`}>

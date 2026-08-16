@@ -1,6 +1,6 @@
 export type LanguageTrack = 'ko' | 'ja' | 'en';
 
-export type AppView = 'dashboard' | 'learn' | 'letters' | 'translator' | 'kleo' | 'chatbot' | 'gamify' | 'review' | 'settings';
+export type AppView = 'dashboard' | 'learn' | 'letters' | 'translator' | 'scanner' | 'kleo' | 'chatbot' | 'gamify' | 'review' | 'settings';
 
 export type UserLifecycleState = 'new' | 'returning' | 'lapsed';
 

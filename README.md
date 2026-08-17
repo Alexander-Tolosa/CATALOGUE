@@ -1,4 +1,4 @@
-#  CATalouge
+#  CATALOUGE
 
 **CATalouge** is an AI-powered language learning platform inspired by gamified, habit-building applications like Duolingo. Guided by **Kleo**, your AI cat companion, CATalouge helps users master languages (Korean, Japanese, English) through interactive lessons, stroke tracing, spaced-repetition flashcards, and real-time voice translation.
 

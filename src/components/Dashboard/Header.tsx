@@ -50,7 +50,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
       <div className="flex items-center gap-2 sm:gap-4 min-w-0">
         {/* Mobile Hamburger Menu Toggle Button */}
         <button
-          onClick={() => window.dispatchEvent(new CustomEvent('catalouge:toggle-mobile-drawer'))}
+          onClick={() => window.dispatchEvent(new CustomEvent('catalogue:toggle-mobile-drawer'))}
           className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
           title="Open Menu"
         >

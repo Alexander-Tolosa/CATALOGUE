@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useAuthStore } from '../../store/useAuthStore';
 import { X, ShieldCheck } from 'lucide-react';
-import catalougeLogo from '../../assets/catalouge_logo.png';
+import catalogueLogo from '../../assets/catalogue_logo.png';
 
 interface GoogleOidcPayload {
   sub: string;
@@ -20,7 +20,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
   const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
   const [selectedDisplayName, setSelectedDisplayName] = useState('');
   const [clientId, setClientId] = useState(
-    import.meta.env.VITE_GOOGLE_CLIENT_ID || '1088492049281-catalouge-sandbox.apps.googleusercontent.com'
+    import.meta.env.VITE_GOOGLE_CLIENT_ID || '1088492049281-catalogue-sandbox.apps.googleusercontent.com'
   );
 
   useEffect(() => {
@@ -90,12 +90,12 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
         {/* Header & Cat Mascot Logo Badge */}
         <div className="space-y-3 pt-2">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-orange-50 border border-orange-200/80 flex items-center justify-center p-2.5 shadow-xs">
-            <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
+            <img src={catalogueLogo} alt="CATALOGUE Logo" className="w-full h-full object-contain" />
           </div>
 
           <div className="space-y-1">
             <h3 className="font-display font-black text-2xl text-slate-900 tracking-tight">
-              Sign in to CATALOUGE
+              Sign in to CATALOGUE
             </h3>
             <p className="text-xs font-medium text-slate-500 max-w-xs mx-auto leading-relaxed">
               Use Google Identity Services (OAuth 2.0 & OIDC) for real-time cloud sync with Convex.

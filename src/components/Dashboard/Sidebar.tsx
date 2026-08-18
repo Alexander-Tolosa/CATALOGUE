@@ -28,7 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Brand Logo */}
         <div className="px-3 pt-2">
           <h1 className="font-brand text-2xl font-black text-sky-400 tracking-tight flex items-center gap-2 drop-shadow-md">
-            <span>🐾</span> CATalouge
+            <span>🐾</span> CATALOGUE
           </h1>
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 block mt-0.5">
             Enterprise Language SaaS

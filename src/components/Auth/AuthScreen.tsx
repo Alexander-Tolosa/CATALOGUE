@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { GoogleAuthModal } from './GoogleAuthModal';
 import { Lock, Eye, EyeOff, Sparkles, ShieldCheck, ArrowRight } from 'lucide-react';
-import catalougeLogo from '../../assets/catalouge_logo.png';
+import catalogueLogo from '../../assets/catalogue_logo.png';
 
 interface AuthScreenProps {
   onBack?: () => void;
@@ -59,10 +59,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
             title={onBack ? 'Click to return to Landing Page' : undefined}
           >
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-b from-white to-[#f7eee1] border border-orange-200/80 flex items-center justify-center p-2 shadow-[0_6px_14px_rgba(180,100,30,0.12),_inset_0_1px_0_rgba(255,255,255,1)] group-hover:border-[#FF6B35]/60 transition-all">
-              <img src={catalougeLogo} alt="CATalouge Logo" className="w-full h-full object-contain" />
+              <img src={catalogueLogo} alt="CATALOGUE Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-brand font-extrabold text-xl tracking-wider text-slate-900 uppercase drop-shadow-xs group-hover:text-[#FF6B35] transition-colors">
-              CATalogue
+              CATALOGUE
             </span>
           </div>
         </div>
@@ -107,7 +107,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
 
         {/* Footer Copyright */}
         <div className="text-xs text-slate-500 font-medium">
-          © 2026 CATalouge. Multilingual AI Platform powered by Kleo.
+          © 2026 CATALOGUE. Multilingual AI Platform powered by Kleo.
         </div>
       </div>
 
@@ -298,7 +298,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
             {/* Skeuomorphic Engraved Security Plate */}
             <div className="flex items-center justify-center gap-1.5 text-[10px] font-extrabold text-slate-600 bg-gradient-to-b from-[#efe5d4] to-[#e7dbca] py-2 px-3.5 rounded-xl border border-orange-200/80 shadow-[inset_0_1px_3px_rgba(0,0,0,0.06),_0_1px_0_rgba(255,255,255,0.8)] max-w-xs mx-auto">
               <ShieldCheck size={14} className="text-[#FF6B35]" />
-              <span>Secured by CATalouge Auth • Encrypted Session</span>
+              <span>Secured by CATALOGUE Auth • Encrypted Session</span>
             </div>
           </div>
         </div>

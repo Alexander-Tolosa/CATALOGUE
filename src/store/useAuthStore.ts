@@ -17,9 +17,9 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  token: localStorage.getItem('catalouge_google_oidc_token'),
+  token: localStorage.getItem('catalogue_google_oidc_token') || localStorage.getItem('catalouge_google_oidc_token'),
   googleUser: (() => {
-    const saved = localStorage.getItem('catalouge_google_user');
+    const saved = localStorage.getItem('catalogue_google_user') || localStorage.getItem('catalouge_google_user');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -29,24 +29,24 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
     return null;
   })(),
-  isAuthenticated: !!localStorage.getItem('catalouge_google_oidc_token'),
+  isAuthenticated: !!(localStorage.getItem('catalogue_google_oidc_token') || localStorage.getItem('catalouge_google_oidc_token')),
 
   loginWithGoogle: (profile, token) => {
-    localStorage.setItem('catalouge_google_oidc_token', token);
-    localStorage.setItem('catalouge_google_user', JSON.stringify(profile));
+    localStorage.setItem('catalogue_google_oidc_token', token);
+    localStorage.setItem('catalogue_google_user', JSON.stringify(profile));
 
     // Synchronize authenticated display name into app user profile
     try {
-      const savedAppProfile = localStorage.getItem('catalouge_user_profile');
+      const savedAppProfile = localStorage.getItem('catalogue_user_profile') || localStorage.getItem('catalouge_user_profile');
       if (savedAppProfile) {
         const parsed = JSON.parse(savedAppProfile);
         parsed.name = profile.name;
-        localStorage.setItem('catalouge_user_profile', JSON.stringify(parsed));
+        localStorage.setItem('catalogue_user_profile', JSON.stringify(parsed));
         useAppStore.setState({ profile: parsed });
       } else {
         useAppStore.setState((state) => {
           const updated = { ...state.profile, name: profile.name };
-          localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+          localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
           return { profile: updated };
         });
       }
@@ -58,7 +58,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
+    localStorage.removeItem('catalogue_google_oidc_token');
     localStorage.removeItem('catalouge_google_oidc_token');
+    localStorage.removeItem('catalogue_google_user');
     localStorage.removeItem('catalouge_google_user');
     set({ token: null, googleUser: null, isAuthenticated: false });
   }

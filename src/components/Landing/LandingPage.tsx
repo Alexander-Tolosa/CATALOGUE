@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { FlagIcon } from '../Common/FlagIcon';
 import { Sparkles, Globe, Zap, Bot, ShieldCheck, Heart, Award, ArrowRight, ChevronDown } from 'lucide-react';
-import catalougeLogo from '../../assets/catalouge_logo.png';
+import catalogueLogo from '../../assets/catalogue_logo.png';
 import catVideo from '../../assets/Cat.mp4';
 import studyVideo from '../../assets/Study.mp4';
 
@@ -72,7 +72,7 @@ const translations: Record<SiteLanguage, TranslationSchema> = {
     ctaTitle: 'Ready to start learning?',
     ctaSubtitle: 'Join thousands of learners mastering Korean, Japanese, and English script!',
     ctaButton: 'GET STARTED NOW',
-    rights: '© 2026 CATalouge Platform. All rights reserved.'
+    rights: '© 2026 CATALOGUE Platform. All rights reserved.'
   },
   KOREAN: {
     siteLangLabel: '사이트 언어: 한국어',
@@ -101,7 +101,7 @@ const translations: Record<SiteLanguage, TranslationSchema> = {
     ctaTitle: '학습을 시작할 준비가 되셨나요?',
     ctaSubtitle: '한국어, 일본어, 영어 학습자들과 함께 지금 시작하세요!',
     ctaButton: '지금 시작하기',
-    rights: '© 2026 CATalouge Platform. All rights reserved.'
+    rights: '© 2026 CATALOGUE Platform. All rights reserved.'
   },
   JAPANESE: {
     siteLangLabel: 'サイト言語: 日本語',
@@ -130,7 +130,7 @@ const translations: Record<SiteLanguage, TranslationSchema> = {
     ctaTitle: '学習を始める準備はできましたか？',
     ctaSubtitle: '韓国語、日本語、英語の文字をマスターする何千人もの学習者に加わりましょう！',
     ctaButton: '今すぐ始める',
-    rights: '© 2026 CATalouge Platform. All rights reserved.'
+    rights: '© 2026 CATALOGUE Platform. All rights reserved.'
   }
 };
 
@@ -181,15 +181,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
         >
           <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-200/80 flex items-center justify-center p-1 shadow-sm shrink-0">
             <img
-              src={catalougeLogo}
-              alt="CATalouge Logo"
+              src={catalogueLogo}
+              alt="CATALOGUE Logo"
               onClick={handleBrandClick}
               className="w-full h-full object-contain cursor-pointer"
             />
           </div>
           <div onClick={handleBrandClick} className="cursor-pointer">
             <h1 className="font-display font-black text-2xl tracking-tight leading-none text-white group-hover:text-orange-100 transition-colors drop-shadow-sm">
-              CATALOUGE
+              CATALOGUE
             </h1>
             <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest block mt-0.5">
               Mastering Language

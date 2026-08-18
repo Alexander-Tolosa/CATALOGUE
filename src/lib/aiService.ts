@@ -1,5 +1,5 @@
 /**
- * Unified AI Service for CATalouge
+ * Unified AI Service for CATALOGUE
  * Routes both Chatbot (/chat) and Letter Feedback through the same AI orchestration pipeline.
  * Reuses conversation context (such as vocabulary the user struggled with in chat) to inform writing feedback.
  */
@@ -63,7 +63,7 @@ export function buildChatbotSystemPrompt(options: Omit<AIServiceChatOptions, 'me
       break;
   }
 
-  return `You are Kleo AI Service (CATalouge Platform).
+  return `You are Kleo AI Service (CATALOGUE Platform).
 Target Language: ${langName}
 User Proficiency Level: Level ${userLevel}
 User's Recently Struggled Vocabulary Context: [${vocabListStr}]
@@ -93,7 +93,7 @@ export function buildLetterFeedbackSystemPrompt(options: Omit<AIServiceLetterOpt
     ? struggledVocab.map(v => v.word).join(', ')
     : 'None yet';
 
-  return `You are Kleo Writing & Letter Feedback Service (CATalouge Platform).
+  return `You are Kleo Writing & Letter Feedback Service (CATALOGUE Platform).
 Target Language: ${langName}
 User Proficiency Level: Level ${userLevel}
 Letter/Essay Type: ${letterType || 'General Letter'}
@@ -214,12 +214,12 @@ function generateClientChatFallback(options: AIServiceChatOptions, ragContext: s
         reply = '네! 아이스로 준비해 드릴까요, 아니면 따뜻하게 드릴까요? 사이즈는 보통(Regular)과 큰(Large) 사이즈가 있습니다.';
       }
     } else if (language === 'ja') {
-      reply = 'いらっしゃいませ！カフェCATalougeへようこそ。ご注文はお決まりですか？';
+      reply = 'いらっしゃいませ！カフェCATALOGUEへようこそ。ご注文はお決まりですか？';
       if (textLower.includes('ください') || textLower.includes('コーヒー')) {
         reply = 'かしこまりました！ホットとアイスのどちらになさいますか？サイズはMとLがございます。';
       }
     } else {
-      reply = 'Welcome to Coffee CATalouge! What can I get started for you today? We have freshly roasted espresso and matcha lattes.';
+      reply = 'Welcome to Coffee CATALOGUE! What can I get started for you today? We have freshly roasted espresso and matcha lattes.';
     }
   } else if (scenario === 'job_interview') {
     if (language === 'ko') {
@@ -233,9 +233,9 @@ function generateClientChatFallback(options: AIServiceChatOptions, ragContext: s
     if (language === 'ko') {
       reply = '안녕하세요, 카탈로그 호텔 리셉션입니다. 예약하신 성함을 말씀해 주시겠어요?';
     } else if (language === 'ja') {
-      reply = 'いらっしゃいませ。CATalougeホテルへようこそ。ご予約のお名前をお伺いできますか？';
+      reply = 'いらっしゃいませ。CATALOGUEホテルへようこそ。ご予約のお名前をお伺いできますか？';
     } else {
-      reply = 'Welcome to Hotel CATalouge! May I have your name for the reservation check-in, please?';
+      reply = 'Welcome to Hotel CATALOGUE! May I have your name for the reservation check-in, please?';
     }
   } else if (scenario === 'airport_customs') {
     if (language === 'ko') {

@@ -53,7 +53,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     {
       id: '1',
       sender: 'ai',
-      text: `Meow~ I'm Kleo, your Siamese cat AI Language Tutor for CATalouge! 🐾\nI am ready to practice Japanese, Korean, or English with you. Ask me any grammar rules, vocabulary breakdowns, or translation questions!`,
+      text: `Meow~ I'm Kleo, your Siamese cat AI Language Tutor for CATALOGUE! 🐾\nI am ready to practice Japanese, Korean, or English with you. Ask me any grammar rules, vocabulary breakdowns, or translation questions!`,
       timestamp: 'Just now',
       scenario: 'free_chat'
     }

@@ -25,7 +25,7 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
             <span className="material-symbols-outlined text-3xl">logout</span>
           </div>
 
-          <h3 className="font-display font-extrabold text-2xl text-white">Log Out of CATALOUGE?</h3>
+          <h3 className="font-display font-extrabold text-2xl text-white">Log Out of CATALOGUE?</h3>
           <p className="text-xs text-[#bacac9] leading-relaxed max-w-xs mx-auto">
             Are you sure you want to end your active study session? Your streak and daily progress remain safely saved.
           </p>

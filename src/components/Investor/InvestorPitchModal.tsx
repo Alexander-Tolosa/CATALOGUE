@@ -29,7 +29,7 @@ export const InvestorPitchModal: React.FC<InvestorPitchModalProps> = ({
             <Sparkles size={14} /> Million-Dollar Product Strategy & Pitch Deck
           </div>
           <h2 className="font-display text-2xl md:text-4xl font-black text-white tracking-tight leading-tight">
-            CATalouge Enterprise EdTech
+            CATALOGUE Enterprise EdTech
           </h2>
           <p className="text-xs md:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
             A next-generation, AI-driven gamified language learning web application designed for high retention in Asian & English scripts.

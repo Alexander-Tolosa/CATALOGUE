@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'catalouge_million_dollar_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'catalogue_million_dollar_secret';
 
 app.use(cors());
 app.use(express.json());
@@ -15,7 +15,7 @@ const db = {
   users: [
     {
       id: 'usr-1',
-      email: 'learner@catalouge.app',
+      email: 'learner@catalogue.app',
       passwordHash: bcrypt.hashSync('password123', 10),
       createdAt: new Date().toISOString()
     }
@@ -49,7 +49,7 @@ const db = {
       id: 'msg-1',
       userId: 'usr-1',
       role: 'assistant',
-      content: 'Meow! Welcome to CATalouge AI Tutor! Ask me any grammar, vocabulary, or culture questions!'
+      content: 'Meow! Welcome to CATALOGUE AI Tutor! Ask me any grammar, vocabulary, or culture questions!'
     }
   ]
 };
@@ -278,7 +278,7 @@ app.post('/api/ai/process', (req, res) => {
       ? '어서오세요! 주문하시겠습니까? 아이스 아메리카노와 카페라떼가 준비되어 있습니다.'
       : language === 'ja'
       ? 'いらっしゃいませ！ご注文はお決まりですか？'
-      : 'Welcome to Coffee CATalouge! What can I get started for you today?';
+      : 'Welcome to Coffee CATALOGUE! What can I get started for you today?';
   } else if (scenario === 'job_interview') {
     reply = language === 'ko'
       ? '안녕하십니까! 면접에 참석해 주셔서 감사합니다. 간단히 자기소개 부탁드립니다.'
@@ -337,6 +337,6 @@ app.post('/api/chat', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`CATalouge Express API Server listening on port ${PORT}`);
+  console.log(`CATALOGUE Express API Server listening on port ${PORT}`);
 });
 

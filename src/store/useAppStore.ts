@@ -84,7 +84,7 @@ interface AppStoreState {
 
 export const useAppStore = create<AppStoreState>((set, get) => ({
   profile: (() => {
-    const saved = localStorage.getItem('catalouge_user_profile');
+    const saved = localStorage.getItem('catalogue_user_profile') || localStorage.getItem('catalouge_user_profile');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -95,7 +95,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     return DEFAULT_PROFILE;
   })(),
 
-  isDarkMode: localStorage.getItem('catalouge_theme_dark') === 'true',
+  isDarkMode: (localStorage.getItem('catalogue_theme_dark') || localStorage.getItem('catalouge_theme_dark')) === 'true',
   isChatbotOpen: false,
 
   toggleChatbot: () => {
@@ -109,7 +109,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   toggleThemeMode: () => {
     set((state) => {
       const nextMode = !state.isDarkMode;
-      localStorage.setItem('catalouge_theme_dark', String(nextMode));
+      localStorage.setItem('catalogue_theme_dark', String(nextMode));
       return { isDarkMode: nextMode };
     });
   },
@@ -117,7 +117,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   selectLanguageTrack: (lang) => {
     set((state) => {
       const updated = { ...state.profile, selectedLanguage: lang };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },
@@ -125,7 +125,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   deductHeart: () => {
     set((state) => {
       const updated = { ...state.profile, hearts: Math.max(0, state.profile.hearts - 1) };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },
@@ -133,7 +133,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   refillHearts: () => {
     set((state) => {
       const updated = { ...state.profile, hearts: state.profile.maxHearts };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },
@@ -148,7 +148,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
         level: newLevel,
         minutesCompletedToday: state.profile.minutesCompletedToday + 3
       };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },
@@ -163,7 +163,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
         completedNodeIds: completed,
         xp: state.profile.xp + xpReward
       };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },
@@ -181,7 +181,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
         ...state.profile,
         savedPhrases: [newItem, ...state.profile.savedPhrases]
       };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },
@@ -199,7 +199,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
       const filteredExisting = currentList.filter(existing => !words.includes(existing.word));
       const updatedList = [...newItems, ...filteredExisting].slice(0, 20); // Keep top 20 recent
       const updated = { ...state.profile, struggledVocab: updatedList };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },
@@ -207,7 +207,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   clearStruggledWords: () => {
     set((state) => {
       const updated = { ...state.profile, struggledVocab: [] };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },
@@ -221,7 +221,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
           [category]: cosmeticId
         }
       };
-      localStorage.setItem('catalouge_user_profile', JSON.stringify(updated));
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
     });
   },

@@ -43,7 +43,7 @@ export const KleoChatRoomView: React.FC = () => {
 
   // Knowledge Base Documents State
   const [documents, setDocuments] = useState<DocumentFile[]>(() => {
-    const saved = localStorage.getItem('catalouge_rag_documents');
+    const saved = localStorage.getItem('catalogue_rag_documents') || localStorage.getItem('catalouge_rag_documents');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -56,7 +56,7 @@ export const KleoChatRoomView: React.FC = () => {
 
   // Chat Messages State (Multi-turn persistent history)
   const [messages, setMessages] = useState<Message[]>(() => {
-    const saved = localStorage.getItem('catalouge_rag_chat_history');
+    const saved = localStorage.getItem('catalogue_rag_chat_history') || localStorage.getItem('catalouge_rag_chat_history');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -88,11 +88,11 @@ export const KleoChatRoomView: React.FC = () => {
 
   // Persist documents & history
   useEffect(() => {
-    localStorage.setItem('catalouge_rag_documents', JSON.stringify(documents));
+    localStorage.setItem('catalogue_rag_documents', JSON.stringify(documents));
   }, [documents]);
 
   useEffect(() => {
-    localStorage.setItem('catalouge_rag_chat_history', JSON.stringify(messages));
+    localStorage.setItem('catalogue_rag_chat_history', JSON.stringify(messages));
   }, [messages]);
 
   // Auto-scroll to bottom of chat
@@ -234,6 +234,7 @@ export const KleoChatRoomView: React.FC = () => {
   const handleClearHistory = () => {
     if (confirm('Clear entire chat history?')) {
       setMessages([]);
+      localStorage.removeItem('catalogue_rag_chat_history');
       localStorage.removeItem('catalouge_rag_chat_history');
     }
   };
@@ -308,8 +309,8 @@ export const KleoChatRoomView: React.FC = () => {
       openingText = lang === 'ko'
         ? '안녕하세요! 커피 캣탈로그입니다. 무엇을 주문하시겠어요?'
         : lang === 'ja'
-        ? 'いらっしゃいませ！Coffee CATalougeへようこそ。ご注文はお決まりですか？'
-        : 'Welcome to Coffee CATalouge! What can I get started for you today?';
+        ? 'いらっしゃいませ！Coffee CATALOGUEへようこそ。ご注文はお決まりですか？'
+        : 'Welcome to Coffee CATALOGUE! What can I get started for you today?';
     } else if (scenarioId === 'job_interview') {
       openingText = lang === 'ko'
         ? '안녕하세요! 오늘 면접에 응해주셔서 감사합니다. 먼저 간단히 자기소개를 해주세요.'
@@ -320,8 +321,8 @@ export const KleoChatRoomView: React.FC = () => {
       openingText = lang === 'ko'
         ? '안녕하세요, 호텔 캣탈로그입니다. 체크인 예약을 도와드릴까요?'
         : lang === 'ja'
-        ? 'いらっしゃいませ。Hotel CATalougeへようこそ。チェックインのご予約のお名前をお伺いできますか？'
-        : 'Welcome to Hotel CATalouge! May I have your name for the reservation check-in, please?';
+        ? 'いらっしゃいませ。Hotel CATALOGUEへようこそ。チェックインのご予約のお名前をお伺いできますか？'
+        : 'Welcome to Hotel CATALOGUE! May I have your name for the reservation check-in, please?';
     } else if (scenarioId === 'airport_customs') {
       openingText = lang === 'ko'
         ? '입국 심사입니다. 방문 목적과 체류 기간을 말씀해 주세요.'

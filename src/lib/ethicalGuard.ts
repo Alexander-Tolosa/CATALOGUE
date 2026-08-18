@@ -1,5 +1,5 @@
 /**
- * Ethical Restriction & Multi-Language Word Censorship Engine for CATalouge
+ * Ethical Restriction & Multi-Language Word Censorship Engine for CATALOGUE
  * Prohibits inappropriate words and sentences across English, Korean, Japanese, etc.
  * Replaces characters in detected bad words with the '#' symbol.
  */
@@ -32,7 +32,7 @@ export interface CensorshipResult {
 }
 
 // Custom Event for triggering system-wide ethical warning toasts
-export const ETHICAL_WARNING_EVENT = 'catalouge:ethical-warning';
+export const ETHICAL_WARNING_EVENT = 'catalogue:ethical-warning';
 export const ETHICAL_WARNING_MESSAGE = 'Warning! Inappropriate words are not allowed.';
 
 /**

@@ -7,7 +7,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { LogoutModal } from './LogoutModal';
 import { GoogleAuthModal } from '../Auth/GoogleAuthModal';
 import { Badge } from '../ui/badge';
-import catalougeLogo from '../../assets/catalouge_logo.png';
+import catalogueLogo from '../../assets/catalogue_logo.png';
 
 interface SidebarNavProps {
   activeView: AppView;
@@ -132,8 +132,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
   useEffect(() => {
     const handleToggle = () => setIsMobileDrawerOpen(prev => !prev);
-    window.addEventListener('catalouge:toggle-mobile-drawer', handleToggle);
-    return () => window.removeEventListener('catalouge:toggle-mobile-drawer', handleToggle);
+    window.addEventListener('catalogue:toggle-mobile-drawer', handleToggle);
+    return () => window.removeEventListener('catalogue:toggle-mobile-drawer', handleToggle);
   }, []);
 
   const handleConfirmLogout = () => {
@@ -180,15 +180,15 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             className="w-20 h-20 flex items-center justify-center shrink-0"
           >
             <img
-              src={catalougeLogo}
-              alt="CATALOUGE Logo"
+              src={catalogueLogo}
+              alt="CATALOGUE Logo"
               className="w-full h-full object-contain drop-shadow-[0_4px_16px_rgba(240,101,67,0.25)]"
             />
           </motion.div>
           <h1 className={`mt-2.5 font-display font-extrabold text-base tracking-wider leading-none text-center group-hover:text-[#F06543] transition-colors ${
             isDarkMode ? 'text-white' : 'text-[#2B2725]'
           }`}>
-            CATALOUGE
+            CATALOGUE
           </h1>
         </div>
 
@@ -358,9 +358,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-700/40">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-orange-500/20 p-1 flex items-center justify-center">
-                    <img src={catalougeLogo} alt="CATALOUGE Logo" className="w-full h-full object-contain" />
+                    <img src={catalogueLogo} alt="CATALOGUE Logo" className="w-full h-full object-contain" />
                   </div>
-                  <span className="font-bold text-sm tracking-wider">CATALOUGE</span>
+                  <span className="font-bold text-sm tracking-wider">CATALOGUE</span>
                 </div>
                 <button
                   onClick={() => setIsMobileDrawerOpen(false)}

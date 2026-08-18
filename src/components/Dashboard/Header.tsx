@@ -3,7 +3,6 @@ import { UserProfile, LanguageTrack, AppView } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import {
-  Search,
   Mail,
   Bell,
   Calendar,
@@ -46,15 +45,10 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isLangSubmenuOpen, setIsLangSubmenuOpen] = useState(false);
 
-  // Search state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const mailRef = useRef<HTMLDivElement>(null);
   const bellRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLDivElement>(null);
 
   // Close menus on outside click
   useEffect(() => {
@@ -72,9 +66,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
       }
       if (calendarRef.current && !calendarRef.current.contains(target)) {
         setIsCalendarOpen(false);
-      }
-      if (searchRef.current && !searchRef.current.contains(target)) {
-        setIsSearchFocused(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -100,22 +91,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
       window.print();
     }, 150);
   };
-
-  const searchableNavOptions = [
-    { title: 'Overview Dashboard', view: 'dashboard', category: 'Page' },
-    { title: 'Skill Tree & Lessons', view: 'learn', category: 'Learn' },
-    { title: 'Writing & Letters Feedback', view: 'letters', category: 'Writing' },
-    { title: 'AI Voice & Text Translator', view: 'translator', category: 'Tool' },
-    { title: 'OCR Scan & Translate', view: 'scanner', category: 'Tool' },
-    { title: 'Leaderboards & Streaks', view: 'gamify', category: 'Gamify' },
-    { title: 'SM-2 Review Deck', view: 'review', category: 'Review' },
-    { title: 'Kleo Companion Hub', view: 'kleo', category: 'AI Mascot' },
-    { title: 'Settings & Preferences', view: 'settings', category: 'Account' }
-  ];
-
-  const filteredNav = searchableNavOptions.filter((item) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <>
@@ -160,88 +135,9 @@ export const TopAppBar: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Center / Right Section: Reference Image Design */}
+        {/* Right Section: Notification Badges & Profile */}
         <div className="flex items-center gap-2 sm:gap-4 md:gap-5 min-w-0">
-          {/* 1. Search Bar Pill with Dropdown Chevron */}
-          <div className="relative" ref={searchRef}>
-            <div
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border transition-all ${
-                isDarkMode
-                  ? 'bg-[#131722] hover:bg-[#171c2b] border-[#22283a] focus-within:border-[#F06543]/60 focus-within:ring-2 focus-within:ring-[#F06543]/20 text-white'
-                  : 'bg-[#f4f0e8] hover:bg-[#ece6da] border-[#e0d6c7] focus-within:border-[#F06543]/60 focus-within:ring-2 focus-within:ring-[#F06543]/20 text-slate-900'
-              } w-36 sm:w-56 md:w-64`}
-            >
-              <Search className="w-4 h-4 text-slate-400 shrink-0" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                placeholder="Search"
-                className="w-full bg-transparent text-xs font-semibold focus:outline-none placeholder:text-slate-400 placeholder:font-medium"
-              />
-              <button
-                type="button"
-                onClick={() => setIsSearchFocused(!isSearchFocused)}
-                className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
-                  isDarkMode
-                    ? 'bg-[#1c2234] hover:bg-[#252d45] text-slate-300'
-                    : 'bg-white hover:bg-slate-200 text-slate-600 shadow-2xs'
-                }`}
-                title="Search Filter Options"
-              >
-                <ChevronDown className="w-3 h-3" />
-              </button>
-            </div>
-
-            {/* Quick Search Palette Dropdown */}
-            {isSearchFocused && (
-              <div
-                className={`absolute left-0 mt-2 w-72 rounded-2xl border shadow-2xl p-2 z-50 animate-fadeIn ${
-                  isDarkMode
-                    ? 'bg-[#131722] border-[#22283a] text-white'
-                    : 'bg-white border-[#e0d6c7] text-slate-900'
-                }`}
-              >
-                <div className="text-[10px] font-extrabold text-slate-400 px-3 py-1.5 uppercase tracking-wider">
-                  QUICK NAVIGATION
-                </div>
-                <div className="max-h-56 overflow-y-auto space-y-1">
-                  {filteredNav.map((item, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => {
-                        window.dispatchEvent(
-                          new CustomEvent('catalogue:navigate-view', {
-                            detail: item.view
-                          })
-                        );
-                        setIsSearchFocused(false);
-                        setSearchQuery('');
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors text-left cursor-pointer ${
-                        isDarkMode
-                          ? 'hover:bg-[#1c2234] text-slate-200'
-                          : 'hover:bg-[#f4f0e8] text-slate-800'
-                      }`}
-                    >
-                      <span>{item.title}</span>
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-orange-500/15 text-[#F06543]">
-                        {item.category}
-                      </span>
-                    </button>
-                  ))}
-                  {filteredNav.length === 0 && (
-                    <div className="p-3 text-center text-xs text-slate-400">
-                      No matching pages found
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* 2. Messages Icon with Red Badge (25) */}
+          {/* 1. Messages Icon with Red Badge (25) */}
           <div className="relative" ref={mailRef}>
             <button
               onClick={() => {

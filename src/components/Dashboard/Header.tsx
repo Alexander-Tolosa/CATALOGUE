@@ -18,7 +18,8 @@ import {
   Flame,
   CheckCircle2,
   BookOpen,
-  Sparkles
+  Sparkles,
+  User
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -26,13 +27,15 @@ interface HeaderProps {
   activeView: AppView;
   onSelectLanguage: (lang: LanguageTrack) => void;
   onOpenPitchModal: () => void;
+  onSelectView?: (view: AppView) => void;
 }
 
 export const TopAppBar: React.FC<HeaderProps> = ({
   profile,
   activeView,
   onSelectLanguage,
-  onOpenPitchModal
+  onOpenPitchModal,
+  onSelectView
 }) => {
   const { isDarkMode, toggleThemeMode } = useAppStore();
   const { googleUser, logout } = useAuthStore();
@@ -307,29 +310,42 @@ export const TopAppBar: React.FC<HeaderProps> = ({
           {/* 5. User Profile Name & Avatar with Chevron Down (Exact Picture 1 & Picture 3 Reference) */}
           <div className="relative" ref={profileMenuRef}>
             <div
-              onClick={() => {
-                setIsProfileMenuOpen(!isProfileMenuOpen);
-                setIsMailOpen(false);
-                setIsBellOpen(false);
-                setIsCalendarOpen(false);
-              }}
-              className="flex items-center gap-2.5 cursor-pointer group"
-              title="User Account & Preferences"
+              className="flex items-center gap-2.5 group select-none"
+              title="My Profile"
             >
-              {/* Bold Uppercase User Name */}
-              <span
-                className={`hidden lg:inline-block text-xs md:text-sm font-black tracking-wider truncate max-w-[140px] xl:max-w-[200px] uppercase transition-colors ${
+              {/* Bold Uppercase User Name (Click opens Profile) */}
+              <button
+                onClick={() => {
+                  setIsProfileMenuOpen(false);
+                  if (onSelectView) {
+                    onSelectView('profile');
+                  } else {
+                    window.dispatchEvent(new CustomEvent('catalogue:navigate-view', { detail: 'profile' }));
+                  }
+                }}
+                className={`hidden lg:inline-block text-xs md:text-sm font-black tracking-wider truncate max-w-[140px] xl:max-w-[200px] uppercase transition-colors cursor-pointer ${
                   isDarkMode
                     ? 'text-white group-hover:text-slate-200'
                     : 'text-[#2b2725] group-hover:text-[#F06543]'
                 }`}
               >
                 {displayName}
-              </span>
+              </button>
 
               {/* Cyan/Sky Blue Circle Avatar with Overlaid Chevron Badge */}
               <div className="relative shrink-0">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] p-0.5 shadow-md flex items-center justify-center overflow-hidden border border-white/40">
+                <button
+                  onClick={() => {
+                    setIsProfileMenuOpen(false);
+                    if (onSelectView) {
+                      onSelectView('profile');
+                    } else {
+                      window.dispatchEvent(new CustomEvent('catalogue:navigate-view', { detail: 'profile' }));
+                    }
+                  }}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] p-0.5 shadow-md flex items-center justify-center overflow-hidden border border-white/40 cursor-pointer hover:scale-105 transition-transform"
+                  title="View Profile"
+                >
                   {googleUser?.picture ? (
                     <img
                       src={googleUser.picture}
@@ -369,20 +385,28 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                       />
                     </svg>
                   )}
-                </div>
+                </button>
 
-                {/* Overlaid Dark Round Badge with Chevron Down Icon (Exact Reference) */}
-                <div
-                  className={`absolute -bottom-1 -right-1 w-4.5 h-4.5 rounded-full flex items-center justify-center border shadow-xs transition-transform duration-200 ${
+                {/* Overlaid Dark Round Badge with Chevron Down Icon (Toggles Menu) */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsProfileMenuOpen(!isProfileMenuOpen);
+                    setIsMailOpen(false);
+                    setIsBellOpen(false);
+                    setIsCalendarOpen(false);
+                  }}
+                  className={`absolute -bottom-1 -right-1 w-4.5 h-4.5 rounded-full flex items-center justify-center border shadow-xs transition-transform duration-200 cursor-pointer ${
                     isProfileMenuOpen ? 'rotate-180' : ''
                   } ${
                     isDarkMode
-                      ? 'bg-[#161a26] border-[#2b3145] text-slate-300'
-                      : 'bg-white border-slate-300 text-slate-700'
+                      ? 'bg-[#161a26] border-[#2b3145] text-slate-300 hover:text-white'
+                      : 'bg-white border-slate-300 text-slate-700 hover:text-slate-900'
                   }`}
+                  title="Account Menu"
                 >
                   <ChevronDown className="w-3 h-3 stroke-[2.5]" />
-                </div>
+                </button>
               </div>
             </div>
 
@@ -395,6 +419,31 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                     : 'bg-white border-[#e2d9cd] text-slate-800'
                 }`}
               >
+                {/* 0. My Profile & Awards */}
+                <button
+                  onClick={() => {
+                    setIsProfileMenuOpen(false);
+                    if (onSelectView) {
+                      onSelectView('profile');
+                    } else {
+                      window.dispatchEvent(new CustomEvent('catalogue:navigate-view', { detail: 'profile' }));
+                    }
+                  }}
+                  className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer text-[#F06543] ${
+                    isDarkMode ? 'hover:bg-[#1a2032]' : 'hover:bg-[#f6f1e8]'
+                  }`}
+                >
+                  <span className="font-extrabold flex items-center gap-2">
+                    <User className="w-4 h-4 text-[#F06543]" />
+                    <span>My Profile & Friends</span>
+                  </span>
+                  <span className="text-[10px] font-black bg-[#F06543]/15 text-[#F06543] px-2 py-0.5 rounded-full">
+                    CLASE
+                  </span>
+                </button>
+
+                <div className={`my-1 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`} />
+
                 {/* 1. Toggle Dark Mode */}
                 <button
                   onClick={() => {

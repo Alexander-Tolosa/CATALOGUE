@@ -1,6 +1,6 @@
 export type LanguageTrack = 'ko' | 'ja' | 'en';
 
-export type AppView = 'dashboard' | 'learn' | 'letters' | 'translator' | 'scanner' | 'kleo' | 'chatbot' | 'gamify' | 'review' | 'settings';
+export type AppView = 'dashboard' | 'learn' | 'letters' | 'translator' | 'scanner' | 'kleo' | 'chatbot' | 'gamify' | 'review' | 'settings' | 'profile';
 
 export type UserLifecycleState = 'new' | 'returning' | 'lapsed';
 
@@ -105,6 +105,95 @@ export interface StruggledWordItem {
   timestamp: string;
 }
 
+export type FriendStatus = 'online' | 'offline' | 'in_lesson' | 'studying';
+
+export interface FriendUser {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  avatarColor?: string;
+  avatarInitials?: string;
+  department: string;
+  program: string;
+  status: FriendStatus;
+  statusMessage?: string;
+  targetLanguage: LanguageTrack;
+  level: number;
+  streakDays: number;
+  mutualFriendsCount?: number;
+  isOnline: boolean;
+  lastActive?: string;
+  bio?: string;
+  interests?: string[];
+}
+
+export interface FriendRequest {
+  id: string;
+  fromUser: FriendUser;
+  timestamp: string;
+  message?: string;
+  status: 'pending' | 'accepted' | 'declined';
+}
+
+export interface FriendChatMessage {
+  id: string;
+  senderId: string; // 'current_user' or friend.id
+  text: string;
+  timestamp: string;
+  isAudioSnippet?: boolean;
+}
+
+export interface CertificateAward {
+  id: string;
+  title: string;
+  course: string;
+  awardedDate: string;
+  issuer: string;
+  grade?: string;
+  certificateNumber: string;
+  skillsCovered: string[];
+}
+
+export interface BadgeAward {
+  id: string;
+  title: string;
+  course: string;
+  awardedDate: string;
+  iconType: 'badge' | 'star' | 'trophy' | 'medal';
+  iconColor: string;
+  description: string;
+}
+
+export interface UserPersonalInfo {
+  fullName: string;
+  studentId: string;
+  department: string;
+  program: string;
+  yearLevel: string;
+  email: string;
+  phone: string;
+  dateOfBirth: string;
+  address: string;
+  emergencyContact: {
+    name: string;
+    relationship: string;
+    phone: string;
+  };
+  bio: string;
+  joinedDate: string;
+  lastActivity: string;
+}
+
+export interface ActiveSession {
+  id: string;
+  device: string;
+  browser: string;
+  location: string;
+  ipAddress: string;
+  lastActive: string;
+  isCurrent: boolean;
+}
+
 export type UserProfile = {
   name: string;
   lifecycleState: UserLifecycleState;
@@ -127,5 +216,6 @@ export type UserProfile = {
   };
   savedPhrases: ReviewItem[];
   struggledVocab?: StruggledWordItem[];
+  personalInfo?: UserPersonalInfo;
 };
 

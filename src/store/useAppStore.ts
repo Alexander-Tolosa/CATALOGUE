@@ -13,7 +13,7 @@ export const COSMETIC_ITEMS: CosmeticItem[] = [
 ];
 
 const DEFAULT_PROFILE: UserProfile = {
-  name: 'Learner',
+  name: 'ALEXANDER MICHAEL TOLOSA',
   lifecycleState: 'returning',
   selectedLanguage: 'ko',
   dailyGoalMinutes: 10,
@@ -60,7 +60,26 @@ const DEFAULT_PROFILE: UserProfile = {
   struggledVocab: [
     { word: '존댓말 (Honorifics)', language: 'ko', context: 'Used casual banmal with elder in chat', timestamp: new Date().toISOString() },
     { word: 'です / ます (Polite Form)', language: 'ja', context: 'Omitted polite verb ending in roleplay', timestamp: new Date().toISOString() }
-  ]
+  ],
+  personalInfo: {
+    fullName: 'ALEXANDER MICHAEL TOLOSA',
+    studentId: '2020-09482',
+    department: 'College of Liberal Arts, Sciences and Education (CLASE)',
+    program: 'Information Technology (CLASE)',
+    yearLevel: 'BSIT 2nd Year (Section 2C)',
+    email: 'alexander.tolosa@clase.edu.ph',
+    phone: '+63 912 345 6789',
+    dateOfBirth: 'March 15, 2002',
+    address: 'Iloilo City, Philippines',
+    emergencyContact: {
+      name: 'Maria Teresa Tolosa',
+      relationship: 'Mother / Guardian',
+      phone: '+63 918 765 4321'
+    },
+    bio: 'There is currently no information about this member.',
+    joinedDate: 'Sep 4, 2020',
+    lastActivity: '3 hours ago'
+  }
 };
 
 interface AppStoreState {
@@ -80,6 +99,7 @@ interface AppStoreState {
   clearStruggledWords: () => void;
   equipCosmetic: (category: 'hat' | 'scarf' | 'glasses' | 'skin', cosmeticId?: string) => void;
   getActiveNodes: () => typeof KOREAN_NODES;
+  updatePersonalInfo: (info: Partial<UserProfile['personalInfo']> & { name?: string }) => void;
 }
 
 export const useAppStore = create<AppStoreState>((set, get) => ({
@@ -234,6 +254,23 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
       case 'ko':
       default: return KOREAN_NODES;
     }
+  },
+
+  updatePersonalInfo: (info) => {
+    set((state) => {
+      const currentPersonalInfo = state.profile.personalInfo || DEFAULT_PROFILE.personalInfo!;
+      const updatedPersonalInfo = {
+        ...currentPersonalInfo,
+        ...info
+      };
+      const updatedProfile: UserProfile = {
+        ...state.profile,
+        name: info.name || info.fullName || state.profile.name,
+        personalInfo: updatedPersonalInfo
+      };
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updatedProfile));
+      return { profile: updatedProfile };
+    });
   }
 }));
 

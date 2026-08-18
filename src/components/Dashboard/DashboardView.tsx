@@ -5,6 +5,7 @@ import { useKleoStore } from '../../store/useKleoStore';
 import { useAppStore } from '../../store/useAppStore';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { DashboardLoader } from './DashboardLoader';
+import { OverviewRightSidebar } from './OverviewRightSidebar';
 
 interface DashboardViewProps {
   profile: UserProfile;
@@ -73,12 +74,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 12 : 0 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
-        className={`pt-20 px-4 md:px-8 pb-24 max-w-6xl mx-auto space-y-6 transition-colors duration-200 ${
+        className={`pt-20 px-4 md:px-6 lg:px-8 pb-24 max-w-7xl mx-auto transition-colors duration-200 ${
           isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#FAF6F0] text-[#2B2725]'
         }`}
       >
-        {/* 1. Header Welcome Bar (Personalized Name, Cleaned of Duplicated Stats & Sign Out Button) */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
+          {/* Main Dashboard Left/Center Column */}
+          <div className="flex-1 min-w-0 space-y-6">
+            {/* 1. Header Welcome Bar (Personalized Name, Cleaned of Duplicated Stats & Sign Out Button) */}
+            <div className="flex items-center justify-between">
           <div>
             <h1 className={`font-display text-2xl md:text-3xl font-extrabold tracking-tight ${
               isDarkMode ? 'text-white' : 'text-[#2B2725]'
@@ -369,7 +373,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
         </div>
-      </motion.div>
-    </>
-  );
+      </div>
+
+      {/* Right Sidebar: Calendar, To-do, and Online Friends (Matching Screenshot) */}
+      <OverviewRightSidebar onNavigate={onNavigate} />
+    </div>
+  </motion.div>
+</>
+);
 };

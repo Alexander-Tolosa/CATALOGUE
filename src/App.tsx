@@ -16,6 +16,8 @@ import { KleoChatRoomView } from './components/ChatRoom/KleoChatRoomView';
 import { GamifyHubView } from './components/Gamify/GamifyHubView';
 import { ReviewDeckView } from './components/Review/ReviewDeckView';
 import { SettingsView } from './components/Settings/SettingsView';
+import { ProfilePageView } from './components/Profile/ProfilePageView';
+import { DirectChatModal } from './components/Profile/DirectChatModal';
 import { GlobalAIChatbox } from './components/Chatbox/GlobalAIChatbox';
 import { InvestorPitchModal } from './components/Investor/InvestorPitchModal';
 import { AuthScreen } from './components/Auth/AuthScreen';
@@ -91,6 +93,7 @@ export const App: React.FC = () => {
           activeView={activeView}
           onSelectLanguage={selectLanguageTrack}
           onOpenPitchModal={() => setIsPitchModalOpen(true)}
+          onSelectView={setActiveView}
         />
 
         {/* Animated View Stage with Framer Motion AnimatePresence */}
@@ -112,6 +115,10 @@ export const App: React.FC = () => {
                   onSelectNode={(node) => setActiveView('learn')}
                   onNavigate={setActiveView}
                 />
+              )}
+
+              {activeView === 'profile' && (
+                <ProfilePageView />
               )}
 
               {activeView === 'learn' && (
@@ -199,6 +206,9 @@ export const App: React.FC = () => {
 
       {/* Persistent Global AI Chatbox */}
       <GlobalAIChatbox currentLanguage={profile.selectedLanguage} />
+
+      {/* Global Direct Encrypted Friend Chat Modal */}
+      <DirectChatModal />
 
       {/* Global Ethical Restriction Toast Notification */}
       <EthicalAlertToast />

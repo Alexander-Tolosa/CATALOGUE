@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from './store/useAppStore';
 import { useKleoStore } from './store/useKleoStore';
@@ -40,6 +40,16 @@ export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<AppView>('dashboard');
   const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  useEffect(() => {
+    const handleNav = (e: any) => {
+      if (e.detail) {
+        setActiveView(e.detail);
+      }
+    };
+    window.addEventListener('catalogue:navigate-view', handleNav);
+    return () => window.removeEventListener('catalogue:navigate-view', handleNav);
+  }, []);
 
   // Unauthenticated Gate: Show Duolingo-style Landing Page (with Auth modal overlay)
   if (!isAuthenticated || !token) {

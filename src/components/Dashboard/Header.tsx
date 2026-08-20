@@ -307,31 +307,12 @@ export const TopAppBar: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* 5. User Profile Name & Avatar with Chevron Down (Exact Picture 1 & Picture 3 Reference) */}
+          {/* 5. User Profile Avatar with Chevron Down (Exact Picture 1 & Picture 3 Reference) */}
           <div className="relative" ref={profileMenuRef}>
             <div
               className="flex items-center gap-2.5 group select-none"
               title="My Profile"
             >
-              {/* Bold Uppercase User Name (Click opens Profile) */}
-              <button
-                onClick={() => {
-                  setIsProfileMenuOpen(false);
-                  if (onSelectView) {
-                    onSelectView('profile');
-                  } else {
-                    window.dispatchEvent(new CustomEvent('catalogue:navigate-view', { detail: 'profile' }));
-                  }
-                }}
-                className={`hidden lg:inline-block text-xs md:text-sm font-black tracking-wider truncate max-w-[140px] xl:max-w-[200px] uppercase transition-colors cursor-pointer ${
-                  isDarkMode
-                    ? 'text-white group-hover:text-slate-200'
-                    : 'text-[#2b2725] group-hover:text-[#F06543]'
-                }`}
-              >
-                {displayName}
-              </button>
-
               {/* Cyan/Sky Blue Circle Avatar with Overlaid Chevron Badge */}
               <div className="relative shrink-0">
                 <button

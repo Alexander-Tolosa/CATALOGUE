@@ -79,13 +79,12 @@ export const AIChatbox: React.FC<AIChatboxProps> = ({ currentLanguage }) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 glass-button btn-primary py-2.5 px-4 shadow-2xl rounded-full flex items-center gap-2.5 animate-bounce cursor-pointer"
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-[#FF6B35] to-[#f97316] shadow-2xl border-2 border-white/80 dark:border-slate-800 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
           title="Open AI Language Tutor Chat"
         >
-          <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-white/30">
-            <img src={kleoChatbotLogo} alt="Kleo" className="w-full h-full object-cover" />
+          <div className="w-full h-full rounded-full overflow-hidden">
+            <img src={kleoChatbotLogo} alt="Kleo AI Tutor" className="w-full h-full object-cover" />
           </div>
-          <span className="font-bold text-sm hidden sm:inline">AI Tutor & Grammar Help</span>
         </button>
       )}
 

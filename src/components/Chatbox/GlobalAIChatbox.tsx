@@ -175,23 +175,23 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
       <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50">
         <motion.button
           onClick={() => setIsChatbotOpen(true)}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.94 }}
-          className="relative group flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-[#FF6B35] to-[#f97316] text-white shadow-[0_8px_25px_rgba(255,107,53,0.45)] border border-orange-400/40 cursor-pointer"
+          whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
+          whileTap={{ scale: 0.92 }}
+          className="relative group w-14 h-14 md:w-16 md:h-16 rounded-full p-0.5 bg-gradient-to-tr from-[#FF6B35] to-[#f97316] shadow-[0_8px_25px_rgba(255,107,53,0.45)] hover:shadow-[0_12px_30px_rgba(255,107,53,0.65)] transition-shadow border-2 border-white/80 dark:border-slate-800 cursor-pointer flex items-center justify-center"
           title="Chat with Kleo AI"
         >
-          {/* Animated Mascot Badge - Siamese Cat Head Circle */}
-          <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-white/30 shadow-xs">
-            <img src={kleoChatbotLogo} alt="Kleo AI" className="w-full h-full object-cover" />
-          </div>
-          <div className="hidden sm:flex flex-col text-left">
-            <span className="text-xs font-black tracking-tight leading-none">Kleo AI Chat</span>
-            <span className="text-[10px] text-orange-100 font-medium">Click to talk</span>
+          {/* Circular Siamese Cat Head Only */}
+          <div className="w-full h-full rounded-full overflow-hidden">
+            <img
+              src={kleoChatbotLogo}
+              alt="Kleo AI Chat"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            />
           </div>
 
           {/* Active Status Pulse Indicator */}
-          <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-950 rounded-full animate-ping" />
-          <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-950 rounded-full" />
+          <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-950 rounded-full animate-ping pointer-events-none" />
+          <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-950 rounded-full pointer-events-none" />
         </motion.button>
       </div>
     );

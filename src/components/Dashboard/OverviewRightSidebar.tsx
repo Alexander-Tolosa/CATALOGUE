@@ -4,10 +4,6 @@ import {
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
-  CheckCircle2,
-  Plus,
-  Lightbulb,
-  FileText,
   Radio,
   X,
   MessageSquare,
@@ -32,26 +28,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
   const [isCalendarHidden, setIsCalendarHidden] = useState(false);
   const [isOnlineHidden, setIsOnlineHidden] = useState(false);
   const [isFullCalendarOpen, setIsFullCalendarOpen] = useState(false);
-  const [isAddTodoOpen, setIsAddTodoOpen] = useState(false);
-  const [newTodoText, setNewTodoText] = useState('');
 
-  // To-do list items (matching picture 1)
-  const [todos, setTodos] = useState([
-    {
-      id: 'todo-1',
-      icon: 'bulb',
-      text: 'Set profile description',
-      action: 'profile' as const,
-      isCompleted: false
-    },
-    {
-      id: 'todo-2',
-      icon: 'file',
-      text: '6 assignments due',
-      action: 'profile' as const,
-      isCompleted: false
-    }
-  ]);
 
   const monthNames = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -119,23 +96,6 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
 
   // Online friends filter
   const onlineFriends = friends.filter((f) => f.isOnline);
-
-  const handleAddTodo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTodoText.trim()) return;
-    setTodos([
-      ...todos,
-      {
-        id: `todo-${Date.now()}`,
-        icon: 'file',
-        text: newTodoText.trim(),
-        action: 'profile',
-        isCompleted: false
-      }
-    ]);
-    setNewTodoText('');
-    setIsAddTodoOpen(false);
-  };
 
   return (
     <aside className="w-72 xl:w-80 space-y-4 shrink-0 hidden lg:block select-none">
@@ -236,50 +196,6 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
           <span className="text-sky-400 text-[11px]">show</span>
         </button>
       )}
-
-      {/* ========================================================
-          CARD 2: To-do (Matching Picture 1)
-         ======================================================== */}
-      <div
-        className={`p-5 rounded-3xl border shadow-xl space-y-3.5 transition-colors ${
-          isDarkMode ? 'bg-[#101422] border-[#1d2338]' : 'bg-white border-slate-200'
-        }`}
-      >
-        {/* Header with Red Check Circle Icon and Plus Button */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[#e11d48] font-black text-sm">
-            <CheckCircle2 size={16} className="stroke-[2.5]" />
-            <span className="text-xs font-black tracking-wide">To-do</span>
-          </div>
-          <button
-            onClick={() => setIsAddTodoOpen(true)}
-            className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
-            title="Add Task"
-          >
-            <Plus size={16} />
-          </button>
-        </div>
-
-        {/* To-do List Items */}
-        <div className="space-y-2.5 pt-1 text-xs">
-          {todos.map((todo) => (
-            <div
-              key={todo.id}
-              onClick={() => onNavigate(todo.action)}
-              className="flex items-center gap-2.5 cursor-pointer group hover:translate-x-0.5 transition-transform"
-            >
-              {todo.icon === 'bulb' ? (
-                <Lightbulb size={14} className="text-slate-400 group-hover:text-amber-400 shrink-0" />
-              ) : (
-                <FileText size={14} className="text-slate-400 group-hover:text-sky-400 shrink-0" />
-              )}
-              <span className="text-sky-400 group-hover:underline font-medium text-xs truncate">
-                {todo.text}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ========================================================
           CARD 3: Online (Online Friends - Matching Picture 1)
@@ -460,58 +376,6 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
                   Close
                 </button>
               </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Add To-do Modal */}
-      <AnimatePresence>
-        {isAddTodoOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className={`w-full max-w-sm rounded-3xl border shadow-2xl p-5 space-y-4 ${
-                isDarkMode ? 'bg-[#101422] border-[#1d2338] text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            >
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-[#e11d48]" /> Add New Task
-                </h3>
-                <button onClick={() => setIsAddTodoOpen(false)} className="text-slate-400 hover:text-white">
-                  <X size={16} />
-                </button>
-              </div>
-
-              <form onSubmit={handleAddTodo} className="space-y-3">
-                <input
-                  type="text"
-                  value={newTodoText}
-                  onChange={(e) => setNewTodoText(e.target.value)}
-                  placeholder="e.g. Review Japanese Kanji Lesson 3..."
-                  required
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs outline-none focus:ring-2 focus:ring-[#e11d48]"
-                />
-
-                <div className="flex items-center justify-end gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddTodoOpen(false)}
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-1.5 rounded-xl bg-[#e11d48] text-white text-xs font-black"
-                  >
-                    Add Task
-                  </button>
-                </div>
-              </form>
             </motion.div>
           </div>
         )}

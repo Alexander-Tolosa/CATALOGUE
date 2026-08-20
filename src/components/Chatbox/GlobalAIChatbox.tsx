@@ -21,6 +21,7 @@ import { useKleoStore } from '../../store/useKleoStore';
 import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 import { processAIChatMessage } from '../../lib/aiService';
 import { ChatScenario } from '../../types';
+import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 
 interface GlobalAIChatboxProps {
   currentLanguage: string;
@@ -179,10 +180,10 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
           className="relative group flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-[#FF6B35] to-[#f97316] text-white shadow-[0_8px_25px_rgba(255,107,53,0.45)] border border-orange-400/40 cursor-pointer"
           title="Chat with Kleo AI"
         >
-          {/* Animated Mascot Badge */}
-          <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-lg animate-bounce">
-            🐾
-          </span>
+          {/* Animated Mascot Badge - Siamese Cat Head Circle */}
+          <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-white/30 shadow-xs">
+            <img src={kleoChatbotLogo} alt="Kleo AI" className="w-full h-full object-cover" />
+          </div>
           <div className="hidden sm:flex flex-col text-left">
             <span className="text-xs font-black tracking-tight leading-none">Kleo AI Chat</span>
             <span className="text-[10px] text-orange-100 font-medium">Click to talk</span>
@@ -213,8 +214,8 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
         {/* Header Bar */}
         <div className="p-3.5 sm:p-4 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#FF6B35]/20 border border-[#FF6B35]/40 flex items-center justify-center text-xl text-[#FF6B35] shadow-inner">
-              🐾
+            <div className="w-10 h-10 rounded-full border border-[#FF6B35]/40 overflow-hidden shadow-inner shrink-0 bg-[#FF6B35]/10 flex items-center justify-center">
+              <img src={kleoChatbotLogo} alt="Kleo AI Tutor" className="w-full h-full object-cover" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -267,8 +268,9 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
               >
                 {m.sender === 'ai' && (
                   <div className="flex items-center justify-between border-b border-slate-800/60 pb-1.5 mb-2 text-[10px] text-slate-400">
-                    <span className="font-bold text-[#FF6B35] flex items-center gap-1">
-                      🐾 Kleo AI
+                    <span className="font-bold text-[#FF6B35] flex items-center gap-1.5">
+                      <img src={kleoChatbotLogo} alt="Kleo" className="w-4 h-4 rounded-full object-cover inline-block" />
+                      Kleo AI
                     </span>
                     <div className="flex items-center gap-1">
                       <button

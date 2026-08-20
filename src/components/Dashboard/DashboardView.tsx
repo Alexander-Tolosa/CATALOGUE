@@ -6,6 +6,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { DashboardLoader } from './DashboardLoader';
 import { OverviewRightSidebar } from './OverviewRightSidebar';
+import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 
 interface DashboardViewProps {
   profile: UserProfile;
@@ -279,8 +280,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 : 'bg-white border-[#EDE5DA] hover:border-[#E2D9CE] hover:bg-[#FAF6F1]'
             }`}
           >
-            <div className="w-12 h-12 rounded-2xl bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700 flex items-center justify-center text-[#F06543] shrink-0 group-hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined text-xl">chat_bubble</span>
+            <div className="w-12 h-12 rounded-full border-2 border-[#FDE3D5] dark:border-slate-700 overflow-hidden shrink-0 group-hover:scale-110 transition-transform shadow-xs">
+              <img src={kleoChatbotLogo} alt="Chat with Kleo" className="w-full h-full object-cover" />
             </div>
             <div className="space-y-0.5 min-w-0">
               <h4 className={`font-display text-sm font-bold truncate group-hover:text-[#F06543] transition-colors ${
@@ -375,7 +376,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </div>
 
-      {/* Right Sidebar: Calendar, To-do, and Online Friends (Matching Screenshot) */}
+      {/* Right Sidebar: Calendar and Online Friends */}
       <OverviewRightSidebar onNavigate={onNavigate} />
     </div>
   </motion.div>

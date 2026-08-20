@@ -4,6 +4,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { FlagIcon } from '../Common/FlagIcon';
 import { Sparkles, Globe, Zap, Bot, ShieldCheck, Heart, Award, ArrowRight, ChevronDown } from 'lucide-react';
 import catalogueLogo from '../../assets/catalogue_logo.png';
+import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 import catVideo from '../../assets/Cat.mp4';
 import studyVideo from '../../assets/Study.mp4';
 
@@ -401,8 +402,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
 
               {/* 3. AI Chatbot */}
               <div className="p-4 rounded-2xl bg-[#eef2f7] shadow-[6px_6px_14px_rgba(163,177,198,0.4),-6px_-6px_14px_rgba(255,255,255,0.9)] flex items-center gap-4 border border-white/60 transition-all hover:scale-[1.02]">
-                <div className="w-12 h-12 rounded-2xl bg-[#f3e8ff]/80 text-purple-500 flex items-center justify-center shrink-0 shadow-inner">
-                  <Bot size={22} className="text-purple-500 stroke-[2.2]" />
+                <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-xs border border-white">
+                  <img src={kleoChatbotLogo} alt="AI Chatbot" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <span className="font-extrabold text-xs text-slate-800 block">{t.chatbotTitle}</span>

@@ -8,6 +8,7 @@ import { LogoutModal } from './LogoutModal';
 import { GoogleAuthModal } from '../Auth/GoogleAuthModal';
 import { Badge } from '../ui/badge';
 import catalogueLogo from '../../assets/catalogue_logo.png';
+import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 
 interface SidebarNavProps {
   activeView: AppView;
@@ -264,10 +265,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-[#f97316]/50'
             }`}
           >
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-              activeView === 'kleo' ? 'bg-white/20 text-white' : 'bg-[#f97316] text-white shadow-xs'
-            }`}>
-              <span className="material-symbols-outlined text-base">auto_awesome</span>
+            <div className="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-white/30 shadow-xs">
+              <img src={kleoChatbotLogo} alt="Kleo Companion" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col min-w-0">
               <span className={`text-xs font-bold leading-tight ${
@@ -403,7 +402,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                   }}
                   className="w-full p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs flex items-center gap-2 shadow-md"
                 >
-                  <span className="material-symbols-outlined text-base">auto_awesome</span>
+                  <div className="w-5 h-5 rounded-full overflow-hidden shrink-0 border border-white/30">
+                    <img src={kleoChatbotLogo} alt="Kleo" className="w-full h-full object-cover" />
+                  </div>
                   <span>Kleo Companion Hub</span>
                 </button>
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MessageSquare, X, Send, Sparkles, Bot, User, HelpCircle, BookOpen } from 'lucide-react';
 import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
+import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 
 interface AIChatboxProps {
   currentLanguage: string;
@@ -78,10 +79,12 @@ export const AIChatbox: React.FC<AIChatboxProps> = ({ currentLanguage }) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 glass-button btn-primary py-3 px-4 shadow-2xl rounded-full flex items-center gap-2 animate-bounce"
+          className="fixed bottom-6 right-6 z-50 glass-button btn-primary py-2.5 px-4 shadow-2xl rounded-full flex items-center gap-2.5 animate-bounce cursor-pointer"
           title="Open AI Language Tutor Chat"
         >
-          <Sparkles size={20} className="text-amber-300" />
+          <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-white/30">
+            <img src={kleoChatbotLogo} alt="Kleo" className="w-full h-full object-cover" />
+          </div>
           <span className="font-bold text-sm hidden sm:inline">AI Tutor & Grammar Help</span>
         </button>
       )}
@@ -91,13 +94,13 @@ export const AIChatbox: React.FC<AIChatboxProps> = ({ currentLanguage }) => {
         <div className="fixed bottom-6 right-6 z-50 w-full max-w-sm sm:max-w-md h-[520px] glass-panel border border-sky-500/40 shadow-2xl flex flex-col overflow-hidden animate-fadeIn">
           {/* Header */}
           <div className="p-4 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-sky-950 border border-sky-800 text-sky-400">
-                <Bot size={20} />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 border border-sky-500/50 shadow-md">
+                <img src={kleoChatbotLogo} alt="Kleo AI" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h3 className="font-brand font-bold text-slate-100 text-sm flex items-center gap-1">
-                  AI Language Coach <span>🐾</span>
+                  AI Language Coach
                 </h3>
                 <span className="text-xs text-emerald-400 font-medium">● Context-aware online</span>
               </div>
@@ -135,8 +138,8 @@ export const AIChatbox: React.FC<AIChatboxProps> = ({ currentLanguage }) => {
                 className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.sender === 'ai' && (
-                  <div className="w-7 h-7 rounded-full bg-sky-900 border border-sky-700 flex items-center justify-center text-sky-300 text-xs shrink-0 mt-1">
-                    🐾
+                  <div className="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-sky-700/80 mt-1 shadow-2xs">
+                    <img src={kleoChatbotLogo} alt="Kleo" className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div

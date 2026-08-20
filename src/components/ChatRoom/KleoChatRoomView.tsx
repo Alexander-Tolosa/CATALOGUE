@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { useKleoStore } from '../../store/useKleoStore';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
+import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
 import { processAIChatMessage } from '../../lib/aiService';
 import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
@@ -352,8 +353,8 @@ export const KleoChatRoomView: React.FC = () => {
       }`}>
         {/* Left: Avatar with subtle green online status dot & Tutor details */}
         <div className="flex items-center gap-3">
-          <div className="relative w-9 h-9 rounded-full bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700/60 flex items-center justify-center p-0.5 shadow-2xs">
-            <KleoAvatar mood={mood} equippedCosmetics={equippedCosmetics} size={32} />
+          <div className="relative w-9 h-9 rounded-full bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700/60 overflow-hidden shrink-0 shadow-2xs">
+            <img src={kleoChatbotLogo} alt="Kleo AI Tutor" className="w-full h-full object-cover" />
             <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-emerald-500/20" title="Online" />
           </div>
 
@@ -427,8 +428,8 @@ export const KleoChatRoomView: React.FC = () => {
         <div className="max-w-3xl mx-auto w-full space-y-6">
           {messages.length === 0 ? (
             <div className="py-16 flex flex-col items-center justify-center text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700 flex items-center justify-center p-2 shadow-xs">
-                <KleoAvatar mood="happy" equippedCosmetics={equippedCosmetics} size={54} />
+              <div className="w-16 h-16 rounded-full bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700 overflow-hidden shrink-0 shadow-xs">
+                <img src={kleoChatbotLogo} alt="Kleo AI Tutor" className="w-full h-full object-cover" />
               </div>
               <h3 className={`font-display text-xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
                 Start Roleplaying with Kleo! 🐾
@@ -464,8 +465,8 @@ export const KleoChatRoomView: React.FC = () => {
                 ) : (
                   /* 2. Borderless AI Message Block (Natural human flow, avatar anchor, no heavy rectangular card border) */
                   <div className="flex gap-3.5 my-4 max-w-[85%] sm:max-w-[80%]">
-                    <div className="w-8 h-8 rounded-full bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700 flex items-center justify-center p-0.5 shrink-0 shadow-2xs mt-0.5">
-                      <KleoAvatar mood={mood} equippedCosmetics={equippedCosmetics} size={28} />
+                    <div className="w-8 h-8 rounded-full bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700 overflow-hidden shrink-0 shadow-2xs mt-0.5">
+                      <img src={kleoChatbotLogo} alt="Kleo AI" className="w-full h-full object-cover" />
                     </div>
 
                     <div className="space-y-2 text-slate-800 dark:text-slate-200 text-sm leading-relaxed font-sans flex-1">

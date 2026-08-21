@@ -28,6 +28,7 @@ export const App: React.FC = () => {
   const { isAuthenticated, token } = useAuthStore();
   const {
     isDarkMode,
+    isSidebarExpanded,
     profile,
     selectLanguageTrack,
     deductHeart,
@@ -42,6 +43,13 @@ export const App: React.FC = () => {
   const [activeView, setActiveView] = useState<AppView>('dashboard');
   const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const handleNav = (e: any) => {
@@ -84,9 +92,21 @@ export const App: React.FC = () => {
         reviewItemsDueCount={profile.savedPhrases.length}
       />
 
-      {/* 2. Main Canvas & TopAppBar */}
-      <main className={`md:ml-20 min-h-screen relative transition-colors duration-300 ${isDarkMode ? 'bg-[#0b0f17]' : 'bg-[#FAF6F0]'
-        }`}>
+      {/* 2. Main Canvas & TopAppBar (Fluidly connects and shifts with sidebar expansion) */}
+      <motion.main
+        initial={false}
+        animate={{
+          marginLeft: isDesktop ? (isSidebarExpanded ? 260 : 76) : 0
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 28,
+          mass: 0.85
+        }}
+        className={`min-h-screen relative transition-colors duration-300 ${isDarkMode ? 'bg-[#0b0f17]' : 'bg-[#FAF6F0]'
+        }`}
+      >
         {/* Top Header */}
         <TopAppBar
           profile={profile}
@@ -196,7 +216,7 @@ export const App: React.FC = () => {
             </motion.div>
           </AnimatePresence>
         </div>
-      </main>
+      </motion.main>
 
       {/* Investor Pitch Modal */}
       <InvestorPitchModal

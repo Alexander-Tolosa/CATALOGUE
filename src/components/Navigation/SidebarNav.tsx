@@ -125,7 +125,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   onSelectView,
   reviewItemsDueCount
 }) => {
-  const { isDarkMode } = useAppStore();
+  const { isDarkMode, setSidebarExpanded } = useAppStore();
   const { googleUser, isAuthenticated, logout } = useAuthStore();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
@@ -151,13 +151,18 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   const isExpanded = isHovered;
 
   useEffect(() => {
+    setSidebarExpanded(isExpanded);
+  }, [isExpanded, setSidebarExpanded]);
+
+  useEffect(() => {
     const handleToggle = () => setIsMobileDrawerOpen(prev => !prev);
     window.addEventListener('catalogue:toggle-mobile-drawer', handleToggle);
     return () => {
       window.removeEventListener('catalogue:toggle-mobile-drawer', handleToggle);
       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      setSidebarExpanded(false);
     };
-  }, []);
+  }, [setSidebarExpanded]);
 
   const handleConfirmLogout = () => {
     logout();

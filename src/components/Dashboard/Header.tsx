@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { UserProfile, LanguageTrack, AppView } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -37,8 +38,16 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   onOpenPitchModal,
   onSelectView
 }) => {
-  const { isDarkMode, toggleThemeMode } = useAppStore();
+  const { isDarkMode, toggleThemeMode, isSidebarExpanded } = useAppStore();
   const { googleUser, logout } = useAuthStore();
+
+  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Dropdown states
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -97,8 +106,18 @@ export const TopAppBar: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header
-        className={`fixed top-0 right-0 left-0 md:left-20 h-16 backdrop-blur-md border-b flex items-center justify-between px-3 sm:px-5 md:px-6 z-40 transition-colors duration-200 select-none ${
+      <motion.header
+        initial={false}
+        animate={{
+          left: isDesktop ? (isSidebarExpanded ? 260 : 76) : 0
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 28,
+          mass: 0.85
+        }}
+        className={`fixed top-0 right-0 h-16 backdrop-blur-md border-b flex items-center justify-between px-3 sm:px-5 md:px-6 z-40 transition-colors duration-200 select-none ${
           isDarkMode
             ? 'bg-[#0e1322]/95 border-[#1d2538] text-white'
             : 'bg-[#ffffff]/95 border-[#e8dfd3] text-[#2b2725] shadow-xs'
@@ -570,7 +589,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
             )}
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Interactive Help Modal */}
       {isHelpModalOpen && (

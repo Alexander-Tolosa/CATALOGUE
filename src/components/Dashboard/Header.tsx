@@ -31,6 +31,53 @@ interface HeaderProps {
   onSelectView?: (view: AppView) => void;
 }
 
+const FlagIcon: React.FC<{ country: 'ja' | 'ko' | 'en'; className?: string }> = ({ country, className = "w-4 h-3 rounded-xs shrink-0" }) => {
+  if (country === 'ja') {
+    return (
+      <svg viewBox="0 0 30 20" className={`${className} shadow-2xs border border-white/20 inline-block`} xmlns="http://www.w3.org/2000/svg">
+        <rect width="30" height="20" fill="#FFFFFF" />
+        <circle cx="15" cy="10" r="6" fill="#BC002D" />
+      </svg>
+    );
+  }
+  if (country === 'ko') {
+    return (
+      <svg viewBox="0 0 30 20" className={`${className} shadow-2xs border border-white/20 inline-block`} xmlns="http://www.w3.org/2000/svg">
+        <rect width="30" height="20" fill="#FFFFFF" />
+        <circle cx="15" cy="10" r="5" fill="#C60C30" />
+        <path d="M15 5a5 5 0 0 0 0 5 2.5 2.5 0 0 1 0 5 5 5 0 0 0 0-10z" fill="#003478" />
+        <circle cx="15" cy="7.5" r="2.5" fill="#C60C30" />
+        <rect x="3.5" y="3.5" width="4.5" height="1" transform="rotate(33 5.7 4)" fill="#000000" />
+        <rect x="4" y="5" width="4.5" height="1" transform="rotate(33 6.2 5.5)" fill="#000000" />
+        <rect x="22" y="14" width="4.5" height="1" transform="rotate(33 24.2 14.5)" fill="#000000" />
+        <rect x="22.5" y="15.5" width="4.5" height="1" transform="rotate(33 24.7 16)" fill="#000000" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 30 20" className={`${className} shadow-2xs border border-white/20 inline-block`} xmlns="http://www.w3.org/2000/svg">
+      <rect width="30" height="20" fill="#B22234" />
+      <rect y="1.54" width="30" height="1.54" fill="#FFFFFF" />
+      <rect y="4.62" width="30" height="1.54" fill="#FFFFFF" />
+      <rect y="7.69" width="30" height="1.54" fill="#FFFFFF" />
+      <rect y="10.77" width="30" height="1.54" fill="#FFFFFF" />
+      <rect y="13.85" width="30" height="1.54" fill="#FFFFFF" />
+      <rect y="16.92" width="30" height="1.54" fill="#FFFFFF" />
+      <rect width="12" height="10.77" fill="#3C3B6E" />
+      <circle cx="2.5" cy="2" r="0.7" fill="#FFFFFF" />
+      <circle cx="6" cy="2" r="0.7" fill="#FFFFFF" />
+      <circle cx="9.5" cy="2" r="0.7" fill="#FFFFFF" />
+      <circle cx="4.25" cy="4" r="0.7" fill="#FFFFFF" />
+      <circle cx="7.75" cy="4" r="0.7" fill="#FFFFFF" />
+      <circle cx="2.5" cy="6" r="0.7" fill="#FFFFFF" />
+      <circle cx="6" cy="6" r="0.7" fill="#FFFFFF" />
+      <circle cx="9.5" cy="6" r="0.7" fill="#FFFFFF" />
+      <circle cx="4.25" cy="8" r="0.7" fill="#FFFFFF" />
+      <circle cx="7.75" cy="8" r="0.7" fill="#FFFFFF" />
+    </svg>
+  );
+};
+
 export const TopAppBar: React.FC<HeaderProps> = ({
   profile,
   activeView,
@@ -92,10 +139,10 @@ export const TopAppBar: React.FC<HeaderProps> = ({
 
   const currentLanguageLabel =
     profile.selectedLanguage === 'ko'
-      ? 'Korean (KR)'
+      ? '🇰🇷 Korean'
       : profile.selectedLanguage === 'ja'
-      ? 'Japanese (JP)'
-      : 'English (US)';
+      ? '🇯🇵 Japanese'
+      : '🇺🇸 English';
 
   const handlePrint = () => {
     setIsProfileMenuOpen(false);
@@ -492,7 +539,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   <Printer className="w-4 h-4 text-slate-400" />
                 </button>
 
-                {/* 4. English (US) / Active Language Track */}
+                {/* 4. Active Language Track & Switcher */}
                 <div className="relative">
                   <button
                     onClick={() => setIsLangSubmenuOpen(!isLangSubmenuOpen)}
@@ -502,7 +549,16 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                         : 'hover:bg-[#f6f1e8] text-slate-800'
                     }`}
                   >
-                    <span>{currentLanguageLabel}</span>
+                    <span className="flex items-center gap-2">
+                      <FlagIcon country={profile.selectedLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
+                      <span>
+                        {profile.selectedLanguage === 'ko'
+                          ? 'Korean'
+                          : profile.selectedLanguage === 'ja'
+                          ? 'Japanese'
+                          : 'English'}
+                      </span>
+                    </span>
                     <Globe className="w-4 h-4 text-[#F06543]" />
                   </button>
 
@@ -527,7 +583,10 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                             : 'text-slate-300 hover:bg-slate-700/40'
                         }`}
                       >
-                        <span>🇺🇸 English (US)</span>
+                        <span className="flex items-center gap-2">
+                          <FlagIcon country="en" className="w-4 h-3 rounded-2xs" />
+                          <span>English</span>
+                        </span>
                         {profile.selectedLanguage === 'en' && (
                           <CheckCircle2 className="w-3 h-3 text-white" />
                         )}
@@ -545,7 +604,10 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                             : 'text-slate-300 hover:bg-slate-700/40'
                         }`}
                       >
-                        <span>🇰🇷 Korean (한국어)</span>
+                        <span className="flex items-center gap-2">
+                          <FlagIcon country="ko" className="w-4 h-3 rounded-2xs" />
+                          <span>Korean</span>
+                        </span>
                         {profile.selectedLanguage === 'ko' && (
                           <CheckCircle2 className="w-3 h-3 text-white" />
                         )}
@@ -563,7 +625,10 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                             : 'text-slate-300 hover:bg-slate-700/40'
                         }`}
                       >
-                        <span>🇯🇵 Japanese (日本語)</span>
+                        <span className="flex items-center gap-2">
+                          <FlagIcon country="ja" className="w-4 h-3 rounded-2xs" />
+                          <span>Japanese</span>
+                        </span>
                         {profile.selectedLanguage === 'ja' && (
                           <CheckCircle2 className="w-3 h-3 text-white" />
                         )}
@@ -571,20 +636,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                     </div>
                   )}
                 </div>
-
-                <div className={`my-1 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`} />
-
-                {/* 5. Log out */}
-                <button
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    logout();
-                  }}
-                  className="w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                >
-                  <span>Log out</span>
-                  <LogOut className="w-4 h-4 text-rose-500" />
-                </button>
               </div>
             )}
           </div>

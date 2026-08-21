@@ -13,7 +13,8 @@ import {
   Volume2,
   Copy,
   Check,
-  RotateCcw
+  RotateCcw,
+  Plus
 } from 'lucide-react';
 import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
 import { useAppStore } from '../../store/useAppStore';
@@ -54,8 +55,8 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     {
       id: '1',
       sender: 'ai',
-      text: `Meow~ I'm Kleo, your Siamese cat AI Language Tutor for CATALOGUE! 🐾\nI am ready to practice Japanese, Korean, or English with you. Ask me any grammar rules, vocabulary breakdowns, or translation questions!`,
-      timestamp: 'Just now',
+      text: `I can tell you're ready to master a new language today! Would you like to practice Japanese, Korean, or English grammar with me? 🐾`,
+      timestamp: '10:42 AM',
       scenario: 'free_chat'
     }
   ]);
@@ -101,51 +102,54 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     }
     const textToSend = check.censoredText;
 
-    const userMsgId = 'u-' + Date.now();
     const userMsgObj: Message = {
-      id: userMsgId,
+      id: 'u-' + Date.now(),
       sender: 'user',
       text: textToSend,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
       scenario: selectedScenario
     };
 
     setMessages(prev => [...prev, userMsgObj]);
     if (!userQuery) setInputMsg('');
     setIsSending(true);
-    react('correct');
-
-    // Kleo Topic Guardrail check
-    if (!isAllowedTopic(textToSend)) {
-      setTimeout(() => {
-        const refusalMsg: Message = {
-          id: 'ai-' + Date.now(),
-          sender: 'ai',
-          text: STANDARD_REFUSAL_RESPONSE,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          scenario: selectedScenario
-        };
-        setMessages(prev => [...prev, refusalMsg]);
-        setIsSending(false);
-        react('welcome');
-      }, 500);
-      return;
-    }
 
     try {
+      // Direct Ethical Policy refusal check
+      if (!isAllowedTopic(textToSend)) {
+        setTimeout(() => {
+          const refusalMsg: Message = {
+            id: 'ai-' + Date.now(),
+            sender: 'ai',
+            text: STANDARD_REFUSAL_RESPONSE,
+            timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+            scenario: selectedScenario
+          };
+          setMessages(prev => [...prev, refusalMsg]);
+          setIsSending(false);
+          react('error');
+        }, 500);
+        return;
+      }
+
+      // Call AI Service (Gemini API with fallback)
       const response = await processAIChatMessage({
         message: textToSend,
-        scenario: selectedScenario,
         language: profile.selectedLanguage,
         userLevel: profile.level,
-        struggledVocab: profile.struggledVocab
+        scenario: selectedScenario,
+        struggledVocab: profile.struggledVocab,
+        history: messages.slice(-6).map(m => ({
+          sender: m.sender,
+          text: m.text
+        }))
       });
 
       const aiMsgObj: Message = {
         id: 'ai-' + Date.now(),
         sender: 'ai',
         text: response.reply,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
         scenario: selectedScenario
       };
 
@@ -160,7 +164,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
         text: `Meow~ I'm here! Let's practice ${
           profile.selectedLanguage === 'ko' ? 'Korean' : profile.selectedLanguage === 'ja' ? 'Japanese' : 'English'
         }. You said: "${textToSend}". Practice saying it politely!`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
         scenario: selectedScenario
       };
       setMessages(prev => [...prev, fallbackMsg]);
@@ -205,31 +209,22 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.92, y: 20 }}
         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-        className={`fixed z-[999] border border-[#FF6B35]/40 shadow-2xl flex flex-col overflow-hidden bg-slate-950/95 backdrop-blur-2xl transition-all duration-300 ${
+        className={`fixed z-[999] border border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden bg-[#0e121b]/98 backdrop-blur-2xl transition-all duration-300 ${
           isFullscreen
             ? 'inset-3 sm:inset-6 rounded-3xl'
-            : 'bottom-20 right-2 left-2 sm:left-auto sm:right-6 sm:bottom-6 sm:w-full max-w-sm sm:max-w-md h-[540px] rounded-3xl'
+            : 'bottom-20 right-2 left-2 sm:left-auto sm:right-6 sm:bottom-6 sm:w-full max-w-sm sm:max-w-md h-[560px] rounded-3xl'
         }`}
       >
         {/* Header Bar */}
-        <div className="p-3.5 sm:p-4 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+        <div className="p-3.5 sm:p-4 bg-[#121622]/90 border-b border-slate-800/80 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-[#FF6B35]/40 overflow-hidden shadow-inner shrink-0 bg-[#FF6B35]/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full border border-orange-500/40 overflow-hidden shadow-xs shrink-0 bg-[#FF6B35]/10 flex items-center justify-center ring-1 ring-white/10">
               <img src={kleoChatbotLogo} alt="Kleo AI Tutor" className="w-full h-full object-cover" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-display font-black text-white text-sm sm:text-base tracking-tight flex items-center gap-1.5">
-                  Kleo AI Language Tutor
-                </h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FF6B35]/20 text-[#FF6B35] border border-[#FF6B35]/30 uppercase">
-                  {profile.selectedLanguage.toUpperCase()}
-                </span>
-              </div>
-              <span className="text-[10px] text-emerald-400 font-semibold block flex items-center gap-1 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Active Context: {activeLessonTitle}
-              </span>
+              <h3 className="font-display font-black text-white text-sm sm:text-base tracking-tight">
+                Kleo
+              </h3>
             </div>
           </div>
 
@@ -237,14 +232,14 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer"
               title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen View'}
             >
               {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
             </button>
             <button
               onClick={() => setIsChatbotOpen(false)}
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 transition-colors"
+              className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 transition-colors cursor-pointer"
               title="Close Chatbot"
             >
               <X size={18} />
@@ -253,112 +248,118 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
         </div>
 
         {/* Message Stream Feed */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
+        <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs sm:text-sm no-scrollbar">
+          {/* Centered Timestamp Capsule Pill (Matching Reference Format) */}
+          <div className="flex justify-center my-2">
+            <span className="px-3.5 py-1 rounded-full text-[11px] font-medium text-slate-400 bg-[#161a24]/90 border border-slate-800/80 shadow-xs">
+              Today, 10:42 AM
+            </span>
+          </div>
+
           {messages.map(m => (
-            <div
-              key={m.id}
-              className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[85%] sm:max-w-[78%] p-3.5 rounded-2xl relative ${
-                  m.sender === 'user'
-                    ? 'bg-gradient-to-r from-[#FF6B35] to-[#ff7849] text-white font-medium rounded-tr-none shadow-md'
-                    : 'bg-slate-900/90 border border-slate-800 text-slate-100 rounded-tl-none shadow-sm'
-                }`}
-              >
-                {m.sender === 'ai' && (
-                  <div className="flex items-center justify-between border-b border-slate-800/60 pb-1.5 mb-2 text-[10px] text-slate-400">
-                    <span className="font-bold text-[#FF6B35] flex items-center gap-1.5">
-                      <img src={kleoChatbotLogo} alt="Kleo" className="w-4 h-4 rounded-full object-cover inline-block" />
-                      Kleo AI
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => handleSpeak(m.id, m.text)}
-                        className={`p-1 rounded hover:text-white transition-colors ${
-                          speakingId === m.id ? 'text-[#FF6B35] animate-pulse' : ''
-                        }`}
-                        title="Listen TTS"
-                      >
-                        <Volume2 size={13} />
-                      </button>
-                      <button
-                        onClick={() => handleCopy(m.id, m.text)}
-                        className="p-1 rounded hover:text-white transition-colors"
-                        title="Copy text"
-                      >
-                        {copiedId === m.id ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                      </button>
+            <div key={m.id}>
+              {m.sender === 'ai' ? (
+                /* AI Message with Siamese Head Avatar and Rounded Dark Surface */
+                <div className="flex items-start gap-3 my-2 max-w-[95%] sm:max-w-[90%]">
+                  <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-orange-500/30 bg-[#FF6B35]/10 shadow-xs mt-0.5 ring-1 ring-white/10">
+                    <img src={kleoChatbotLogo} alt="Kleo AI" className="w-full h-full object-cover" />
+                  </div>
+
+                  <div className="flex-1 bg-[#161a23] border border-white/[0.08] text-slate-100 p-4 rounded-2xl sm:rounded-3xl shadow-md space-y-2">
+                    <p className="whitespace-pre-line leading-relaxed font-sans text-xs sm:text-sm text-slate-100 font-normal">
+                      {m.text}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-white/[0.04] text-[10px] text-slate-400">
+                      <span className="font-medium text-slate-400">{m.timestamp}</span>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleSpeak(m.id, m.text)}
+                          className={`p-1 rounded hover:text-white transition-colors cursor-pointer ${
+                            speakingId === m.id ? 'text-[#FF6B35] animate-pulse' : ''
+                          }`}
+                          title="Listen TTS"
+                        >
+                          <Volume2 size={13} />
+                        </button>
+                        <button
+                          onClick={() => handleCopy(m.id, m.text)}
+                          className="p-1 rounded hover:text-white transition-colors cursor-pointer"
+                          title="Copy text"
+                        >
+                          {copiedId === m.id ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                )}
-
-                <p className="whitespace-pre-line leading-relaxed font-sans">{m.text}</p>
-
-                <span className={`text-[9px] mt-1.5 block text-right font-mono ${
-                  m.sender === 'user' ? 'text-orange-100' : 'text-slate-500'
-                }`}>
-                  {m.timestamp}
-                </span>
-              </div>
+                </div>
+              ) : (
+                /* User Message (Right Aligned) */
+                <div className="flex justify-end my-2">
+                  <div className="max-w-[85%] sm:max-w-[78%] bg-gradient-to-r from-[#F06543] to-[#ff7849] text-white p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl rounded-tr-xs shadow-md text-xs sm:text-sm font-sans leading-relaxed">
+                    <p className="whitespace-pre-line">{m.text}</p>
+                    <span className="text-[9px] mt-1 block text-right text-orange-100 font-mono">
+                      {m.timestamp}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
 
           {isSending && (
-            <div className="flex justify-start">
-              <div className="bg-slate-900/90 border border-slate-800 text-slate-400 p-3 rounded-2xl rounded-tl-none flex items-center gap-2 text-xs">
+            <div className="flex items-start gap-3 my-2">
+              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-orange-500/30 bg-[#FF6B35]/10 shadow-xs mt-0.5">
+                <img src={kleoChatbotLogo} alt="Kleo AI" className="w-full h-full object-cover" />
+              </div>
+              <div className="bg-[#161a23] border border-white/[0.08] text-slate-400 p-3.5 rounded-2xl rounded-tl-xs flex items-center gap-2 text-xs">
                 <span className="w-2 h-2 rounded-full bg-[#FF6B35] animate-bounce" />
                 <span className="w-2 h-2 rounded-full bg-[#FF6B35] animate-bounce [animation-delay:0.2s]" />
                 <span className="w-2 h-2 rounded-full bg-[#FF6B35] animate-bounce [animation-delay:0.4s]" />
-                <span className="font-bold text-[#FF6B35]">Kleo is thinking...</span>
+                <span className="font-bold text-[#FF6B35] text-xs">Kleo is thinking...</span>
               </div>
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick Prompts Bar */}
-        <div className="p-2 bg-slate-900/80 border-t border-slate-800 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px]">
-          <button
-            onClick={() => handleSend('Explain formal vs informal speech')}
-            className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 hover:bg-[#FF6B35] hover:text-white shrink-0 transition-colors font-bold cursor-pointer"
+        {/* Message Input Box (Matching Reference Format) */}
+        <div className="p-3 sm:p-4 bg-[#0c101a]/95 border-t border-slate-800/80 backdrop-blur-md">
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              handleSend();
+            }}
+            className="w-full flex items-center gap-2.5 bg-[#141824] border border-slate-800/90 focus-within:border-slate-700/80 rounded-2xl px-3 py-2.5 shadow-inner transition-colors"
           >
-            💡 Honorifics
-          </button>
-          <button
-            onClick={() => handleSend('Give me a quick quiz')}
-            className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 hover:bg-[#FF6B35] hover:text-white shrink-0 transition-colors font-bold cursor-pointer"
-          >
-            🎯 Quiz Me
-          </button>
-          <button
-            onClick={() => handleSend('Translate "Where is the train station?"')}
-            className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 hover:bg-[#FF6B35] hover:text-white shrink-0 transition-colors font-bold cursor-pointer"
-          >
-            🌐 Quick Translate
-          </button>
-        </div>
+            {/* Plus Action Button on the left */}
+            <button
+              type="button"
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer shrink-0"
+              title="Add attachment or action"
+            >
+              <Plus size={18} />
+            </button>
 
-        {/* Message Input Box */}
-        <div className="p-3 bg-slate-950 border-t border-slate-800 flex items-center gap-2">
-          <input
-            type="text"
-            value={inputMsg}
-            onChange={e => setInputMsg(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSend()}
-            placeholder={`Ask Kleo any ${
-              profile.selectedLanguage === 'ko' ? 'Korean' : profile.selectedLanguage === 'ja' ? 'Japanese' : 'English'
-            } question...`}
-            className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FF6B35]"
-          />
-          <button
-            onClick={() => handleSend()}
-            disabled={!inputMsg.trim() || isSending}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#f97316] text-white hover:brightness-110 disabled:opacity-50 disabled:hover:brightness-100 flex items-center justify-center shrink-0 shadow-md cursor-pointer"
-            title="Send Message"
-          >
-            <Send size={16} />
-          </button>
+            {/* Input */}
+            <input
+              type="text"
+              value={inputMsg}
+              onChange={e => setInputMsg(e.target.value)}
+              placeholder="Type your message..."
+              className="flex-1 bg-transparent border-none text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none"
+            />
+
+            {/* Send Button on the right */}
+            <button
+              type="submit"
+              disabled={!inputMsg.trim() || isSending}
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-[#F06543] disabled:opacity-30 disabled:hover:text-slate-400 transition-colors cursor-pointer shrink-0"
+              title="Send message"
+            >
+              <Send size={18} />
+            </button>
+          </form>
         </div>
       </motion.div>
     </AnimatePresence>

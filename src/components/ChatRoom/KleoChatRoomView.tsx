@@ -425,7 +425,14 @@ export const KleoChatRoomView: React.FC = () => {
 
       {/* 2. Conversational Container & Layout Mechanics (Constrained Max-Width max-w-3xl = 768px Centered Canvas) */}
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 no-scrollbar">
-        <div className="max-w-3xl mx-auto w-full space-y-6">
+        <div className="max-w-3xl mx-auto w-full space-y-4">
+          {/* Centered Timestamp Capsule Pill */}
+          <div className="flex justify-center my-2">
+            <span className="px-3.5 py-1 rounded-full text-[11px] font-medium text-slate-400 bg-[#161a24]/90 border border-slate-800/80 shadow-xs">
+              Today, 10:42 AM
+            </span>
+          </div>
+
           {messages.length === 0 ? (
             <div className="py-16 flex flex-col items-center justify-center text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700 overflow-hidden shrink-0 shadow-xs">
@@ -456,30 +463,25 @@ export const KleoChatRoomView: React.FC = () => {
             messages.map((msg) => (
               <div key={msg.id} className="space-y-3">
                 {msg.sender === 'user' ? (
-                  /* 2. User Message Bubble (Right-aligned, max-w-[70%], fit-content width, soft rounded corners) */
-                  <div className="flex justify-end my-3">
-                    <div className="max-w-[70%] bg-gradient-to-r from-[#F06543] to-amber-600 dark:from-[#F06543] dark:to-orange-600 text-white px-4 py-3 rounded-2xl rounded-br-xs shadow-xs text-sm font-sans leading-relaxed">
+                  /* User Message Bubble (Right-aligned, soft rounded corners) */
+                  <div className="flex justify-end my-2">
+                    <div className="max-w-[85%] sm:max-w-[78%] bg-gradient-to-r from-[#F06543] to-amber-600 dark:from-[#F06543] dark:to-orange-600 text-white px-4 py-3 rounded-2xl sm:rounded-3xl rounded-tr-xs shadow-xs text-sm font-sans leading-relaxed">
                       {msg.text}
                     </div>
                   </div>
                 ) : (
-                  /* 2. Borderless AI Message Block (Natural human flow, avatar anchor, no heavy rectangular card border) */
-                  <div className="flex gap-3.5 my-4 max-w-[85%] sm:max-w-[80%]">
-                    <div className="w-8 h-8 rounded-full bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700 overflow-hidden shrink-0 shadow-2xs mt-0.5">
+                  /* AI Message Block with Siamese Head Avatar and Dark Card Bubble */
+                  <div className="flex items-start gap-3 my-2 max-w-[95%] sm:max-w-[90%]">
+                    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-orange-500/30 bg-[#FF6B35]/10 shadow-xs mt-0.5 ring-1 ring-white/10">
                       <img src={kleoChatbotLogo} alt="Kleo AI" className="w-full h-full object-cover" />
                     </div>
 
-                    <div className="space-y-2 text-slate-800 dark:text-slate-200 text-sm leading-relaxed font-sans flex-1">
-                      <div className="flex items-center justify-between gap-3 text-xs">
-                        <span className="font-semibold text-slate-500 dark:text-slate-400">Kleo AI</span>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500">{msg.timestamp}</span>
-                      </div>
-
-                      <div className="whitespace-pre-wrap">
+                    <div className="flex-1 bg-[#161a23] border border-white/[0.08] text-slate-100 p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl shadow-md space-y-2">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed font-sans text-slate-100">
                         {sanitizeAIReply(msg.text)}
                       </div>
 
-                      {/* 2. Subtle Footnote Citation (No technical RAG panels or raw filename clutter) */}
+                      {/* Footnote Citation */}
                       {msg.citedSources && msg.citedSources.length > 0 && (
                         <details className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                           <summary className="cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors font-semibold flex items-center gap-1 select-none text-[11px]">
@@ -499,27 +501,30 @@ export const KleoChatRoomView: React.FC = () => {
                       )}
 
                       {/* Assistant Actions (TTS Speaker & Copy) */}
-                      <div className="flex items-center gap-2 pt-1">
-                        <button
-                          onClick={() => speakText(msg.id, sanitizeAIReply(msg.text))}
-                          className={`p-1 rounded-lg text-slate-400 dark:text-slate-500 hover:text-[#F06543] dark:hover:text-orange-400 opacity-70 hover:opacity-100 transition-all cursor-pointer ${
-                            isSpeakingId === msg.id ? 'text-[#F06543] opacity-100 animate-pulse' : ''
-                          }`}
-                          title="Speak Message (TTS)"
-                        >
-                          <span className="material-symbols-outlined text-base">
-                            {isSpeakingId === msg.id ? 'volume_up' : 'volume_mute'}
-                          </span>
-                        </button>
-                        <button
-                          onClick={() => handleCopy(msg.id, sanitizeAIReply(msg.text))}
-                          className="p-1 rounded-lg text-slate-400 dark:text-slate-500 hover:text-[#F06543] dark:hover:text-orange-400 opacity-70 hover:opacity-100 transition-all cursor-pointer"
-                          title="Copy to Clipboard"
-                        >
-                          <span className="material-symbols-outlined text-base">
-                            {copiedId === msg.id ? 'check' : 'content_copy'}
-                          </span>
-                        </button>
+                      <div className="flex items-center justify-between pt-1 border-t border-white/[0.04] text-[10px] text-slate-400">
+                        <span className="font-medium text-slate-400">{msg.timestamp}</span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => speakText(msg.id, sanitizeAIReply(msg.text))}
+                            className={`p-1 rounded hover:text-white transition-colors cursor-pointer ${
+                              isSpeakingId === msg.id ? 'text-[#F06543] opacity-100 animate-pulse' : 'text-slate-400'
+                            }`}
+                            title="Speak Message (TTS)"
+                          >
+                            <span className="material-symbols-outlined text-sm">
+                              {isSpeakingId === msg.id ? 'volume_up' : 'volume_mute'}
+                            </span>
+                          </button>
+                          <button
+                            onClick={() => handleCopy(msg.id, sanitizeAIReply(msg.text))}
+                            className="p-1 rounded text-slate-400 hover:text-white transition-colors cursor-pointer"
+                            title="Copy to Clipboard"
+                          >
+                            <span className="material-symbols-outlined text-sm">
+                              {copiedId === msg.id ? 'check' : 'content_copy'}
+                            </span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -580,62 +585,34 @@ export const KleoChatRoomView: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Footer Input Area (Centered max-w-3xl, Slate Background & Refined Quick Prompts) */}
+      {/* 3. Footer Input Area (Centered max-w-3xl, Sleek Dark Pill Input) */}
       <footer className={`p-4 border-t shrink-0 shadow-lg ${
-        isDarkMode ? 'bg-[#0F172A] border-slate-800/80' : 'bg-white border-slate-200'
+        isDarkMode ? 'bg-[#0b0f17] border-slate-800/80' : 'bg-white border-slate-200'
       }`}>
         <div className="max-w-3xl mx-auto w-full space-y-3">
-          {/* Quick Action Prompt Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1">
-              <span className="material-symbols-outlined text-xs text-[#F06543]">tips_and_updates</span>
-              Quick Prompts:
-            </span>
-            <button
-              onClick={() => handleSend(profile.selectedLanguage === 'ko' ? '안녕하세요! 반갑습니다!' : profile.selectedLanguage === 'ja' ? 'はじめまして！' : 'Nice to meet you!')}
-              className="text-[11px] font-semibold px-3 py-1.5 rounded-xl border border-slate-700/60 dark:border-slate-700/80 bg-slate-800/60 dark:bg-slate-800/80 text-slate-300 hover:text-amber-300 hover:border-amber-500/40 transition-all shrink-0 cursor-pointer shadow-2xs active:scale-95"
-            >
-              👋 "Nice to meet you"
-            </button>
-            <button
-              onClick={() => handleSend(profile.selectedLanguage === 'ko' ? '존댓말 어미 표현을 설명해 주세요.' : profile.selectedLanguage === 'ja' ? '敬語の語尾表現を説明してください' : 'Explain polite grammar endings')}
-              className="text-[11px] font-semibold px-3 py-1.5 rounded-xl border border-slate-700/60 dark:border-slate-700/80 bg-slate-800/60 dark:bg-slate-800/80 text-slate-300 hover:text-amber-300 hover:border-amber-500/40 transition-all shrink-0 cursor-pointer shadow-2xs active:scale-95"
-            >
-              💡 "Explain polite endings"
-            </button>
-            <button
-              onClick={() => handleSend(profile.selectedLanguage === 'ko' ? '아이스 아메리카노 한 잔 주세요.' : profile.selectedLanguage === 'ja' ? 'アイスコーヒーを一つください。' : 'I would like an iced coffee please.')}
-              className="text-[11px] font-semibold px-3 py-1.5 rounded-xl border border-slate-700/60 dark:border-slate-700/80 bg-slate-800/60 dark:bg-slate-800/80 text-slate-300 hover:text-amber-300 hover:border-amber-500/40 transition-all shrink-0 cursor-pointer shadow-2xs active:scale-95"
-            >
-              ☕ "Order coffee"
-            </button>
-          </div>
-
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSend();
             }}
-            className={`flex items-center gap-2.5 p-1.5 rounded-2xl border transition-all ${
+            className={`flex items-center gap-2.5 p-2 rounded-2xl border transition-all ${
               isDarkMode
-                ? 'bg-[#1E293B]/90 border-slate-700/70 shadow-lg'
+                ? 'bg-[#141824] border-slate-800/90 shadow-lg focus-within:border-slate-700'
                 : 'bg-slate-100 border-slate-200'
             }`}
           >
-            {/* STT Voice Input */}
+            {/* Plus / Voice action on the left */}
             <button
               type="button"
               onClick={startVoiceInput}
-              className={`p-2.5 rounded-xl border transition-all cursor-pointer relative ${
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer relative shrink-0 ${
                 isListening
-                  ? 'bg-rose-500 text-white border-rose-400 shadow-lg shadow-rose-500/30 animate-pulse'
-                  : isDarkMode
-                  ? 'bg-slate-800/90 border-slate-700 text-slate-300 hover:text-white hover:border-[#F06543]'
-                  : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-[#F06543]'
+                  ? 'bg-rose-500 text-white shadow-lg animate-pulse'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
               }`}
-              title="Speak Message (STT Input)"
+              title="Voice Input (STT)"
             >
-              <span className="material-symbols-outlined text-xl">{isListening ? 'mic' : 'mic_none'}</span>
+              <span className="material-symbols-outlined text-lg">{isListening ? 'mic' : 'add'}</span>
               {isListening && (
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping" />
               )}
@@ -649,37 +626,35 @@ export const KleoChatRoomView: React.FC = () => {
               placeholder={
                 isListening
                   ? 'Listening to speech...'
-                  : `Type in ${activeLangName} or English (${selectedScenario} roleplay)...`
+                  : 'Type your message...'
               }
-              className={`flex-1 px-3 py-2.5 rounded-xl text-xs md:text-sm font-medium focus:outline-none transition-all ${
-                isDarkMode
-                  ? 'bg-transparent text-white placeholder-slate-400'
-                  : 'bg-transparent text-slate-900 placeholder-slate-400'
+              className={`flex-1 px-2 py-1.5 text-xs md:text-sm font-medium focus:outline-none bg-transparent ${
+                isDarkMode ? 'text-white placeholder-slate-500' : 'text-slate-900 placeholder-slate-400'
               }`}
             />
 
-            {/* Submit / Stop Button */}
+            {/* Send Button on the right */}
             {isStreaming ? (
               <button
                 type="button"
                 onClick={handleStopStreaming}
-                className="p-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-md transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-xl bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center transition-colors cursor-pointer shrink-0 shadow-xs"
                 title="Stop Generating"
               >
-                <span className="material-symbols-outlined text-xl">stop</span>
+                <span className="material-symbols-outlined text-lg">stop</span>
               </button>
             ) : (
               <button
                 type="submit"
                 disabled={!inputMsg.trim()}
-                className={`p-2.5 rounded-xl font-bold text-white shadow-md transition-all cursor-pointer ${
+                className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
                   !inputMsg.trim()
-                    ? 'bg-slate-600/50 opacity-40 cursor-not-allowed'
-                    : 'bg-[#F06543] hover:bg-[#E05432] active:scale-95'
+                    ? 'text-slate-600 opacity-40 cursor-not-allowed'
+                    : 'text-slate-400 hover:text-[#F06543]'
                 }`}
-                title="Send Message"
+                title="Send message"
               >
-                <span className="material-symbols-outlined text-xl">send</span>
+                <span className="material-symbols-outlined text-lg">send</span>
               </button>
             )}
           </form>

@@ -113,22 +113,6 @@ export const AIChatbox: React.FC<AIChatboxProps> = ({ currentLanguage }) => {
             </button>
           </div>
 
-          {/* Quick Prompts Bar */}
-          <div className="px-3 py-2 bg-slate-900/60 border-b border-slate-800/80 flex gap-2 overflow-x-auto">
-            <button
-              onClick={() => handleSend("Explain formal vs informal speech rules")}
-              className="text-xs text-sky-300 bg-sky-950/80 hover:bg-sky-900 px-2.5 py-1 rounded-full border border-sky-800 shrink-0"
-            >
-              💡 Formal Rules
-            </button>
-            <button
-              onClick={() => handleSend("Quiz me on vocabulary")}
-              className="text-xs text-amber-300 bg-amber-950/80 hover:bg-amber-900 px-2.5 py-1 rounded-full border border-amber-800 shrink-0"
-            >
-              🎯 Quick Quiz
-            </button>
-          </div>
-
           {/* Messages Feed */}
           <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/40">
             {messages.map(msg => (

@@ -24,9 +24,8 @@ export const DashboardLoader: React.FC<DashboardLoaderProps> = ({ onFinish }) =>
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.02, filter: 'blur(6px)' }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className={`fixed inset-0 w-screen h-screen z-[99999] flex items-center justify-center transition-colors duration-300 select-none overflow-hidden ${
-        isDarkMode ? 'bg-[#0b0f19]' : 'bg-[#FAF6F0]'
-      }`}
+      className={`fixed inset-0 w-screen h-screen z-[99999] flex items-center justify-center transition-colors duration-300 select-none overflow-hidden ${isDarkMode ? 'bg-[#0b0f19]' : 'bg-[#FAF6F0]'
+        }`}
     >
       <div style={{ width: '320px', height: '320px' }} className="flex items-center justify-center">
         <DotLottieReact

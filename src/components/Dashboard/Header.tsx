@@ -6,7 +6,6 @@ import { useAuthStore } from '../../store/useAuthStore';
 import {
   Mail,
   Bell,
-  Calendar,
   ChevronDown,
   Moon,
   Sun,
@@ -100,14 +99,12 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMailOpen, setIsMailOpen] = useState(false);
   const [isBellOpen, setIsBellOpen] = useState(false);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isLangSubmenuOpen, setIsLangSubmenuOpen] = useState(false);
 
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const mailRef = useRef<HTMLDivElement>(null);
   const bellRef = useRef<HTMLDivElement>(null);
-  const calendarRef = useRef<HTMLDivElement>(null);
 
   // Close menus on outside click
   useEffect(() => {
@@ -122,9 +119,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
       }
       if (bellRef.current && !bellRef.current.contains(target)) {
         setIsBellOpen(false);
-      }
-      if (calendarRef.current && !calendarRef.current.contains(target)) {
-        setIsCalendarOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -212,7 +206,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
               onClick={() => {
                 setIsMailOpen(!isMailOpen);
                 setIsBellOpen(false);
-                setIsCalendarOpen(false);
                 setIsProfileMenuOpen(false);
               }}
               className={`relative p-1.5 sm:p-2 rounded-xl transition-colors cursor-pointer ${
@@ -268,7 +261,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
               onClick={() => {
                 setIsBellOpen(!isBellOpen);
                 setIsMailOpen(false);
-                setIsCalendarOpen(false);
                 setIsProfileMenuOpen(false);
               }}
               className={`relative p-1.5 sm:p-2 rounded-xl transition-colors cursor-pointer ${
@@ -314,66 +306,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* 4. Calendar Icon */}
-          <div className="relative" ref={calendarRef}>
-            <button
-              onClick={() => {
-                setIsCalendarOpen(!isCalendarOpen);
-                setIsMailOpen(false);
-                setIsBellOpen(false);
-                setIsProfileMenuOpen(false);
-              }}
-              className={`p-1.5 sm:p-2 rounded-xl transition-colors cursor-pointer ${
-                isDarkMode
-                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-              title="Daily Study Calendar & Streak History"
-            >
-              <Calendar className="w-5 h-5 stroke-[1.8]" />
-            </button>
-
-            {/* Calendar Popover */}
-            {isCalendarOpen && (
-              <div
-                className={`absolute right-0 mt-2 w-64 rounded-2xl border shadow-2xl p-4 z-50 animate-fadeIn ${
-                  isDarkMode
-                    ? 'bg-[#131722] border-[#22283a] text-white'
-                    : 'bg-white border-[#e0d6c7] text-slate-900'
-                }`}
-              >
-                <div className="flex items-center justify-between pb-2 border-b border-slate-700/40">
-                  <span className="font-extrabold text-xs">Study Streak Calendar</span>
-                  <span className="text-[10px] font-bold text-amber-400">🔥 5 Days</span>
-                </div>
-                <div className="py-3 text-center space-y-2">
-                  <p className="text-xs font-semibold text-slate-300">Active Study Days</p>
-                  <div className="grid grid-cols-7 gap-1 text-[10px] font-bold">
-                    {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-                      <div key={i} className="text-slate-400">{d}</div>
-                    ))}
-                    {[24, 25, 26, 27, 28, 29, 30].map((day, i) => {
-                      const isStreak = i < 5;
-                      return (
-                        <div
-                          key={day}
-                          className={`h-7 rounded-lg flex items-center justify-center font-extrabold ${
-                            isStreak
-                              ? 'bg-[#F06543] text-white shadow-xs'
-                              : 'bg-slate-800/40 text-slate-500'
-                          }`}
-                        >
-                          {day}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* 5. User Profile Avatar with Chevron Down (Exact Picture 1 & Picture 3 Reference) */}
+          {/* 4. User Profile Avatar with Chevron Down (Exact Picture 1 & Picture 3 Reference) */}
           <div className="relative" ref={profileMenuRef}>
             <div
               className="flex items-center gap-2.5 group select-none"
@@ -441,7 +374,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                     setIsProfileMenuOpen(!isProfileMenuOpen);
                     setIsMailOpen(false);
                     setIsBellOpen(false);
-                    setIsCalendarOpen(false);
                   }}
                   className={`absolute -bottom-1 -right-1 w-4.5 h-4.5 rounded-full flex items-center justify-center border shadow-xs transition-transform duration-200 cursor-pointer ${
                     isProfileMenuOpen ? 'rotate-180' : ''

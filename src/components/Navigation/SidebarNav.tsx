@@ -212,7 +212,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         {/* Centered Brand Mascot Logo (Clicking logo reloads/refreshes the dashboard) */}
         <div
           onClick={handleBrandClick}
-          className="mb-3 w-full flex items-center justify-center cursor-pointer select-none py-1 group shrink-0"
+          className="mb-1.5 w-full flex items-center justify-center cursor-pointer select-none py-1 group shrink-0"
           title="Refresh Dashboard"
         >
           <motion.div
@@ -233,8 +233,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           </motion.div>
         </div>
 
-        {/* Navigation Items */}
-        <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar pt-1 pb-1 w-full px-2.5">
+        {/* Navigation Items (Ample top padding so active cat paw has full float room without clipping) */}
+        <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar pt-3 pb-1.5 w-full px-2.5">
           {navItems.map((item, idx) => {
             const isActive = activeView === item.id;
             return (
@@ -269,10 +269,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                         scale: { type: 'spring', stiffness: 450, damping: 22 }
                       }}
                       className={`absolute z-30 pointer-events-none ${
-                        isExpanded ? '-top-1.5 right-1.5' : '-top-1.5 -right-1'
+                        isExpanded ? '-top-2 right-1.5' : '-top-2 right-0.5'
                       }`}
                     >
-                      <Cat3DPawIcon size={isExpanded ? 24 : 20} />
+                      <Cat3DPawIcon size={isExpanded ? 24 : 19} />
                     </motion.div>
                   )}
                 </AnimatePresence>

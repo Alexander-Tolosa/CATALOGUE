@@ -310,28 +310,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     </motion.span>
                   )}
                 </AnimatePresence>
-
-                {/* Badge Count */}
-                {item.id === 'review' && reviewItemsDueCount > 0 && (
-                  <AnimatePresence>
-                    {isExpanded ? (
-                      <motion.span
-                        initial={{ opacity: 0, scale: 0.6 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.6 }}
-                        className={`font-bold text-[9px] px-1.5 py-0.5 rounded-full shadow-xs mr-2 ml-auto shrink-0 ${
-                          isActive ? 'bg-white text-[#F06543]' : 'bg-[#F06543] text-white'
-                        }`}
-                      >
-                        {reviewItemsDueCount}
-                      </motion.span>
-                    ) : (
-                      <span className="absolute -top-1 -right-1 bg-[#F06543] text-white font-bold text-[9px] px-1.5 py-0.5 rounded-full shadow-xs">
-                        {reviewItemsDueCount}
-                      </span>
-                    )}
-                  </AnimatePresence>
-                )}
               </motion.button>
             );
           })}

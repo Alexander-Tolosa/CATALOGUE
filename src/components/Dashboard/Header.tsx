@@ -466,31 +466,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                     : 'bg-white border-[#e2d9cd] text-slate-800'
                 }`}
               >
-                {/* 0. My Profile & Awards */}
-                <button
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    if (onSelectView) {
-                      onSelectView('profile');
-                    } else {
-                      window.dispatchEvent(new CustomEvent('catalogue:navigate-view', { detail: 'profile' }));
-                    }
-                  }}
-                  className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer text-[#F06543] ${
-                    isDarkMode ? 'hover:bg-[#1a2032]' : 'hover:bg-[#f6f1e8]'
-                  }`}
-                >
-                  <span className="font-extrabold flex items-center gap-2">
-                    <User className="w-4 h-4 text-[#F06543]" />
-                    <span>My Profile & Friends</span>
-                  </span>
-                  <span className="text-[10px] font-black bg-[#F06543]/15 text-[#F06543] px-2 py-0.5 rounded-full">
-                    CLASE
-                  </span>
-                </button>
-
-                <div className={`my-1 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`} />
-
                 {/* 1. Toggle Dark Mode */}
                 <button
                   onClick={() => {

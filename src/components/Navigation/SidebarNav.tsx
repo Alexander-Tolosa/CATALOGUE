@@ -179,8 +179,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     { id: 'translator', label: 'Translator', icon: 'language' },
     { id: 'scanner', label: 'Scan & Translate', icon: 'document_scanner' },
     { id: 'gamify', label: 'Leaderboard & Stats', icon: 'leaderboard' },
-    { id: 'review', label: 'Review Deck', icon: 'rebase_edit' },
-    { id: 'settings', label: 'Settings', icon: 'settings' }
+    { id: 'review', label: 'Review Deck', icon: 'rebase_edit' }
   ];
 
   return (

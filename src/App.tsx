@@ -85,7 +85,7 @@ export const App: React.FC = () => {
       />
 
       {/* 2. Main Canvas & TopAppBar */}
-      <main className={`md:ml-64 min-h-screen relative transition-colors duration-300 ${isDarkMode ? 'bg-[#0b0f17]' : 'bg-[#FAF6F0]'
+      <main className={`md:ml-20 min-h-screen relative transition-colors duration-300 ${isDarkMode ? 'bg-[#0b0f17]' : 'bg-[#FAF6F0]'
         }`}>
         {/* Top Header */}
         <TopAppBar

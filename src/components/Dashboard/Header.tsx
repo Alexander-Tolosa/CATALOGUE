@@ -98,7 +98,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   return (
     <>
       <header
-        className={`fixed top-0 right-0 left-0 md:left-64 h-16 backdrop-blur-md border-b flex items-center justify-between px-3 sm:px-5 md:px-6 z-40 transition-colors duration-200 select-none ${
+        className={`fixed top-0 right-0 left-0 md:left-20 h-16 backdrop-blur-md border-b flex items-center justify-between px-3 sm:px-5 md:px-6 z-40 transition-colors duration-200 select-none ${
           isDarkMode
             ? 'bg-[#0e1322]/95 border-[#1d2538] text-white'
             : 'bg-[#ffffff]/95 border-[#e8dfd3] text-[#2b2725] shadow-xs'

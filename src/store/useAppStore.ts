@@ -88,6 +88,9 @@ interface AppStoreState {
   isChatbotOpen: boolean;
   isSidebarExpanded: boolean;
   setSidebarExpanded: (expanded: boolean) => void;
+  isAppRefreshing: boolean;
+  triggerAppRefresh: () => void;
+  finishAppRefresh: () => void;
   toggleChatbot: () => void;
   setIsChatbotOpen: (isOpen: boolean) => void;
   toggleThemeMode: () => void;
@@ -120,6 +123,15 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   isDarkMode: (localStorage.getItem('catalogue_theme_dark') || localStorage.getItem('catalouge_theme_dark')) === 'true',
   isChatbotOpen: false,
   isSidebarExpanded: false,
+  isAppRefreshing: false,
+
+  triggerAppRefresh: () => {
+    set({ isAppRefreshing: true });
+  },
+
+  finishAppRefresh: () => {
+    set({ isAppRefreshing: false });
+  },
 
   setSidebarExpanded: (expanded: boolean) => {
     set({ isSidebarExpanded: expanded });

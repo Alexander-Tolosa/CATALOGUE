@@ -125,7 +125,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   onSelectView,
   reviewItemsDueCount
 }) => {
-  const { isDarkMode, setSidebarExpanded } = useAppStore();
+  const { isDarkMode, setSidebarExpanded, triggerAppRefresh } = useAppStore();
   const { googleUser, isAuthenticated, logout } = useAuthStore();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
@@ -140,19 +140,17 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
       hoverTimeoutRef.current = null;
     }
     setIsHovered(true);
+    setSidebarExpanded(true);
   };
 
   const handleMouseLeave = () => {
     hoverTimeoutRef.current = setTimeout(() => {
       setIsHovered(false);
+      setSidebarExpanded(false);
     }, 140);
   };
 
   const isExpanded = isHovered;
-
-  useEffect(() => {
-    setSidebarExpanded(isExpanded);
-  }, [isExpanded, setSidebarExpanded]);
 
   useEffect(() => {
     const handleToggle = () => setIsMobileDrawerOpen(prev => !prev);
@@ -171,7 +169,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
   const handleBrandClick = () => {
     onSelectView('dashboard');
-    window.location.reload();
+    triggerAppRefresh();
   };
 
   const navItems: { id: AppView; label: string; icon: string }[] = [

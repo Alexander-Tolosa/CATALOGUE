@@ -23,12 +23,15 @@ import { InvestorPitchModal } from './components/Investor/InvestorPitchModal';
 import { AuthScreen } from './components/Auth/AuthScreen';
 import { LandingPage } from './components/Landing/LandingPage';
 import { EthicalAlertToast } from './components/Common/EthicalAlertToast';
+import { DashboardLoader } from './components/Dashboard/DashboardLoader';
 
 export const App: React.FC = () => {
   const { isAuthenticated, token } = useAuthStore();
   const {
     isDarkMode,
     isSidebarExpanded,
+    isAppRefreshing,
+    finishAppRefresh,
     profile,
     selectLanguageTrack,
     deductHeart,
@@ -232,6 +235,13 @@ export const App: React.FC = () => {
 
       {/* Global Ethical Restriction Toast Notification */}
       <EthicalAlertToast />
+
+      {/* Full-Screen Global Loading / Refresh Screen (Mounted to body via Portal) */}
+      <AnimatePresence mode="wait">
+        {isAppRefreshing && (
+          <DashboardLoader key="global-app-refresh-loader" onFinish={finishAppRefresh} />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -23,11 +23,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="w-64 bg-[#090e1c] border-r border-slate-800/90 p-4 flex flex-col justify-between shrink-0 h-screen sticky top-0 z-30 shadow-2xl">
+    <aside className="w-64 bg-[#0c101c] border-r border-white/[0.04] p-4 flex flex-col justify-between shrink-0 h-screen sticky top-0 z-30 shadow-[8px_0_28px_rgba(0,0,0,0.65),inset_1px_0_0_rgba(255,255,255,0.04)]">
       <div className="space-y-6">
-        {/* Brand Logo */}
-        <div className="px-3 pt-2">
-          <h1 className="font-brand text-2xl font-black text-sky-400 tracking-tight flex items-center gap-2 drop-shadow-md">
+        {/* Brand Logo Plate */}
+        <div className="p-3 bg-[#131929] border border-white/[0.04] rounded-2xl shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_10px_rgba(0,0,0,0.6)]">
+          <h1 className="font-brand text-2xl font-black text-orange-400 tracking-tight flex items-center gap-2 drop-shadow-md">
             <span>🐾</span> CATALOGUE
           </h1>
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 block mt-0.5">
@@ -36,7 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Vertical Nav List */}
-        <nav className="space-y-1.5">
+        <nav className="space-y-2">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             const isPitch = item.id === 'pitch';
@@ -45,15 +45,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => onSelectTab(item.id as any)}
-                className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-xs font-black tracking-wider transition-all duration-200 ${
+                className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-xs font-black tracking-wider transition-all duration-200 cursor-pointer ${
                   isPitch
-                    ? 'bg-amber-500/10 text-amber-300 border border-amber-500/40 hover:bg-amber-500/20'
+                    ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30 shadow-[-2px_-2px_6px_rgba(255,255,255,0.02),3px_3px_8px_rgba(0,0,0,0.5)] hover:bg-amber-500/20'
                     : isActive
-                    ? 'bg-sky-950/90 text-sky-400 border-2 border-sky-400/80 shadow-lg shadow-sky-500/20'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border-2 border-transparent'
+                    ? 'bg-gradient-to-r from-[#F06543] to-[#EA580C] text-white shadow-[-2px_-2px_6px_rgba(255,255,255,0.05),3px_3px_14px_rgba(240,101,67,0.45),inset_1px_1px_1.5px_rgba(255,255,255,0.25)] border border-orange-400/25'
+                    : 'text-slate-400 hover:text-white bg-transparent hover:bg-[#131929] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] border border-transparent'
                 }`}
               >
-                <span className={isPitch ? 'text-amber-400' : isActive ? 'text-sky-400' : 'text-slate-400'}>
+                <span className={isPitch ? 'text-amber-400' : isActive ? 'text-white drop-shadow-xs' : 'text-slate-400'}>
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
@@ -64,10 +64,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* AI Tutor Button at Bottom */}
-      <div className="pt-4 border-t border-slate-800/80 space-y-2">
+      <div className="pt-4 border-t border-white/[0.06] space-y-2">
         <button
           onClick={onOpenTutor}
-          className="w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400 text-slate-950 font-black text-xs tracking-wider shadow-xl hover:brightness-110 transition-all"
+          className="w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-slate-950 font-black text-xs tracking-wider shadow-[-2px_-2px_6px_rgba(255,255,255,0.08),3px_3px_12px_rgba(249,115,22,0.4),inset_1px_1px_1.5px_rgba(255,255,255,0.4)] hover:brightness-110 active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3)] transition-all cursor-pointer"
         >
           <MessageSquare size={18} fill="#090e1c" />
           <span>AI TUTOR COACH</span>

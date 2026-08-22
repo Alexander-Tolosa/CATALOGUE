@@ -184,7 +184,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
   return (
     <>
-      {/* Desktop Fluid Morphic Expanding Sidebar (Hidden on mobile <768px, visible on md+) */}
+      {/* Desktop Fluid Expanding Sidebar (Hidden on mobile <768px, visible on md+) */}
       <motion.aside
         initial={false}
         animate={{
@@ -203,7 +203,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className={`hidden md:flex h-screen fixed left-0 top-0 border-r flex-col py-3.5 z-50 select-none overflow-hidden backdrop-blur-xl ${
+        className={`hidden md:flex h-screen fixed left-0 top-0 border-r flex-col py-3.5 z-50 select-none overflow-hidden backdrop-blur-xl transition-colors duration-300 ${
           isDarkMode
             ? 'bg-[#0b0f17]/95 border-[#1e293b] text-white'
             : 'bg-[#FFFDF9]/95 border-[#EDE5DA] text-[#2B2725]'
@@ -233,7 +233,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           </motion.div>
         </div>
 
-        {/* Navigation Items (Ample top padding so active cat paw has full float room without clipping) */}
+        {/* Navigation Items (Clean, vibrant modern buttons without heavy neumorphic inset wells) */}
         <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar pt-3 pb-1.5 w-full px-2.5">
           {navItems.map((item, idx) => {
             const isActive = activeView === item.id;
@@ -277,7 +277,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                   )}
                 </AnimatePresence>
 
-                {/* Anchor Slot for Icon (Exactly centered at 76px resting rail) */}
+                {/* Anchor Slot for Icon (Clean, centered icon) */}
                 <div className="w-[50px] flex items-center justify-center shrink-0">
                   <span
                     className={`material-symbols-outlined text-xl ${
@@ -579,3 +579,4 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     </>
   );
 };
+

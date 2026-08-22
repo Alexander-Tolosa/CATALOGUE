@@ -297,8 +297,8 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
                     <span
                       className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs transition-transform hover:scale-105 ${
                         isDarkMode
-                          ? 'bg-[#06b6d4] text-[#101422] shadow-[-2px_-2px_6px_rgba(255,255,255,0.25),2px_2px_8px_rgba(0,0,0,0.6)] shadow-[0_0_14px_rgba(6,182,212,0.45)]'
-                          : 'bg-[#fb7185] text-white shadow-[-2px_-2px_6px_rgba(255,255,255,0.7),2px_2px_8px_rgba(200,80,100,0.4)] shadow-[0_4px_12px_rgba(251,113,133,0.4)]'
+                          ? 'bg-gradient-to-tr from-[#f97316] to-[#fb923c] text-white shadow-[-2px_-2px_6px_rgba(255,255,255,0.25),2px_2px_8px_rgba(0,0,0,0.6)] shadow-[0_0_14px_rgba(249,115,22,0.55)]'
+                          : 'bg-gradient-to-tr from-[#f06543] to-[#f97316] text-white shadow-[-2px_-2px_6px_rgba(255,255,255,0.7),2px_2px_8px_rgba(240,101,67,0.4)] shadow-[0_4px_12px_rgba(240,101,67,0.45)]'
                       }`}
                     >
                       {item.day}
@@ -336,7 +336,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
             <button
               onClick={() => setIsFullCalendarOpen(true)}
               className={`transition-colors cursor-pointer ${
-                isDarkMode ? 'text-[#2dd4bf] hover:text-[#5eead4]' : 'text-[#fb7185] hover:text-[#f43f5e]'
+                isDarkMode ? 'text-[#f97316] hover:text-[#fb923c]' : 'text-[#f06543] hover:text-[#ea580c]'
               }`}
             >
               full calendar
@@ -362,12 +362,12 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
         >
           <span
             className={`flex items-center gap-2 font-extrabold ${
-              isDarkMode ? 'text-[#2dd4bf]' : 'text-[#fb7185]'
+              isDarkMode ? 'text-[#f97316]' : 'text-[#f06543]'
             }`}
           >
             <CalendarIcon size={15} /> Show Calendar
           </span>
-          <span className={`text-[11px] font-semibold ${isDarkMode ? 'text-[#2dd4bf]' : 'text-[#fb7185]'}`}>
+          <span className={`text-[11px] font-semibold ${isDarkMode ? 'text-[#f97316]' : 'text-[#f06543]'}`}>
             show
           </span>
         </button>

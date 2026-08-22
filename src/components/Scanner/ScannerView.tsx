@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createWorker } from 'tesseract.js';
 import { LanguageTrack, ReviewItem } from '../../types';
@@ -20,7 +20,9 @@ import {
   Zap,
   HelpCircle,
   FileText,
-  Play
+  Play,
+  BookOpen,
+  Info
 } from 'lucide-react';
 
 interface ScannerViewProps {
@@ -35,10 +37,188 @@ const LANG_CONFIG: Record<LangOption, { code: 'us' | 'jp' | 'kr'; trackCode: Lan
   Korean: { code: 'kr', trackCode: 'ko', apiCode: 'ko', tesseractLang: 'kor', bcp47: 'ko-KR' }
 };
 
+// ==========================================
+// Direct Korean / Japanese Lexicon
+// ==========================================
+interface LexiconEntry {
+  translations: Record<LangOption, string>;
+  phonetic: string;
+}
+
+const COMPREHENSIVE_LEXICON: Record<string, LexiconEntry> = {
+  '안녕하세요': {
+    translations: { English: 'Hello', Japanese: 'こんにちは', Korean: '안녕하세요' },
+    phonetic: 'Annyeonghaseyo'
+  },
+  '안녕': {
+    translations: { English: 'Hi', Japanese: 'こんにちは', Korean: '안녕' },
+    phonetic: 'Annyeong'
+  },
+  '감사합니다': {
+    translations: { English: 'Thank you', Japanese: 'ありがとうございます', Korean: '감사합니다' },
+    phonetic: 'Gamsahamnida'
+  },
+  '고맙습니다': {
+    translations: { English: 'Thank you', Japanese: 'ありがとうございます', Korean: '고맙습니다' },
+    phonetic: 'Gomapseumnida'
+  },
+  '고마워': {
+    translations: { English: 'Thanks', Japanese: 'ありがとう', Korean: '고마워' },
+    phonetic: 'Gomawo'
+  },
+  '죄송합니다': {
+    translations: { English: 'I am sorry', Japanese: 'すみません', Korean: '죄송합니다' },
+    phonetic: 'Joesonghamnida'
+  },
+  '미안해요': {
+    translations: { English: 'I am sorry', Japanese: 'ごめんなさい', Korean: '미안해요' },
+    phonetic: 'Mianhaeyo'
+  },
+  '미안해': {
+    translations: { English: 'Sorry', Japanese: 'ごめん', Korean: '미안해' },
+    phonetic: 'Mianhae'
+  },
+  '실례합니다': {
+    translations: { English: 'Excuse me', Japanese: '失礼します', Korean: '실례합니다' },
+    phonetic: 'Sillyehamnida'
+  },
+  '잠시만요': {
+    translations: { English: 'Just a moment', Japanese: '少々お待ちください', Korean: '잠시만요' },
+    phonetic: 'Jamsimanyo'
+  },
+  '화장실이 어디예요?': {
+    translations: { English: 'Where is the restroom?', Japanese: 'お手洗いはどこですか？', Korean: '화장실이 어디예요?' },
+    phonetic: 'Hwajangsiri eodiyeyo?'
+  },
+  '화장실': {
+    translations: { English: 'Restroom', Japanese: 'お手洗い', Korean: '화장실' },
+    phonetic: 'Hwajangsil'
+  },
+  '이거 얼마예요?': {
+    translations: { English: 'How much is this?', Japanese: 'これはいくらですか？', Korean: '이거 얼마예요?' },
+    phonetic: 'Igeo eolmayeyo?'
+  },
+  '이거': {
+    translations: { English: 'This', Japanese: 'これ', Korean: '이거' },
+    phonetic: 'Igeo'
+  },
+  '얼마예요': {
+    translations: { English: 'How much is it?', Japanese: 'いくらですか', Korean: '얼마예요' },
+    phonetic: 'Eolmayeyo'
+  },
+  '물 주세요': {
+    translations: { English: 'Water, please', Japanese: 'お水をお願いします', Korean: '물 주세요' },
+    phonetic: 'Mul juseyo'
+  },
+  '물': {
+    translations: { English: 'Water', Japanese: '水', Korean: '물' },
+    phonetic: 'Mul'
+  },
+  '주세요': {
+    translations: { English: 'Please give me', Japanese: 'ください', Korean: '주세요' },
+    phonetic: 'Juseyo'
+  },
+  '메뉴판 주세요': {
+    translations: { English: 'Please give me the menu', Japanese: 'メニューをお願いします', Korean: '메뉴판 주세요' },
+    phonetic: 'Menyupan juseyo'
+  },
+  '메뉴': {
+    translations: { English: 'Menu', Japanese: 'メニュー', Korean: '메뉴' },
+    phonetic: 'Menyu'
+  },
+  '맛있어요': {
+    translations: { English: 'It is delicious', Japanese: '美味しいです', Korean: '맛있어요' },
+    phonetic: 'Masisseoyo'
+  },
+  '사랑해요': {
+    translations: { English: 'I love you', Japanese: '愛しています', Korean: '사랑해요' },
+    phonetic: 'Saranghaeyo'
+  },
+  '네': {
+    translations: { English: 'Yes', Japanese: 'はい', Korean: '네' },
+    phonetic: 'Ne'
+  },
+  '아니요': {
+    translations: { English: 'No', Japanese: 'いいえ', Korean: '아니요' },
+    phonetic: 'Aniyo'
+  },
+  '도와주세요': {
+    translations: { English: 'Please help me', Japanese: '助けてください', Korean: '도와주세요' },
+    phonetic: 'Dowajuseyo'
+  },
+  '안녕히 계세요': {
+    translations: { English: 'Goodbye', Japanese: 'さようなら', Korean: '안녕히 계세요' },
+    phonetic: 'Annyeonghi gyeseyo'
+  },
+  '안녕히 가세요': {
+    translations: { English: 'Goodbye', Japanese: '行ってらっしゃい', Korean: '안녕히 가세요' },
+    phonetic: 'Annyeonghi gaseyo'
+  },
+  '만나서 반가워요': {
+    translations: { English: 'Nice to meet you', Japanese: 'お会いできて嬉しいです', Korean: '만나서 반가워요' },
+    phonetic: 'Mannaseo bangawoyo'
+  },
+  '괜찮아요': {
+    translations: { English: "It's okay", Japanese: '大丈夫です', Korean: '괜찮아요' },
+    phonetic: 'Gwaenchannayo'
+  },
+  '모르겠어요': {
+    translations: { English: "I don't know", Japanese: 'わかりません', Korean: '모르겠어요' },
+    phonetic: 'Moreugesseoyo'
+  },
+  '알겠어요': {
+    translations: { English: 'I understand', Japanese: 'わかりました', Korean: '알겠어요' },
+    phonetic: 'Algesseoyo'
+  },
+  '식당': { translations: { English: 'Restaurant', Japanese: '食堂', Korean: '식당' }, phonetic: 'Sikdang' },
+  '카페': { translations: { English: 'Cafe', Japanese: 'カフェ', Korean: '카페' }, phonetic: 'Kape' },
+  '병원': { translations: { English: 'Hospital', Japanese: '病院', Korean: '병원' }, phonetic: 'Byeongwon' },
+  '약국': { translations: { English: 'Pharmacy', Japanese: '薬局', Korean: '약국' }, phonetic: 'Yakguk' },
+  '지하철': { translations: { English: 'Subway', Japanese: '地下鉄', Korean: '지하철' }, phonetic: 'Jihacheol' },
+  '출구': { translations: { English: 'Exit', Japanese: '出口', Korean: '출구' }, phonetic: 'Chulgu' },
+  '입구': { translations: { English: 'Entrance', Japanese: '入口', Korean: '입구' }, phonetic: 'Ipgu' },
+  '고양이': { translations: { English: 'Cat', Japanese: '猫', Korean: '고양이' }, phonetic: 'Goyangi' },
+  '강아지': { translations: { English: 'Puppy', Japanese: '子犬', Korean: '강아지' }, phonetic: 'Gang-aji' },
+  '친구': { translations: { English: 'Friend', Japanese: '友達', Korean: '친구' }, phonetic: 'Chingu' },
+  '선생님': { translations: { English: 'Teacher', Japanese: '先生', Korean: '선생님' }, phonetic: 'Seonsaengnim' },
+  '학교': { translations: { English: 'School', Japanese: '学校', Korean: '학교' }, phonetic: 'Hakgyo' },
+  '오늘': { translations: { English: 'Today', Japanese: '今日', Korean: '오늘' }, phonetic: 'Oneul' },
+  '내일': { translations: { English: 'Tomorrow', Japanese: '明日', Korean: '내일' }, phonetic: 'Naeil' },
+  '어제': { translations: { English: 'Yesterday', Japanese: '昨日', Korean: '어제' }, phonetic: 'Eoje' },
+  'こんにちは': {
+    translations: { English: 'Hello', Korean: '안녕하세요', Japanese: 'こんにちは' },
+    phonetic: 'Konnichiwa'
+  },
+  'ありがとうございます': {
+    translations: { English: 'Thank you', Korean: '감사합니다', Japanese: 'ありがとうございます' },
+    phonetic: 'Arigatou gozaimasu'
+  },
+  'すみません': {
+    translations: { English: 'Excuse me', Korean: '죄송합니다', Japanese: 'すみません' },
+    phonetic: 'Sumimasen'
+  },
+  'ごめんなさい': {
+    translations: { English: 'I am sorry', Korean: '미안해요', Japanese: 'ごめんなさい' },
+    phonetic: 'Gomennasai'
+  },
+  '猫': {
+    translations: { English: 'Cat', Korean: '고양이', Japanese: '猫 (ねこ)' },
+    phonetic: 'Neko'
+  },
+  '犬': {
+    translations: { English: 'Dog', Korean: '개 / 강아지', Japanese: '犬 (いぬ)' },
+    phonetic: 'Inu'
+  },
+  '美味しい': {
+    translations: { English: 'Delicious / Tasty', Korean: '맛있어요', Japanese: '美味しい (おいしい)' },
+    phonetic: 'Oishii'
+  }
+};
+
 // Hangul Romanization Engine
-const INITIALS = ['g', 'g', 'n', 'd', 'd', 'r', 'm', 'b', 'b', 's', 's', '', 'j', 'j', 'ch', 'k', 't', 'p', 'h'];
+const INITIALS = ['g', 'kk', 'n', 'd', 'tt', 'r', 'm', 'b', 'pp', 's', 'ss', '', 'j', 'jj', 'ch', 'k', 't', 'p', 'h'];
 const VOWELS = ['a', 'ae', 'ya', 'yae', 'eo', 'e', 'yeo', 'ye', 'o', 'wa', 'wae', 'oe', 'yo', 'u', 'wo', 'we', 'wi', 'yu', 'eu', 'ui', 'i'];
-const FINALS = ['', 'g', 'g', 'gs', 'n', 'nj', 'nh', 'd', 'l', 'lg', 'lm', 'lb', 'ls', 'lt', 'lp', 'lh', 'm', 'b', 'bs', 's', 'ss', 'ng', 'j', 'ch', 'k', 't', 'p', 'h'];
+const FINALS = ['', 'k', 'k', 'k', 'n', 'n', 'n', 't', 'l', 'k', 'm', 'p', 'l', 't', 'p', 'l', 'm', 'p', 'p', 't', 't', 'ng', 't', 't', 'k', 't', 'p', 't'];
 
 function romanizeHangul(char: string): string {
   const code = char.charCodeAt(0);
@@ -65,13 +245,28 @@ const KANA_ROMAN: Record<string, string> = {
   'わ':'wa','を':'o','ん':'n',
   'が':'ga','ぎ':'gi','ぐ':'gu','げ':'ge','ご':'go',
   'ざ':'za','じ':'ji','ず':'zu','ぜ':'ze','ぞ':'zo',
-  'だ':'da','ぢ':'ji','づ':'zu','de':'de','ど':'do',
+  'だ':'da','ぢ':'ji','づ':'zu','で':'de','ど':'do',
   'ば':'ba','び':'bi','ぶ':'bu','べ':'be','ぼ':'bo',
-  'ぱ':'pa','ぴ':'pi','ぷ':'pu','ぺ':'pe','ぽ':'po'
+  'ぱ':'pa','ぴ':'pi','ぷ':'pu','ぺ':'pe','ぽ':'po',
+  'ア':'a','イ':'i','ウ':'u','エ':'e','オ':'o',
+  'カ':'ka','キ':'ki','ク':'ku','ケ':'ke','コ':'ko',
+  'サ':'sa','シ':'shi','ス':'su','セ':'se','ソ':'so',
+  'タ':'ta','チ':'chi','ツ':'tsu','テ':'te','ト':'to',
+  'ナ':'na','ニ':'ni','ヌ':'nu','ネ':'ne','ノ':'no',
+  'ハ':'ha','ヒ':'hi','フ':'fu','ヘ':'he','ホ':'ho',
+  'マ':'ma','ミ':'mi','ム':'mu','メ':'me','モ':'mo',
+  'ヤ':'ya','ユ':'yu','ヨ':'yo',
+  'ラ':'ra','リ':'ri','ル':'ru','レ':'re','ロ':'ro',
+  'ワ':'wa','ヲ':'o','ン':'n'
 };
 
 function generatePhonetic(text: string, lang: LangOption): string {
   if (!text.trim() || lang === 'English') return '';
+
+  const clean = text.trim();
+  if (COMPREHENSIVE_LEXICON[clean]?.phonetic) {
+    return COMPREHENSIVE_LEXICON[clean].phonetic;
+  }
 
   if (lang === 'Korean') {
     const result = text.split('').map(char => romanizeHangul(char)).join('');
@@ -84,10 +279,85 @@ function generatePhonetic(text: string, lang: LangOption): string {
       const char = text[i];
       result += KANA_ROMAN[char] || char;
     }
-    return result;
+    return result ? result.charAt(0).toUpperCase() + result.slice(1) : '';
   }
 
   return '';
+}
+
+function detectLanguageFromText(text: string): LangOption | null {
+  if (/[\uAC00-\uD7A3]/.test(text)) return 'Korean';
+  if (/[\u3040-\u30FF\u4E00-\u9FAF]/.test(text)) return 'Japanese';
+  if (/^[A-Za-z0-9\s.,!?'"-]+$/.test(text) && text.trim().length > 0) return 'English';
+  return null;
+}
+
+function cleanOcrText(text: string, lang: LangOption): string {
+  if (!text) return '';
+  let cleaned = text.trim();
+
+  // If Korean: merge accidentally split Korean syllables
+  if (lang === 'Korean' || /[\uAC00-\uD7A3]/.test(cleaned)) {
+    cleaned = cleaned.replace(/([\uAC00-\uD7A3])\s+([\uAC00-\uD7A3])/g, '$1$2');
+    cleaned = cleaned.replace(/([\uAC00-\uD7A3])\s+([\uAC00-\uD7A3])/g, '$1$2');
+  }
+
+  // If Japanese: merge split kana
+  if (lang === 'Japanese' || /[\u3040-\u30FF\u4E00-\u9FAF]/.test(cleaned)) {
+    cleaned = cleaned.replace(/([\u3040-\u30FF\u4E00-\u9FAF])\s+([\u3040-\u30FF\u4E00-\u9FAF])/g, '$1$2');
+  }
+
+  return cleaned.replace(/[|~`^]+/g, '').trim();
+}
+
+// Canvas Image Preprocessor for High-Accuracy OCR
+function preprocessImageForOCR(imageSrc: string): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(imageSrc);
+          return;
+        }
+
+        const maxDim = Math.max(img.width, img.height);
+        const scale = Math.max(1, Math.min(2.5, 1200 / maxDim));
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = imgData.data;
+
+        // Grayscale + Contrast normalization
+        for (let i = 0; i < d.length; i += 4) {
+          const r = d[i];
+          const g = d[i + 1];
+          const b = d[i + 2];
+          const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+          const factor = 1.3;
+          let enhanced = factor * (gray - 128) + 128;
+          enhanced = Math.max(0, Math.min(255, enhanced));
+          d[i] = enhanced;
+          d[i + 1] = enhanced;
+          d[i + 2] = enhanced;
+        }
+
+        ctx.putImageData(imgData, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      } catch (e) {
+        resolve(imageSrc);
+      }
+    };
+    img.onerror = () => resolve(imageSrc);
+    img.src = imageSrc;
+  });
 }
 
 const ALL_LANGS: LangOption[] = ['Japanese', 'Korean', 'English'];
@@ -203,7 +473,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
   const { isDarkMode } = useAppStore();
 
   // Mode: Live Camera vs. Uploaded Image
-  const [activeMode, setActiveMode] = useState<'camera' | 'upload'>('camera');
+  const [activeMode, setActiveMode] = useState<'camera' | 'upload'>('upload');
   const [cameraActive, setCameraActive] = useState(false);
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
   const [cameraError, setCameraError] = useState<string | null>(null);
@@ -216,17 +486,19 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
   const [scanProgress, setScanProgress] = useState(0);
   const [statusMessage, setStatusMessage] = useState('');
 
-  const [fromLang, setFromLang] = useState<LangOption>('Japanese');
+  const [fromLang, setFromLang] = useState<LangOption>('Korean');
   const [toLang, setToLang] = useState<LangOption>('English');
 
   const [scannedText, setScannedText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
   const [phoneticText, setPhoneticText] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
+  const [lexiconInsight, setLexiconInsight] = useState<LexiconEntry | null>(null);
 
   // Interactive Tokens
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [selectedWordTranslation, setSelectedWordTranslation] = useState<string | null>(null);
+  const [selectedWordPhonetic, setSelectedWordPhonetic] = useState<string | null>(null);
 
   // Audio TTS State
   const [isSpeakingSource, setIsSpeakingSource] = useState(false);
@@ -235,12 +507,93 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
   // UX Feedback
   const [isSaved, setIsSaved] = useState(false);
   const [copiedToast, setCopiedToast] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [pasteToast, setPasteToast] = useState(false);
 
   // DOM Refs
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Global Clipboard Paste Listener (Ctrl+V / Cmd+V)
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            e.preventDefault();
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const dataUrl = event.target?.result as string;
+              setCapturedImage(dataUrl);
+              setActiveMode('upload');
+              setPasteToast(true);
+              setTimeout(() => setPasteToast(false), 2500);
+              processOCR(dataUrl);
+            };
+            reader.readAsDataURL(file);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [fromLang, toLang]);
+
+  // Click-to-paste from Clipboard API
+  const handlePasteFromClipboard = async () => {
+    try {
+      if (!navigator.clipboard?.read) {
+        alert('Please press Ctrl+V to paste your copied image.');
+        return;
+      }
+      const clipboardItems = await navigator.clipboard.read();
+      for (const item of clipboardItems) {
+        const imageType = item.types.find((t) => t.startsWith('image/'));
+        if (imageType) {
+          const blob = await item.getType(imageType);
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const dataUrl = event.target?.result as string;
+            setCapturedImage(dataUrl);
+            setActiveMode('upload');
+            setPasteToast(true);
+            setTimeout(() => setPasteToast(false), 2500);
+            processOCR(dataUrl);
+          };
+          reader.readAsDataURL(blob);
+          return;
+        }
+      }
+      alert('No image found in your clipboard. Please copy an image or take a screenshot first, then paste!');
+    } catch (err) {
+      console.warn('Clipboard read error:', err);
+    }
+  };
+
+  // Drag & Drop Handler
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        setCapturedImage(dataUrl);
+        processOCR(dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Camera Management
   const stopCameraStream = useCallback(() => {
@@ -294,9 +647,12 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
     };
   }, [activeMode, startCameraStream, stopCameraStream]);
 
-  // Translation Function using Google GTX & MyMemory fallback
+  // =========================================================
+  // Multi-Engine Resilient Translation (with offline lexicon)
+  // =========================================================
   const performTranslation = useCallback(async (text: string, source: LangOption, target: LangOption) => {
-    if (!text.trim()) {
+    const clean = text.trim();
+    if (!clean) {
       setTranslatedText('');
       setPhoneticText('');
       return;
@@ -305,12 +661,27 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
     setIsTranslating(true);
     setIsSaved(false);
 
+    // Calculate phonetic immediately
+    const computedPhonetic = generatePhonetic(clean, source);
+    setPhoneticText(computedPhonetic);
+
+    // 1. Instant check against offline lexicon (exact and normalized)
+    const normalized = clean.replace(/[.,!?;:~\s"']/g, '').trim();
+    const directMatch = COMPREHENSIVE_LEXICON[clean] || COMPREHENSIVE_LEXICON[normalized];
+    if (directMatch && directMatch.translations[target]) {
+      setTranslatedText(directMatch.translations[target]);
+      setPhoneticText(directMatch.phonetic || computedPhonetic);
+      setIsTranslating(false);
+      return;
+    }
+
     const srcCode = LANG_CONFIG[source].apiCode;
     const tgtCode = LANG_CONFIG[target].apiCode;
 
+    // Engine 1: Google GTX API
     try {
       const response = await fetch(
-        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${srcCode}&tl=${tgtCode}&dt=t&q=${encodeURIComponent(text)}`
+        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${srcCode}&tl=${tgtCode}&dt=t&q=${encodeURIComponent(clean)}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -318,66 +689,153 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
           const result = data[0].filter((item: any) => item && item[0]).map((item: any) => item[0]).join('');
           if (result.trim()) {
             setTranslatedText(result);
-            setPhoneticText(generatePhonetic(result, target));
             setIsTranslating(false);
             return;
           }
         }
       }
     } catch (err) {
-      console.warn('Primary translation engine failed, using fallback:', err);
+      console.warn('Google GTX failed, trying secondary engines...', err);
     }
 
-    // Fallback engine: MyMemory
+    // Engine 2: Google Dict Client API
+    try {
+      const response = await fetch(
+        `https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl=${srcCode}&tl=${tgtCode}&dt=t&q=${encodeURIComponent(clean)}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data[0] && Array.isArray(data[0])) {
+          const result = data[0].filter((item: any) => item && item[0]).map((item: any) => item[0]).join('');
+          if (result.trim()) {
+            setTranslatedText(result);
+            setIsTranslating(false);
+            return;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Google Dict API failed:', err);
+    }
+
+    // Engine 3: MyMemory API
     try {
       const fbRes = await fetch(
-        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${srcCode}|${tgtCode}`
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(clean)}&langpair=${srcCode}|${tgtCode}`
       );
       if (fbRes.ok) {
         const fbData = await fbRes.json();
         if (fbData?.responseData?.translatedText) {
           const res = fbData.responseData.translatedText;
-          setTranslatedText(res);
-          setPhoneticText(generatePhonetic(res, target));
+          if (res.trim()) {
+            setTranslatedText(res);
+            setIsTranslating(false);
+            return;
+          }
         }
       }
     } catch (fbErr) {
-      console.warn('Fallback translation failed:', fbErr);
-    } finally {
-      setIsTranslating(false);
+      console.warn('MyMemory API failed:', fbErr);
     }
+
+    // Engine 4: Lingva Proxy API
+    try {
+      const lingvaRes = await fetch(
+        `https://lingva.ml/api/v1/${srcCode}/${tgtCode}/${encodeURIComponent(clean)}`
+      );
+      if (lingvaRes.ok) {
+        const lingvaData = await lingvaRes.json();
+        if (lingvaData?.translation) {
+          setTranslatedText(lingvaData.translation);
+          setIsTranslating(false);
+          return;
+        }
+      }
+    } catch (lErr) {
+      console.warn('Lingva Proxy failed:', lErr);
+    }
+
+    // Fallback: Partial word matching or direct clean word
+    let partialFound = false;
+    for (const [dictWord, dictEntry] of Object.entries(COMPREHENSIVE_LEXICON)) {
+      if ((clean.includes(dictWord) || normalized.includes(dictWord)) && dictEntry.translations[target]) {
+        setTranslatedText(dictEntry.translations[target]);
+        if (dictEntry.phonetic) setPhoneticText(dictEntry.phonetic);
+        partialFound = true;
+        break;
+      }
+    }
+
+    if (!partialFound) {
+      setTranslatedText(clean);
+    }
+
+    setIsTranslating(false);
   }, []);
 
-  // Run OCR on an Image (DataURL or Canvas)
+  // Auto-translate whenever scannedText, fromLang, or toLang changes
+  useEffect(() => {
+    if (scannedText.trim()) {
+      performTranslation(scannedText, fromLang, toLang);
+    } else {
+      setTranslatedText('');
+      setPhoneticText('');
+    }
+  }, [scannedText, fromLang, toLang, performTranslation]);
+
+  // Run OCR on an Image with Preprocessing
   const processOCR = async (imageSource: string) => {
     setIsScanning(true);
-    setScanProgress(5);
-    setStatusMessage('Initializing OCR Neural Engine...');
+    setScanProgress(10);
+    setStatusMessage('Preprocessing image for high optical contrast...');
     setSelectedWord(null);
     setSelectedWordTranslation(null);
 
     try {
+      // Step 1: Canvas Enhancement
+      const enhancedSource = await preprocessImageForOCR(imageSource);
+      setScanProgress(25);
+      setStatusMessage('Loading OCR Neural Engine...');
+
+      // Step 2: Run Tesseract with configured language
       const tesseractLang = LANG_CONFIG[fromLang].tesseractLang;
-      // Load worker
       const worker = await createWorker(tesseractLang, 1, {
         logger: (m) => {
           if (m.status === 'recognizing text') {
-            setScanProgress(Math.floor(m.progress * 100));
-            setStatusMessage(`Recognizing text (${Math.floor(m.progress * 100)}%)...`);
+            const pct = Math.floor(m.progress * 65) + 30;
+            setScanProgress(Math.min(95, pct));
+            setStatusMessage(`Recognizing foreign characters (${Math.floor(m.progress * 100)}%)...`);
           } else if (m.status) {
             setStatusMessage(`${m.status.charAt(0).toUpperCase() + m.status.slice(1)}...`);
           }
         }
       });
 
-      const { data } = await worker.recognize(imageSource);
+      const { data } = await worker.recognize(enhancedSource);
       await worker.terminate();
 
-      const extracted = data.text.trim().replace(/\s+/g, ' ');
-      if (extracted) {
-        setScannedText(extracted);
-        setStatusMessage('Text recognized! Translating...');
-        await performTranslation(extracted, fromLang, toLang);
+      let rawExtracted = data.text.trim();
+      let cleaned = cleanOcrText(rawExtracted, fromLang);
+
+      // Auto-detect language if mismatch
+      const detected = detectLanguageFromText(cleaned);
+      let activeFrom = fromLang;
+      let activeTo = toLang;
+
+      if (detected && detected !== fromLang) {
+        activeFrom = detected;
+        setFromLang(detected);
+        if (toLang === detected) {
+          activeTo = detected === 'English' ? 'Korean' : 'English';
+          setToLang(activeTo);
+        }
+      }
+
+      if (cleaned) {
+        setScannedText(cleaned);
+        setScanProgress(100);
+        setStatusMessage('Text recognized! Generating instant translation...');
+        await performTranslation(cleaned, activeFrom, activeTo);
       } else {
         setScannedText('No clear text detected. Please aim closely with good lighting.');
         setStatusMessage('No text found.');
@@ -396,8 +854,8 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
 
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -406,7 +864,6 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
     const dataUrl = canvas.toDataURL('image/png');
     setCapturedImage(dataUrl);
 
-    // Run OCR
     processOCR(dataUrl);
   };
 
@@ -424,13 +881,24 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
     reader.readAsDataURL(file);
   };
 
-  // Translate Single Word on Click
+  // Translate Single Word on Click with Lexicon & API Lookup
   const handleSelectWord = async (word: string) => {
     const cleanWord = word.replace(/[.,!?;:"'(){}\[\]]/g, '').trim();
     if (!cleanWord) return;
 
     setSelectedWord(cleanWord);
-    setSelectedWordTranslation('Translating...');
+    setSelectedWordTranslation('Looking up definition...');
+    setSelectedWordPhonetic(generatePhonetic(cleanWord, fromLang));
+
+    // Check offline dictionary first
+    if (COMPREHENSIVE_LEXICON[cleanWord]) {
+      const entry = COMPREHENSIVE_LEXICON[cleanWord];
+      const match = entry.translations[toLang];
+      if (match) {
+        setSelectedWordTranslation(match);
+        return;
+      }
+    }
 
     const srcCode = LANG_CONFIG[fromLang].apiCode;
     const tgtCode = LANG_CONFIG[toLang].apiCode;
@@ -441,15 +909,31 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
       );
       if (response.ok) {
         const data = await response.json();
-        if (data && data[0] && data[0][0]) {
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
           setSelectedWordTranslation(data[0][0][0]);
           return;
         }
       }
     } catch (err) {
-      console.warn('Word translation failed:', err);
+      console.warn('Word translation API failed, checking dictionary...', err);
     }
-    setSelectedWordTranslation('Direct definition unavailable');
+
+    try {
+      const fbRes = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(cleanWord)}&langpair=${srcCode}|${tgtCode}`
+      );
+      if (fbRes.ok) {
+        const fbData = await fbRes.json();
+        if (fbData?.responseData?.translatedText) {
+          setSelectedWordTranslation(fbData.responseData.translatedText);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Fallback failed:', e);
+    }
+
+    setSelectedWordTranslation(cleanWord);
   };
 
   // Audio Speech Synthesis
@@ -476,13 +960,25 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
 
   // Save to Review Deck
   const handleSaveToReview = () => {
-    if (!scannedText.trim() || !translatedText.trim()) return;
+    const term = scannedText.trim();
+    const translation =
+      translatedText ||
+      COMPREHENSIVE_LEXICON[term]?.translations[toLang] ||
+      COMPREHENSIVE_LEXICON[term.replace(/[.,!?;:~\s"']/g, '')]?.translations[toLang] ||
+      term;
+    if (!term || !translation) return;
+
+    const phonetic =
+      phoneticText ||
+      COMPREHENSIVE_LEXICON[term]?.phonetic ||
+      COMPREHENSIVE_LEXICON[term.replace(/[.,!?;:~\s"']/g, '')]?.phonetic ||
+      generatePhonetic(term, fromLang);
 
     onSaveToReview({
-      term: scannedText,
-      translation: translatedText,
+      term,
+      translation,
       language: LANG_CONFIG[toLang].trackCode,
-      phonetic: phoneticText || undefined
+      phonetic: phonetic || undefined
     });
 
     setIsSaved(true);
@@ -491,8 +987,14 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
 
   // Copy Translation
   const handleCopy = () => {
-    if (!translatedText) return;
-    navigator.clipboard.writeText(translatedText);
+    const term = scannedText.trim();
+    const textToCopy =
+      translatedText ||
+      COMPREHENSIVE_LEXICON[term]?.translations[toLang] ||
+      COMPREHENSIVE_LEXICON[term.replace(/[.,!?;:~\s"']/g, '')]?.translations[toLang] ||
+      term;
+    if (!textToCopy) return;
+    navigator.clipboard.writeText(textToCopy);
     setCopiedToast(true);
     setTimeout(() => setCopiedToast(false), 2000);
   };
@@ -507,7 +1009,11 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
     }
   };
 
-  const wordsList = scannedText ? scannedText.split(' ').filter(Boolean) : [];
+  // Break text into interactive word tokens
+  const wordsList: string[] = useMemo(() => {
+    if (!scannedText) return [];
+    return scannedText.split(/\s+/).filter(Boolean);
+  }, [scannedText]);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-24 px-2 sm:px-4">
@@ -618,6 +1124,21 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
         </div>
       </div>
 
+      {/* Toast banner for pasted screenshot */}
+      <AnimatePresence>
+        {pasteToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#F06543] to-[#F97316] text-white font-bold text-xs shadow-xl flex items-center gap-2 border border-white/20 backdrop-blur-md"
+          >
+            <span className="material-symbols-outlined text-base">content_paste</span>
+            <span>Image pasted from clipboard! Scanning text...</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main Scanner Workspace Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Camera Viewport / Photo Uploader (7 cols) */}
@@ -696,7 +1217,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
               )
             ) : (
               /* Photo Upload Mode */
-              <div className="text-center p-6 space-y-3 w-full h-full flex flex-col items-center justify-center">
+              <div className="text-center p-4 sm:p-6 space-y-3 w-full h-full flex flex-col items-center justify-center">
                 {capturedImage ? (
                   <div className="relative w-full h-full flex items-center justify-center">
                     <img src={capturedImage} alt="Uploaded text preview" className="max-h-full max-w-full object-contain rounded-xl" />
@@ -706,7 +1227,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                         setScannedText('');
                         setTranslatedText('');
                       }}
-                      className="absolute top-2 right-2 py-1 px-3 rounded-lg bg-black/70 text-white text-xs font-bold hover:bg-black/90"
+                      className="absolute top-2 right-2 py-1 px-3 rounded-lg bg-black/70 text-white text-xs font-bold hover:bg-black/90 cursor-pointer"
                     >
                       Change Photo
                     </button>
@@ -714,13 +1235,61 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                 ) : (
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full h-full border-2 border-dashed border-slate-700 hover:border-orange-500 rounded-2xl flex flex-col items-center justify-center p-6 cursor-pointer transition-colors bg-slate-900/40"
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={handleDrop}
+                    className={`w-full h-full border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 cursor-pointer transition-all ${
+                      isDragging
+                        ? 'border-orange-500 bg-orange-500/10 scale-[0.99]'
+                        : isDarkMode
+                        ? 'border-slate-700 hover:border-orange-500/70 bg-slate-900/40'
+                        : 'border-slate-300 hover:border-orange-500/70 bg-slate-50/70'
+                    }`}
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 mb-3">
-                      <ImageIcon size={28} />
+                    <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-[#F06543] mb-3">
+                      <span className="material-symbols-outlined text-3xl">content_paste_go</span>
                     </div>
-                    <span className="font-bold text-sm text-white">Click or Drag Image Here</span>
-                    <span className="text-xs text-slate-400 mt-1">Supports PNG, JPG, WEBP screenshots or photos</span>
+
+                    <span className={`font-display font-extrabold text-base ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                      Paste (Ctrl + V), Drag, or Click Image
+                    </span>
+
+                    <span className={`text-xs mt-1 max-w-xs text-center ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                      Copy any screenshot or picture to clipboard and press <strong className="text-orange-500">Ctrl + V</strong> anywhere!
+                    </span>
+
+                    <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePasteFromClipboard();
+                        }}
+                        className="px-3.5 py-1.5 rounded-xl bg-orange-500/15 border border-orange-500/30 text-[#F06543] font-extrabold text-xs flex items-center gap-1.5 hover:bg-orange-500/25 transition-all cursor-pointer shadow-xs"
+                      >
+                        <span className="material-symbols-outlined text-sm">content_paste</span>
+                        <span>Paste from Clipboard</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
+                        }}
+                        className={`px-3.5 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                          isDarkMode
+                            ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+                            : 'bg-white border-slate-300 text-slate-700 hover:text-slate-900 shadow-xs'
+                        }`}
+                      >
+                        <Upload size={14} />
+                        <span>Browse Files</span>
+                      </button>
+                    </div>
                   </div>
                 )}
                 <input
@@ -777,10 +1346,14 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
         <div className="lg:col-span-5 space-y-4">
           {/* Scanned Original Text Card */}
           <div className={`p-5 rounded-3xl border transition-all ${
-            isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b] text-white' : 'bg-white border-slate-200 text-slate-800'
+            isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b]' : 'bg-white border-slate-200 shadow-sm'
           }`}>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800/80">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <div className={`flex items-center justify-between pb-3 border-b ${
+              isDarkMode ? 'border-slate-800' : 'border-slate-100'
+            }`}>
+              <span className={`text-xs font-extrabold uppercase tracking-wider flex items-center gap-2 ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-500'
+              }`}>
                 <FlagIcon code={LANG_CONFIG[fromLang].code} size="sm" />
                 <span>Extracted {fromLang} Text</span>
               </span>
@@ -793,7 +1366,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                       ? 'bg-orange-500 text-white border-orange-500'
                       : isDarkMode
                       ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
-                      : 'bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900'
+                      : 'bg-slate-100 border-slate-300 text-slate-700 hover:text-slate-900'
                   }`}
                   title="Play pronunciation"
                 >
@@ -809,7 +1382,6 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                 value={scannedText}
                 onChange={(e) => {
                   setScannedText(e.target.value);
-                  performTranslation(e.target.value, fromLang, toLang);
                 }}
                 placeholder="Scanned words will appear here. You can also edit or type manually..."
                 rows={3}
@@ -823,9 +1395,11 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
 
             {/* Interactive Word Breakdown Pills */}
             {wordsList.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800/60">
+              <div className={`mt-3 pt-3 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                    isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                  }`}>
                     Tap Word For Single Breakdown:
                   </span>
                 </div>
@@ -853,20 +1427,26 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                     isDarkMode ? 'bg-orange-950/30 border-orange-500/30 text-orange-300' : 'bg-orange-50 border-orange-200 text-orange-900'
                   }`}>
                     <div className="flex items-center gap-2 truncate">
-                      <span className="font-bold">{selectedWord}:</span>
-                      <span className="truncate">{selectedWordTranslation}</span>
+                      <span className={`font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{selectedWord}:</span>
+                      {selectedWordPhonetic && (
+                        <span className="text-[11px] text-orange-500 font-mono">[{selectedWordPhonetic}]</span>
+                      )}
+                      <span className={`truncate font-semibold ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>
+                        {selectedWordTranslation}
+                      </span>
                     </div>
                     <button
                       onClick={() => {
                         onSaveToReview({
                           term: selectedWord,
                           translation: selectedWordTranslation || '',
-                          language: LANG_CONFIG[toLang].trackCode
+                          language: LANG_CONFIG[toLang].trackCode,
+                          phonetic: selectedWordPhonetic || undefined
                         });
                         setIsSaved(true);
                         setTimeout(() => setIsSaved(false), 2000);
                       }}
-                      className="px-2 py-0.5 rounded-md bg-[#F06543] text-white font-bold text-[10px] shrink-0"
+                      className="px-2 py-0.5 rounded-md bg-[#F06543] text-white font-bold text-[10px] shrink-0 cursor-pointer"
                     >
                       Save Word
                     </button>
@@ -878,25 +1458,37 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
 
           {/* Translation Result Card */}
           <div className={`p-5 rounded-3xl border transition-all relative overflow-hidden ${
-            isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b] text-white' : 'bg-white border-slate-200 text-slate-800'
+            isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b]' : 'bg-white border-slate-200 shadow-sm'
           }`}>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800/80">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <div className={`flex items-center justify-between pb-3 border-b ${
+              isDarkMode ? 'border-slate-800' : 'border-slate-100'
+            }`}>
+              <span className={`text-xs font-extrabold uppercase tracking-wider flex items-center gap-2 ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-500'
+              }`}>
                 <FlagIcon code={LANG_CONFIG[toLang].code} size="sm" />
                 <span>{toLang} Translation</span>
               </span>
 
               <div className="flex items-center gap-1.5">
-                {translatedText && (
+                {(translatedText || scannedText) && (
                   <>
                     <button
-                      onClick={() => handleSpeak(translatedText, toLang, false)}
+                      onClick={() => {
+                        const term = scannedText.trim();
+                        const wordToSpeak =
+                          translatedText ||
+                          COMPREHENSIVE_LEXICON[term]?.translations[toLang] ||
+                          COMPREHENSIVE_LEXICON[term.replace(/[.,!?;:~\s"']/g, '')]?.translations[toLang] ||
+                          term;
+                        handleSpeak(wordToSpeak, toLang, false);
+                      }}
                       className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${
                         isSpeakingTarget
                           ? 'bg-orange-500 text-white border-orange-500'
                           : isDarkMode
                           ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
-                          : 'bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900'
+                          : 'bg-slate-100 border-slate-300 text-slate-700 hover:text-slate-900'
                       }`}
                       title="Play Translation Pronunciation"
                     >
@@ -909,7 +1501,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                           ? 'bg-emerald-500 text-white border-emerald-500'
                           : isDarkMode
                           ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
-                          : 'bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900'
+                          : 'bg-slate-100 border-slate-300 text-slate-700 hover:text-slate-900'
                       }`}
                       title="Copy translation"
                     >
@@ -921,33 +1513,75 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
             </div>
 
             {/* Translation Output Body */}
-            <div className="py-4 min-h-[90px] flex flex-col justify-center">
-              {isTranslating ? (
+            <div className="py-5 min-h-[90px] flex flex-col justify-center space-y-2.5">
+              {isTranslating && !translatedText ? (
                 <div className="flex items-center gap-2 text-xs font-bold text-orange-400">
                   <span className="material-symbols-outlined text-base animate-spin">sync</span>
-                  <span>Generating instant translation...</span>
-                </div>
-              ) : translatedText ? (
-                <div className="space-y-1.5">
-                  <p className="font-display font-bold text-base sm:text-lg leading-relaxed text-slate-900 dark:text-white">
-                    {translatedText}
-                  </p>
-                  {phoneticText && (
-                    <p className="text-xs font-mono font-medium text-orange-500 dark:text-orange-400">
-                      /{phoneticText}/
-                    </p>
-                  )}
+                  <span>Translating...</span>
                 </div>
               ) : (
-                <p className="text-xs text-slate-400 italic">
-                  Capture or type text to view translated meaning.
-                </p>
+                (() => {
+                  const directWord =
+                    translatedText ||
+                    (scannedText
+                      ? COMPREHENSIVE_LEXICON[scannedText.trim()]?.translations[toLang] ||
+                        COMPREHENSIVE_LEXICON[scannedText.trim().replace(/[.,!?;:~\s"']/g, '')]?.translations[toLang] ||
+                        ''
+                      : '');
+                  const currentPhonetic =
+                    phoneticText ||
+                    (scannedText
+                      ? COMPREHENSIVE_LEXICON[scannedText.trim()]?.phonetic ||
+                        COMPREHENSIVE_LEXICON[scannedText.trim().replace(/[.,!?;:~\s"']/g, '')]?.phonetic ||
+                        generatePhonetic(scannedText, fromLang)
+                      : '');
+
+                  if (!directWord && !scannedText) {
+                    return (
+                      <p className={`text-xs italic ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Capture or type text to view translated meaning.
+                      </p>
+                    );
+                  }
+
+                  return (
+                    <div className="space-y-2.5 animate-fadeIn">
+                      <h2 className={`font-display font-black text-3xl sm:text-4xl tracking-tight leading-snug ${
+                        isDarkMode ? 'text-white' : 'text-slate-900'
+                      }`}>
+                        {directWord || scannedText}
+                      </h2>
+
+                      {/* Clean Pronunciation Guide */}
+                      {currentPhonetic && (
+                        <div className={`flex items-center gap-2 pt-2 border-t ${
+                          isDarkMode ? 'border-slate-800' : 'border-slate-100'
+                        }`}>
+                          <span className={`text-[10px] font-extrabold uppercase tracking-wider ${
+                            isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                          }`}>
+                            Pronunciation:
+                          </span>
+                          <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-lg border ${
+                            isDarkMode
+                              ? 'text-orange-400 bg-orange-500/10 border-orange-500/30'
+                              : 'text-[#ea580c] bg-orange-50 border-orange-200'
+                          }`}>
+                            [{currentPhonetic}]
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()
               )}
             </div>
 
             {/* Save to Review Deck CTA */}
-            {translatedText && (
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
+            {(translatedText || scannedText) && (
+              <div className={`pt-3 border-t flex items-center justify-between ${
+                isDarkMode ? 'border-slate-800' : 'border-slate-100'
+              }`}>
                 <button
                   onClick={handleSaveToReview}
                   className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${

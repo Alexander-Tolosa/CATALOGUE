@@ -2,8 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
+  ArrowLeft,
+  ArrowRight,
   Radio,
   X,
   MessageSquare,
@@ -19,7 +19,7 @@ interface OverviewRightSidebarProps {
   onNavigate: (view: AppView) => void;
 }
 
-// Neumorphism style tokens
+// Neumorphism style tokens for other elements
 const neumorphicCard = {
   dark: 'bg-[#121624] border border-white/[0.04] shadow-[-6px_-6px_16px_rgba(255,255,255,0.03),6px_6px_18px_rgba(0,0,0,0.65)]',
   light: 'bg-[#eef2f7] border border-white/60 shadow-[-8px_-8px_16px_rgba(255,255,255,0.9),8px_8px_16px_rgba(166,180,200,0.55)]',
@@ -42,7 +42,8 @@ interface CalendarDay {
 }
 
 function buildCalendarGrid(year: number, month: number, today: Date): CalendarDay[] {
-  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+  // Monday start: 0=Mon, 1=Tue, ..., 6=Sun
+  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysInPrevMonth = new Date(year, month, 0).getDate();
 
@@ -66,8 +67,9 @@ function buildCalendarGrid(year: number, month: number, today: Date): CalendarDa
     });
   }
 
-  // Next month fill (always fill to 42 cells = 6 rows)
-  const remaining = 42 - grid.length;
+  // Next month fill (fill to 35 or 42 cells)
+  const totalCells = grid.length > 35 ? 42 : 35;
+  const remaining = totalCells - grid.length;
   for (let d = 1; d <= remaining; d++) {
     grid.push({ day: d, isOtherMonth: true, isToday: false });
   }
@@ -89,11 +91,6 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
   const [isCalendarHidden, setIsCalendarHidden] = useState(false);
   const [isOnlineHidden, setIsOnlineHidden] = useState(false);
   const [isFullCalendarOpen, setIsFullCalendarOpen] = useState(false);
-
-  const monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
 
   const fullMonthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -127,7 +124,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
   // Format today for the full calendar modal
   const todayFormatted = `${fullMonthNames[realToday.getMonth()]} ${realToday.getDate()}, ${realToday.getFullYear()}`;
 
-  // Neumorphic card class helper
+  // Neumorphic card class helper for other cards
   const neuCard = isDarkMode ? neumorphicCard.dark : neumorphicCard.light;
   const neuBtn = isDarkMode ? neumorphicButton.dark : neumorphicButton.light;
   const neuInset = isDarkMode ? neumorphicInset.dark : neumorphicInset.light;
@@ -141,58 +138,78 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
           CARD 1: Calendar — Neumorphism
          ======================================================== */}
       {!isCalendarHidden ? (
-        <div className={`p-5 rounded-3xl space-y-4 transition-all duration-300 ${neuCard}`}>
-          {/* Header with Red Calendar Icon */}
-          <div className="flex items-center gap-2 text-[#e11d48] font-black text-sm">
-            <div className={`p-1.5 rounded-xl ${neuBtn}`}>
-              <CalendarIcon size={16} className="stroke-[2.5]" />
-            </div>
-            <span className="text-xs font-black tracking-wide">Calendar</span>
-          </div>
-
-          {/* Month Switcher */}
-          <div className="flex items-center justify-between px-1">
-            <button
-              onClick={handlePrevMonth}
-              className={`p-1.5 rounded-xl transition-all cursor-pointer ${neuBtn} ${
-                isDarkMode ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+        <div
+          className={`p-6 rounded-[28px] space-y-5 transition-all duration-300 ${
+            isDarkMode
+              ? 'bg-[#1a1e2d] border border-white/[0.03] shadow-[-6px_-6px_18px_rgba(255,255,255,0.035),6px_6px_20px_rgba(0,0,0,0.7)]'
+              : 'bg-[#eef2f7] border border-white/60 shadow-[-8px_-8px_18px_rgba(255,255,255,0.9),8px_8px_18px_rgba(166,180,200,0.55)]'
+          }`}
+        >
+          {/* Header: Month & Year + Neumorphic Arrow Buttons */}
+          <div className="flex items-center justify-between">
+            <span
+              className={`font-display font-extrabold text-base tracking-tight ${
+                isDarkMode ? 'text-white' : 'text-slate-900'
               }`}
             >
-              <ChevronLeft size={16} />
-            </button>
-            <span className={`font-display font-black text-sm ${isDarkMode ? 'text-slate-100' : 'text-slate-800'}`}>
-              {monthNames[viewMonth]} {viewYear}
+              {fullMonthNames[viewMonth]} {viewYear}
             </span>
-            <button
-              onClick={handleNextMonth}
-              className={`p-1.5 rounded-xl transition-all cursor-pointer ${neuBtn} ${
-                isDarkMode ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <ChevronRight size={16} />
-            </button>
+
+            {/* Neumorphic Rounded Arrow Buttons */}
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={handlePrevMonth}
+                aria-label="Previous Month"
+                className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer active:scale-95 ${
+                  isDarkMode
+                    ? 'bg-[#1a1e2d] text-[#2dd4bf] hover:text-[#5eead4] shadow-[-2px_-2px_6px_rgba(255,255,255,0.04),2px_2px_6px_rgba(0,0,0,0.65)] active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.7),inset_-2px_-2px_4px_rgba(255,255,255,0.04)]'
+                    : 'bg-[#eef2f7] text-[#fb7185] hover:text-[#f43f5e] shadow-[-3px_-3px_6px_rgba(255,255,255,0.9),3px_3px_6px_rgba(166,180,200,0.5)] active:shadow-[inset_2px_2px_4px_rgba(166,180,200,0.5),inset_-2px_-2px_4px_rgba(255,255,255,0.9)]'
+                }`}
+              >
+                <ArrowLeft size={14} strokeWidth={2.5} />
+              </button>
+              <button
+                onClick={handleNextMonth}
+                aria-label="Next Month"
+                className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer active:scale-95 ${
+                  isDarkMode
+                    ? 'bg-[#1a1e2d] text-[#2dd4bf] hover:text-[#5eead4] shadow-[-2px_-2px_6px_rgba(255,255,255,0.04),2px_2px_6px_rgba(0,0,0,0.65)] active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.7),inset_-2px_-2px_4px_rgba(255,255,255,0.04)]'
+                    : 'bg-[#eef2f7] text-[#fb7185] hover:text-[#f43f5e] shadow-[-3px_-3px_6px_rgba(255,255,255,0.9),3px_3px_6px_rgba(166,180,200,0.5)] active:shadow-[inset_2px_2px_4px_rgba(166,180,200,0.5),inset_-2px_-2px_4px_rgba(255,255,255,0.9)]'
+                }`}
+              >
+                <ArrowRight size={14} strokeWidth={2.5} />
+              </button>
+            </div>
           </div>
 
-          {/* Days of the Week Headers */}
-          <div className={`grid grid-cols-7 text-center text-[10px] font-black ${
-            isDarkMode ? 'text-slate-400' : 'text-slate-500'
-          }`}>
-            <span>S</span>
-            <span>M</span>
-            <span>T</span>
-            <span>W</span>
-            <span>T</span>
-            <span>F</span>
-            <span>S</span>
+          {/* Days of the Week: Mo Tu We Th Fr Sa Su */}
+          <div
+            className={`grid grid-cols-7 text-center text-[11px] font-semibold tracking-wide ${
+              isDarkMode ? 'text-slate-400/80' : 'text-slate-400'
+            }`}
+          >
+            <span>Mo</span>
+            <span>Tu</span>
+            <span>We</span>
+            <span>Th</span>
+            <span>Fr</span>
+            <span>Sa</span>
+            <span>Su</span>
           </div>
 
-          {/* Days Grid (42 cells: 6 rows × 7 cols) */}
-          <div className="grid grid-cols-7 gap-1.5 text-center text-xs font-extrabold">
+          {/* Days Grid */}
+          <div className="grid grid-cols-7 gap-y-2 text-center text-xs font-semibold">
             {calendarDays.map((item, index) => {
               if (item.isToday) {
                 return (
                   <div key={index} className="flex items-center justify-center">
-                    <span className="w-7 h-7 rounded-full bg-[#e11d48] text-white flex items-center justify-center font-black text-xs shadow-[-2px_-2px_6px_rgba(255,255,255,0.25),3px_3px_8px_rgba(0,0,0,0.5)] ring-2 ring-[#e11d48]/40">
+                    <span
+                      className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs transition-transform hover:scale-105 ${
+                        isDarkMode
+                          ? 'bg-[#06b6d4] text-[#101422] shadow-[-2px_-2px_6px_rgba(255,255,255,0.25),2px_2px_8px_rgba(0,0,0,0.6)] shadow-[0_0_14px_rgba(6,182,212,0.45)]'
+                          : 'bg-[#fb7185] text-white shadow-[-2px_-2px_6px_rgba(255,255,255,0.7),2px_2px_8px_rgba(200,80,100,0.4)] shadow-[0_4px_12px_rgba(251,113,133,0.4)]'
+                      }`}
+                    >
                       {item.day}
                     </span>
                   </div>
@@ -204,11 +221,11 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
                   className={`flex items-center justify-center h-7 rounded-full transition-all ${
                     item.isOtherMonth
                       ? isDarkMode
-                        ? 'text-slate-600 font-semibold'
-                        : 'text-slate-400 font-semibold'
+                        ? 'text-slate-600/50 font-normal'
+                        : 'text-slate-300 font-normal'
                       : isDarkMode
-                        ? 'text-slate-100 hover:bg-[#181d30] hover:shadow-[-2px_-2px_5px_rgba(255,255,255,0.04),2px_2px_5px_rgba(0,0,0,0.5)]'
-                        : 'text-slate-800 hover:bg-[#e4eaf2] hover:shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(166,180,200,0.4)]'
+                        ? 'text-slate-200 hover:text-white font-medium cursor-pointer hover:bg-[#1a1e2d] hover:shadow-[-2px_-2px_5px_rgba(255,255,255,0.04),2px_2px_5px_rgba(0,0,0,0.5)]'
+                        : 'text-slate-800 hover:text-slate-950 font-medium cursor-pointer hover:bg-[#eef2f7] hover:shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(166,180,200,0.4)]'
                   }`}
                 >
                   <span>{item.day}</span>
@@ -217,19 +234,27 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
             })}
           </div>
 
-          {/* Bottom Links */}
-          <div className={`pt-3 border-t flex items-center justify-between text-xs font-semibold ${
-            isDarkMode ? 'border-white/[0.04]' : 'border-black/[0.05]'
-          }`}>
+          {/* Footer: Full calendar & Hide */}
+          <div
+            className={`pt-3 border-t flex items-center justify-between text-[11px] font-semibold ${
+              isDarkMode
+                ? 'border-black/30 shadow-[0_-1px_0_rgba(255,255,255,0.03)]'
+                : 'border-white/60 shadow-[0_-1px_0_rgba(166,180,200,0.2)]'
+            }`}
+          >
             <button
               onClick={() => setIsFullCalendarOpen(true)}
-              className="text-sky-400 hover:text-sky-300 transition-colors cursor-pointer"
+              className={`transition-colors cursor-pointer ${
+                isDarkMode ? 'text-[#2dd4bf] hover:text-[#5eead4]' : 'text-[#fb7185] hover:text-[#f43f5e]'
+              }`}
             >
               full calendar
             </button>
             <button
               onClick={() => setIsCalendarHidden(true)}
-              className="text-sky-400 hover:text-sky-300 transition-colors cursor-pointer"
+              className={`transition-colors cursor-pointer ${
+                isDarkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-400 hover:text-slate-700'
+              }`}
             >
               hide
             </button>
@@ -238,12 +263,22 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
       ) : (
         <button
           onClick={() => setIsCalendarHidden(false)}
-          className={`w-full py-2.5 px-4 rounded-2xl text-xs font-bold flex items-center justify-between transition-all ${neuBtn}`}
+          className={`w-full py-3 px-5 rounded-[22px] text-xs font-bold flex items-center justify-between transition-all ${
+            isDarkMode
+              ? 'bg-[#1a1e2d] text-slate-300 hover:text-white border border-white/[0.03] shadow-[-4px_-4px_12px_rgba(255,255,255,0.03),4px_4px_12px_rgba(0,0,0,0.6)] active:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6)]'
+              : 'bg-[#eef2f7] text-slate-700 hover:text-slate-900 border border-white/60 shadow-[-5px_-5px_12px_rgba(255,255,255,0.8),5px_5px_12px_rgba(166,180,200,0.5)] active:shadow-[inset_2px_2px_4px_rgba(166,180,200,0.5)]'
+          }`}
         >
-          <span className="flex items-center gap-2 text-[#e11d48]">
-            <CalendarIcon size={14} /> Show Calendar
+          <span
+            className={`flex items-center gap-2 font-extrabold ${
+              isDarkMode ? 'text-[#2dd4bf]' : 'text-[#fb7185]'
+            }`}
+          >
+            <CalendarIcon size={15} /> Show Calendar
           </span>
-          <span className="text-sky-400 text-[11px]">show</span>
+          <span className={`text-[11px] font-semibold ${isDarkMode ? 'text-[#2dd4bf]' : 'text-[#fb7185]'}`}>
+            show
+          </span>
         </button>
       )}
 

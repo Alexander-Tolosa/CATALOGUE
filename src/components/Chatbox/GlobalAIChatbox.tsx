@@ -176,7 +176,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
   // If chatbot is closed, show floating button at bottom-right of dashboard (positioned above mobile bottom nav on mobile)
   if (!isChatbotOpen) {
     return (
-      <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50">
+      <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-30">
         <motion.button
           onClick={() => setIsChatbotOpen(true)}
           whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}

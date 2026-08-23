@@ -227,8 +227,10 @@ export const App: React.FC = () => {
         onClose={() => setIsPitchModalOpen(false)}
       />
 
-      {/* Persistent Global AI Chatbox */}
-      <GlobalAIChatbox currentLanguage={profile.selectedLanguage} />
+      {/* AI Chatbox - Visible on Overview & Dashboard */}
+      {(activeView === 'dashboard' || activeView === 'learn') && (
+        <GlobalAIChatbox currentLanguage={profile.selectedLanguage} />
+      )}
 
       {/* Global Direct Encrypted Friend Chat Modal */}
       <DirectChatModal />

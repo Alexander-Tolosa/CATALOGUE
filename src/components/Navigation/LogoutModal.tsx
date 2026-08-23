@@ -20,14 +20,14 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-md p-4 select-none">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 backdrop-blur-md p-4 select-none">
         {/* Backdrop click to close */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0"
+          className="absolute inset-0 z-0"
         />
 
         {/* Modal Card */}

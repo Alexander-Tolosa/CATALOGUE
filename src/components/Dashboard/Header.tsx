@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { UserProfile, LanguageTrack, AppView } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
-import { LogoutModal } from '../Navigation/LogoutModal';
 import {
   Mail,
   Bell,
@@ -13,14 +12,12 @@ import {
   HelpCircle,
   Printer,
   Globe,
-  LogOut,
   Menu,
   X,
   Flame,
   CheckCircle2,
   BookOpen,
-  Sparkles,
-  User
+  Sparkles
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -86,7 +83,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   onSelectView
 }) => {
   const { isDarkMode, toggleThemeMode, isSidebarExpanded } = useAppStore();
-  const { googleUser, logout } = useAuthStore();
+  const { googleUser } = useAuthStore();
 
   const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
 
@@ -102,7 +99,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   const [isBellOpen, setIsBellOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isLangSubmenuOpen, setIsLangSubmenuOpen] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const mailRef = useRef<HTMLDivElement>(null);
@@ -134,12 +130,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
     setTimeout(() => {
       window.print();
     }, 150);
-  };
-
-  const handleConfirmLogout = () => {
-    logout();
-    setIsLogoutModalOpen(false);
-    setIsProfileMenuOpen(false);
   };
 
   return (
@@ -297,39 +287,12 @@ export const TopAppBar: React.FC<HeaderProps> = ({
             {/* Profile Dropdown Menu */}
             {isProfileMenuOpen && (
               <div
-                className={`absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 rounded-2xl border shadow-2xl py-2 z-50 animate-fadeIn ${
+                className={`absolute left-0 sm:left-auto sm:right-0 mt-2 w-60 rounded-2xl border shadow-2xl py-2 z-50 animate-fadeIn ${
                   isDarkMode
                     ? 'bg-[#131722] border-[#22283a] text-slate-100'
                     : 'bg-white border-[#e2d9cd] text-slate-800'
                 }`}
               >
-                {/* Header item: View Profile */}
-                <button
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    if (onSelectView) {
-                      onSelectView('profile');
-                    } else {
-                      window.dispatchEvent(new CustomEvent('catalogue:navigate-view', { detail: 'profile' }));
-                    }
-                  }}
-                  className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
-                    isDarkMode
-                      ? 'hover:bg-[#1a2032] text-slate-200'
-                      : 'hover:bg-[#f6f1e8] text-slate-800'
-                  }`}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <User className="w-4 h-4 text-[#38bdf8]" />
-                    <span>View Profile</span>
-                  </span>
-                  <span className="text-[10px] font-bold text-[#38bdf8] bg-sky-500/10 px-2 py-0.5 rounded-md">
-                    Open
-                  </span>
-                </button>
-
-                <div className={`my-1 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`} />
-
                 {/* 1. Toggle Dark Mode */}
                 <button
                   onClick={() => {
@@ -474,22 +437,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                 >
                   <span>Print this page</span>
                   <Printer className="w-4 h-4 text-slate-400" />
-                </button>
-
-                <div className={`my-1 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`} />
-
-                {/* 5. Log Out */}
-                <button
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    setIsLogoutModalOpen(true);
-                  }}
-                  className="w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                >
-                  <span className="flex items-center gap-2">
-                    <LogOut className="w-4 h-4" />
-                    <span>Log Out</span>
-                  </span>
                 </button>
               </div>
             )}
@@ -674,13 +621,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
           </div>
         </div>
       )}
-
-      {/* Log Out Confirmation Modal */}
-      <LogoutModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={handleConfirmLogout}
-      />
     </>
   );
 };

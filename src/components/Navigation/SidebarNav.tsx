@@ -358,6 +358,39 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             </AnimatePresence>
           </motion.button>
         </div>
+
+        {/* Bottom Log Out Action in Desktop Sidebar */}
+        <div className={`mt-auto pt-2.5 border-t shrink-0 w-full px-2.5 ${isDarkMode ? 'border-[#1e293b]' : 'border-slate-200'}`}>
+          <motion.button
+            onClick={() => setIsLogoutModalOpen(true)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            title={!isExpanded ? 'Log Out' : undefined}
+            className={`w-full h-10.5 rounded-xl border flex items-center transition-all duration-200 cursor-pointer ${
+              isDarkMode
+                ? 'bg-[#111827] border-slate-800/80 hover:bg-rose-950/25 hover:border-rose-900/40 text-rose-400 hover:text-rose-300'
+                : 'bg-white border-slate-200 hover:bg-rose-50 hover:border-rose-200 text-rose-600 hover:text-rose-700'
+            }`}
+          >
+            <div className="w-[50px] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-xl">logout</span>
+            </div>
+
+            <AnimatePresence>
+              {isExpanded && (
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -6 }}
+                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-xs font-bold truncate pr-2 text-rose-500 dark:text-rose-400"
+                >
+                  Log Out
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
+        </div>
       </motion.aside>
 
       {/* Mobile Drawer Overlay (<768px) */}

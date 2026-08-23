@@ -118,6 +118,33 @@ const Cat3DPawIcon: React.FC<{ size?: number; className?: string }> = ({ size = 
   </svg>
 );
 
+// Pill Logout Vector Icon matching user's custom badge
+const LogoutPillIcon: React.FC<{ size?: number; className?: string }> = ({ size = 20, className = '' }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M9 4H5C3.89543 4 3 4.89543 3 6V18C3 19.1046 3.89543 20 5 20H9"
+      stroke="white"
+      strokeWidth="2.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 12H21M21 12L17 8M21 12L17 16"
+      stroke="white"
+      strokeWidth="2.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const SidebarNav: React.FC<SidebarNavProps> = ({
   activeView,
   onSelectView,
@@ -359,33 +386,31 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           </motion.button>
         </div>
 
-        {/* Bottom Log Out Action in Desktop Sidebar */}
-        <div className={`mt-auto pt-2.5 border-t shrink-0 w-full px-2.5 ${isDarkMode ? 'border-[#1e293b]' : 'border-slate-200'}`}>
+        {/* Bottom Log Out Action in Desktop Sidebar (Matching Red Pill Image) */}
+        <div className={`mt-auto pt-3 border-t shrink-0 w-full px-2.5 flex items-center justify-center ${isDarkMode ? 'border-[#1e293b]' : 'border-slate-200'}`}>
           <motion.button
             onClick={() => setIsLogoutModalOpen(true)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
-            title={!isExpanded ? 'Log Out' : undefined}
-            className={`w-full h-10.5 rounded-xl border flex items-center transition-all duration-200 cursor-pointer ${
-              isDarkMode
-                ? 'bg-[#111827] border-slate-800/80 hover:bg-rose-950/25 hover:border-rose-900/40 text-rose-400 hover:text-rose-300'
-                : 'bg-white border-slate-200 hover:bg-rose-50 hover:border-rose-200 text-rose-600 hover:text-rose-700'
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.95 }}
+            title={!isExpanded ? 'LOG OUT' : undefined}
+            className={`cursor-pointer transition-all duration-200 flex items-center justify-center bg-[#f05252] hover:bg-[#e04141] text-white shadow-[0_4px_16px_rgba(240,82,82,0.45)] ring-4 ring-red-400/25 border border-red-300/40 rounded-full ${
+              isExpanded
+                ? 'w-full h-11 px-4 gap-2.5'
+                : 'w-11 h-11 p-0'
             }`}
           >
-            <div className="w-[50px] flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-xl">logout</span>
-            </div>
+            <LogoutPillIcon size={19} className="shrink-0" />
 
             <AnimatePresence>
               {isExpanded && (
                 <motion.span
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -6 }}
-                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-xs font-bold truncate pr-2 text-rose-500 dark:text-rose-400"
+                  exit={{ opacity: 0, x: -4 }}
+                  transition={{ duration: 0.18 }}
+                  className="font-black text-xs uppercase tracking-wider text-white whitespace-nowrap"
                 >
-                  Log Out
+                  LOG OUT
                 </motion.span>
               )}
             </AnimatePresence>
@@ -473,9 +498,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                       setIsLogoutModalOpen(true);
                       setIsMobileDrawerOpen(false);
                     }}
-                    className="w-full py-2 text-center text-xs font-bold text-rose-500 bg-rose-500/10 rounded-xl"
+                    className="w-full h-11 flex items-center justify-center gap-2 bg-[#f05252] hover:bg-[#e04141] text-white font-black text-xs uppercase tracking-wider rounded-full shadow-[0_4px_16px_rgba(240,82,82,0.45)] ring-4 ring-red-400/25 border border-red-300/40 cursor-pointer transition-all active:scale-95"
                   >
-                    Log Out
+                    <LogoutPillIcon size={19} />
+                    <span>LOG OUT</span>
                   </button>
                 )}
               </div>

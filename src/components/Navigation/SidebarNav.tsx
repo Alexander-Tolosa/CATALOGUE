@@ -5,8 +5,6 @@ import { AppView } from '../../types';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useAppStore } from '../../store/useAppStore';
 import { LogoutModal } from './LogoutModal';
-import { GoogleAuthModal } from '../Auth/GoogleAuthModal';
-import { Badge } from '../ui/badge';
 import catalogueLogo from '../../assets/catalogue_logo.png';
 import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 
@@ -128,7 +126,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   const { isDarkMode, setSidebarExpanded, triggerAppRefresh } = useAppStore();
   const { googleUser, isAuthenticated, logout } = useAuthStore();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -361,90 +358,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             </AnimatePresence>
           </motion.button>
         </div>
-
-        {/* Bottom User Profile Section */}
-        <div className={`pt-2.5 border-t shrink-0 w-full px-2.5 ${isDarkMode ? 'border-[#1e293b]' : 'border-slate-200'}`}>
-          {isAuthenticated && googleUser ? (
-            <div className="space-y-2">
-              <div
-                onClick={() => onSelectView('profile')}
-                title={!isExpanded ? `${googleUser.name} (View Profile)` : undefined}
-                className={`rounded-xl flex items-center transition-all cursor-pointer ${
-                  isExpanded
-                    ? isDarkMode
-                      ? 'p-2 bg-[#111827] border border-[#1e293b] hover:border-slate-700'
-                      : 'p-2 bg-slate-50 border border-slate-200 hover:border-slate-300'
-                    : 'h-10 justify-center'
-                }`}
-              >
-                <div className="w-[50px] flex items-center justify-center shrink-0">
-                  <div className="relative w-8 h-8 rounded-full bg-slate-200 border border-slate-300 overflow-hidden shrink-0">
-                    <img
-                      src={googleUser.picture}
-                      alt={googleUser.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🐾</text></svg>';
-                      }}
-                    />
-                    <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 rounded-full border border-white" />
-                  </div>
-                </div>
-
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -6 }}
-                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                      className="flex flex-col min-w-0 pr-1 flex-1"
-                    >
-                      <span className={`text-xs font-semibold truncate ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                        {googleUser.name}
-                      </span>
-                      <span className="text-[10px] text-[#f97316] font-semibold truncate">Google OIDC Active</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.button
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.18 }}
-                    onClick={() => setIsLogoutModalOpen(true)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg border text-rose-600 dark:text-rose-400 font-semibold text-xs transition-colors cursor-pointer ${
-                      isDarkMode
-                        ? 'bg-[#111827] border-slate-800 hover:bg-rose-950/20'
-                        : 'bg-white border-slate-200 hover:bg-rose-50'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-sm">logout</span>
-                    <span>Log Out</span>
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
-          ) : (
-            <button
-              onClick={() => setIsGoogleModalOpen(true)}
-              title={!isExpanded ? 'Sign in with Google' : undefined}
-              className={`w-full h-10 flex items-center rounded-lg btn-primary-saas text-xs font-semibold cursor-pointer ${
-                isExpanded ? 'justify-start px-3 gap-2' : 'justify-center px-0'
-              }`}
-            >
-              <span className="material-symbols-outlined text-base">login</span>
-              {isExpanded && <span>Sign in with Google</span>}
-            </button>
-          )}
-        </div>
       </motion.aside>
 
       {/* Mobile Drawer Overlay (<768px) */}
@@ -470,7 +383,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-700/40">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-orange-500/20 p-1 flex items-center justify-center">
-                    <img src={catalogueLogo} alt="CATALOGUE Logo" className="w-full h-full object-contain" />
+                    <img src={catalogueLogo} alt="CATALOUGE Logo" className="w-full h-full object-contain" />
                   </div>
                   <span className="font-bold text-sm tracking-wider">CATALOGUE</span>
                 </div>
@@ -570,13 +483,6 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={handleConfirmLogout}
       />
-
-      {/* Google Identity Services Modal */}
-      <GoogleAuthModal
-        isOpen={isGoogleModalOpen}
-        onClose={() => setIsGoogleModalOpen(false)}
-      />
     </>
   );
 };
-

@@ -40,23 +40,19 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
         >
           {/* Main Playful Card */}
           <div
-            className={`relative rounded-[28px] border-4 border-[#3A2E27] pt-16 sm:pt-18 px-7 pb-7 text-center shadow-[8px_8px_0_#3A2E27] ${
-              isDarkMode
+            className={`relative rounded-[28px] border-4 border-[#3A2E27] pt-20 sm:pt-22 px-7 pb-7 text-center shadow-[8px_8px_0_#3A2E27] ${isDarkMode
                 ? 'bg-[#1b2234] text-slate-100 shadow-[8px_8px_0_#0f1422]'
                 : 'bg-[#FFFCF3] text-[#3A2E27]'
-            }`}
+              }`}
           >
-            {/* Static Mascot (Sad Siamese Cat with Blue Cap & Scarf) */}
-            <div className="absolute -top-24 sm:-top-28 left-1/2 -translate-x-1/2 pointer-events-none z-10 flex flex-col items-center">
-              {/* Mascot Shadow */}
-              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-24 h-4 bg-[#3A2E27]/25 rounded-full" />
-
+            {/* Mascot (Sad Siamese Cat with Blue Cap & Scarf - Half Inside Card) */}
+            <div className="absolute -top-14 sm:-top-16 left-1/2 -translate-x-1/2 pointer-events-none z-10 flex flex-col items-center">
               {/* Static Sad Siamese Cat Image */}
               <div className="w-32 h-32 sm:w-36 sm:h-36 relative flex items-center justify-center">
                 <img
                   src={sadSiameseCat}
                   alt="Sad Siamese Cat Companion"
-                  className="w-full h-full object-contain drop-shadow-xl"
+                  className="w-full h-full object-contain drop-shadow-md"
                   draggable={false}
                 />
               </div>

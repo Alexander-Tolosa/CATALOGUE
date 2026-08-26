@@ -221,18 +221,42 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* 4. Quick Access Action Grid (3 Equal Columns, Fully Clickable Hover Targets) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Review Deck */}
+        {/* 4. Quick Access Action Grid (4 Columns, Fully Clickable Hover Targets) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+          {/* Card 1: Word Match */}
+          <div
+            onClick={() => onNavigate('matching')}
+            className={`p-5 rounded-3xl border flex items-center gap-3.5 cursor-pointer group hover:-translate-y-1 hover:shadow-md transition-all duration-200 ${
+              isDarkMode
+                ? 'bg-[#131b2e] border-white/10 hover:border-[#F06543]/60'
+                : 'bg-white border-[#EDE5DA] hover:border-[#F06543]/50 hover:bg-[#FAF6F1]'
+            }`}
+          >
+            <div className="w-11 h-11 rounded-2xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-[#F06543] shrink-0 group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-xl">style</span>
+            </div>
+            <div className="space-y-0.5 min-w-0">
+              <h4 className={`font-display text-sm font-bold truncate group-hover:text-[#F06543] transition-colors ${
+                isDarkMode ? 'text-white' : 'text-[#2B2725]'
+              }`}>
+                Word Match
+              </h4>
+              <p className={`text-xs truncate ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
+                Food, Things & Verbs
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: Review Deck */}
           <div
             onClick={() => onNavigate('review')}
-            className={`p-6 rounded-3xl border flex items-center gap-4 cursor-pointer group hover:-translate-y-1 hover:shadow-md transition-all duration-200 ${
+            className={`p-5 rounded-3xl border flex items-center gap-3.5 cursor-pointer group hover:-translate-y-1 hover:shadow-md transition-all duration-200 ${
               isDarkMode
                 ? 'bg-[#131b2e] border-white/10 hover:border-slate-700'
                 : 'bg-white border-[#EDE5DA] hover:border-[#E2D9CE] hover:bg-[#FAF6F1]'
             }`}
           >
-            <div className="w-12 h-12 rounded-2xl bg-[#FAF6F0] dark:bg-slate-800 border border-[#EDE5DA] dark:border-slate-700 flex items-center justify-center text-[#2B2725] dark:text-white shrink-0 group-hover:scale-110 transition-transform">
+            <div className="w-11 h-11 rounded-2xl bg-[#FAF6F0] dark:bg-slate-800 border border-[#EDE5DA] dark:border-slate-700 flex items-center justify-center text-[#2B2725] dark:text-white shrink-0 group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-xl">autorenew</span>
             </div>
             <div className="space-y-0.5 min-w-0">
@@ -247,16 +271,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
-          {/* Card 2: Script & Letters Reference */}
+          {/* Card 3: Script & Letters Reference */}
           <div
             onClick={() => onNavigate('letters')}
-            className={`p-6 rounded-3xl border flex items-center gap-4 cursor-pointer group hover:-translate-y-1 hover:shadow-md transition-all duration-200 ${
+            className={`p-5 rounded-3xl border flex items-center gap-3.5 cursor-pointer group hover:-translate-y-1 hover:shadow-md transition-all duration-200 ${
               isDarkMode
                 ? 'bg-[#131b2e] border-white/10 hover:border-slate-700'
                 : 'bg-white border-[#EDE5DA] hover:border-[#E2D9CE] hover:bg-[#FAF6F1]'
             }`}
           >
-            <div className="w-12 h-12 rounded-2xl bg-[#FAF6F0] dark:bg-slate-800 border border-[#EDE5DA] dark:border-slate-700 flex items-center justify-center text-[#2B2725] dark:text-white shrink-0 group-hover:scale-110 transition-transform">
+            <div className="w-11 h-11 rounded-2xl bg-[#FAF6F0] dark:bg-slate-800 border border-[#EDE5DA] dark:border-slate-700 flex items-center justify-center text-[#2B2725] dark:text-white shrink-0 group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-xl">translate</span>
             </div>
             <div className="space-y-0.5 min-w-0">
@@ -271,16 +295,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
-          {/* Card 3: Chat with Kleo */}
+          {/* Card 4: Chat with Kleo */}
           <div
             onClick={() => onNavigate('chatbot')}
-            className={`p-6 rounded-3xl border flex items-center gap-4 cursor-pointer group hover:-translate-y-1 hover:shadow-md transition-all duration-200 ${
+            className={`p-5 rounded-3xl border flex items-center gap-3.5 cursor-pointer group hover:-translate-y-1 hover:shadow-md transition-all duration-200 ${
               isDarkMode
                 ? 'bg-[#131b2e] border-white/10 hover:border-slate-700'
                 : 'bg-white border-[#EDE5DA] hover:border-[#E2D9CE] hover:bg-[#FAF6F1]'
             }`}
           >
-            <div className="w-12 h-12 rounded-full border-2 border-[#FDE3D5] dark:border-slate-700 overflow-hidden shrink-0 group-hover:scale-110 transition-transform shadow-xs">
+            <div className="w-11 h-11 rounded-full border-2 border-[#FDE3D5] dark:border-slate-700 overflow-hidden shrink-0 group-hover:scale-110 transition-transform shadow-xs">
               <img src={kleoChatbotLogo} alt="Chat with Kleo" className="w-full h-full object-cover" />
             </div>
             <div className="space-y-0.5 min-w-0">

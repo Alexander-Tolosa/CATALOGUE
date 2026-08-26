@@ -200,6 +200,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     { id: 'dashboard', label: 'Overview', icon: 'grid_view' },
     { id: 'learn', label: 'Skill Tree', icon: 'school' },
     { id: 'letters', label: 'Writing & Letters', icon: 'translate' },
+    { id: 'matching', label: 'Word Match', icon: 'style' },
     { id: 'translator', label: 'Translator', icon: 'language' },
     { id: 'scanner', label: 'Scan & Translate', icon: 'document_scanner' },
     { id: 'gamify', label: 'Leaderboard & Stats', icon: 'leaderboard' },

@@ -9,6 +9,7 @@ import { SidebarNav } from './components/Navigation/SidebarNav';
 import { DashboardView } from './components/Dashboard/DashboardView';
 import { LearnView } from './components/Learn/LearnView';
 import { ScriptModuleView } from './components/Script/ScriptModuleView';
+import { MatchingModuleView } from './components/Matching/MatchingModuleView';
 import { TranslatorView } from './components/Translator/TranslatorView';
 import { ScannerView } from './components/Scanner/ScannerView';
 import { KleoHubView } from './components/Kleo/KleoHubView';
@@ -162,6 +163,12 @@ export const App: React.FC = () => {
                     selectedLanguage={profile.selectedLanguage}
                     onFinishFoundations={() => setActiveView('learn')}
                   />
+                </div>
+              )}
+
+              {activeView === 'matching' && (
+                <div className="pt-20 px-4 md:px-8">
+                  <MatchingModuleView onNavigateDashboard={() => setActiveView('dashboard')} />
                 </div>
               )}
 

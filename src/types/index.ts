@@ -1,6 +1,51 @@
 export type LanguageTrack = 'ko' | 'ja' | 'en';
 
-export type AppView = 'dashboard' | 'learn' | 'letters' | 'translator' | 'scanner' | 'kleo' | 'chatbot' | 'gamify' | 'review' | 'settings' | 'profile';
+export type AppView = 'dashboard' | 'learn' | 'letters' | 'matching' | 'translator' | 'scanner' | 'kleo' | 'chatbot' | 'gamify' | 'review' | 'settings' | 'profile';
+
+export type MatchingCategoryId = 'food' | 'things' | 'verbs' | 'basics';
+
+export interface MatchingPair {
+  id: string;
+  sourceText: string;
+  sourcePronunciation: string;
+  targetText: string;
+  targetSubText?: string;
+  category: MatchingCategoryId;
+}
+
+export interface MatchingCategoryMeta {
+  id: MatchingCategoryId;
+  title: string;
+  nativeTitle: string;
+  description: string;
+  icon: string;
+  badgeColor: string;
+  glowColor: string;
+  totalWords: number;
+  tags: string[];
+}
+
+export interface MatchingCardItem {
+  id: string;
+  pairId: string;
+  type: 'source' | 'target'; // 'source' is foreign word + pronunciation (left col), 'target' is English (right col)
+  mainText: string;
+  subText: string;
+  isMatched: boolean;
+  isSelected: boolean;
+  isShaking?: boolean;
+}
+
+export interface MatchingGameStats {
+  moves: number;
+  matchedPairs: number;
+  totalPairs: number;
+  timeSeconds: number;
+  accuracy: number;
+  stars: number;
+  xpEarned: number;
+}
+
 
 export type UserLifecycleState = 'new' | 'returning' | 'lapsed';
 

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { UserProfile, LanguageTrack, LessonNode, ReviewItem, AppView } from '../../types';
 import { useKleoStore } from '../../store/useKleoStore';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { DashboardLoader } from './DashboardLoader';
 import { OverviewRightSidebar } from './OverviewRightSidebar';
@@ -29,6 +30,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 }) => {
   const { isDarkMode } = useAppStore();
   const { mood, bondLevel, equippedCosmetics, speechText } = useKleoStore();
+  const { t, getLanguageName } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(!initialDashboardLoaded);
 
@@ -88,11 +90,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <h1 className={`font-display text-2xl md:text-3xl font-extrabold tracking-tight ${
               isDarkMode ? 'text-white' : 'text-[#2B2725]'
             }`}>
-              Welcome, {userName}!
+              {t.dashboard.welcome}, {userName}!
             </h1>
             <div className="flex items-center gap-1.5 mt-1 text-xs font-semibold text-[#7A736E] dark:text-slate-400">
               <span className="material-symbols-outlined text-sm">translate</span>
-              <span>{activeLangName} track</span>
+              <span>{getLanguageName(profile.selectedLanguage as LanguageTrack)} {t.dashboard.trackSubtitle}</span>
             </div>
           </div>
         </div>
@@ -108,7 +110,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="relative w-20 h-20 rounded-2xl bg-[#FFF4EE] dark:bg-slate-800 border border-[#FDE3D5] dark:border-slate-700 flex items-center justify-center p-1 shrink-0 shadow-inner">
               <KleoAvatar mood={mood} equippedCosmetics={equippedCosmetics} size={64} />
               <span className="absolute -bottom-2 bg-[#F06543] text-white font-bold text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
-                Bond Lv.{bondLevel}
+                {t.dashboard.bondLevel}{bondLevel}
               </span>
             </div>
 
@@ -120,13 +122,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   : 'bg-[#FFF4EE] border-[#FDE3D5] text-[#2B2725] before:content-[\'\'] before:absolute before:-left-2 before:top-3.5 before:w-0 before:h-0 before:border-y-6 before:border-y-transparent before:border-r-6 before:border-r-[#FFF4EE]'
               }`}>
                 <p className="font-display font-semibold text-xs md:text-sm leading-relaxed">
-                  "{speechText || `Ready when you are. Shall we learn some ${scriptName}?`}"
+                  "{speechText || `${t.dashboard.speechBubbleReady} ${scriptName}?`}"
                 </p>
               </div>
 
               <div className="flex items-center justify-center sm:justify-start gap-2 pt-0.5">
                 <span className="font-display font-bold text-xs">Kleo</span>
-                <span className="text-[11px] text-[#7A736E] dark:text-slate-400">AI Tutor Mascot</span>
+                <span className="text-[11px] text-[#7A736E] dark:text-slate-400">{t.dashboard.aiTutorMascot}</span>
               </div>
             </div>
           </div>
@@ -170,13 +172,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <div className="space-y-1">
               <h3 className={`font-display text-base font-bold ${isDarkMode ? 'text-white' : 'text-[#2B2725]'}`}>
-                Daily goal
+                {t.dashboard.dailyGoal}
               </h3>
               <p className={`text-xs md:text-sm ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
-                {profile.minutesCompletedToday} of {profile.dailyGoalMinutes} min completed today
+                {profile.minutesCompletedToday} / {profile.dailyGoalMinutes} {t.dashboard.goalCompletedToday}
               </p>
               <p className="text-[11px] font-semibold text-[#F06543]">
-                {percentGoal >= 100 ? '🎉 Daily goal completed!' : `${profile.dailyGoalMinutes - profile.minutesCompletedToday} min remaining`}
+                {percentGoal >= 100 ? t.dashboard.goalFinished : `${profile.dailyGoalMinutes - profile.minutesCompletedToday} ${t.dashboard.minRemaining}`}
               </p>
             </div>
           </div>
@@ -187,7 +189,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <h2 className={`font-display font-bold text-xs uppercase tracking-widest ${
             isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'
           }`}>
-            Letters unit
+            {t.dashboard.lettersUnitTitle}
           </h2>
 
           <div className={`p-8 md:p-10 rounded-3xl border text-center flex flex-col items-center justify-center space-y-5 shadow-xs ${
@@ -201,12 +203,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <div className="max-w-md space-y-1.5">
               <h3 className="font-display text-lg font-extrabold">
-                {nextNode ? nextNode.title : 'Hangul Foundations'}
+                {nextNode ? nextNode.title : 'Foundations'}
               </h3>
               <p className={`text-xs md:text-sm font-medium leading-relaxed ${
                 isDarkMode ? 'text-slate-300' : 'text-[#7A736E]'
               }`}>
-                {nextNode ? nextNode.description : 'Your journey starts with Hangul consonants. It takes about 5 minutes.'}
+                {nextNode ? nextNode.description : t.learn.masterScriptsDesc}
               </p>
             </div>
 
@@ -215,7 +217,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               onClick={() => nextNode && onSelectNode(nextNode)}
               className="bg-[#F06543] hover:bg-[#E05432] text-white font-extrabold text-sm md:text-base px-10 py-4 rounded-2xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2.5 tracking-wide"
             >
-              <span>Start your first lesson</span>
+              <span>{t.dashboard.startLesson}</span>
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           </div>
@@ -239,10 +241,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <h4 className={`font-display text-sm font-bold truncate group-hover:text-[#F06543] transition-colors ${
                 isDarkMode ? 'text-white' : 'text-[#2B2725]'
               }`}>
-                Word Match
+                {t.dashboard.wordMatchCardTitle}
               </h4>
               <p className={`text-xs truncate ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
-                Food, Things & Verbs
+                {t.dashboard.wordMatchCardDesc}
               </p>
             </div>
           </div>
@@ -263,10 +265,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <h4 className={`font-display text-sm font-bold truncate group-hover:text-[#F06543] transition-colors ${
                 isDarkMode ? 'text-white' : 'text-[#2B2725]'
               }`}>
-                Review
+                {t.dashboard.reviewCardTitle}
               </h4>
               <p className={`text-xs truncate ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
-                {savedPhrases.length} item(s) due
+                {savedPhrases.length} {t.dashboard.reviewCardDesc}
               </p>
             </div>
           </div>
@@ -287,10 +289,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <h4 className={`font-display text-sm font-bold truncate group-hover:text-[#F06543] transition-colors ${
                 isDarkMode ? 'text-white' : 'text-[#2B2725]'
               }`}>
-                Script & letters
+                {t.dashboard.scriptCardTitle}
               </h4>
               <p className={`text-xs truncate ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
-                Full {scriptName} reference
+                {t.dashboard.scriptCardDesc}
               </p>
             </div>
           </div>
@@ -311,10 +313,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <h4 className={`font-display text-sm font-bold truncate group-hover:text-[#F06543] transition-colors ${
                 isDarkMode ? 'text-white' : 'text-[#2B2725]'
               }`}>
-                Chat with Kleo
+                {t.dashboard.chatWithKleoTitle}
               </h4>
               <p className={`text-xs truncate ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
-                AI Language Tutor
+                {t.dashboard.chatWithKleoDesc}
               </p>
             </div>
           </div>
@@ -328,10 +330,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         }`}>
           <div>
             <h3 className={`font-display text-base font-bold ${isDarkMode ? 'text-white' : 'text-[#2B2725]'}`}>
-              Syllable block builder
+              {t.dashboard.syllableBuilderTitle}
             </h3>
             <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
-              Pick a consonant and a vowel to build a real Hangul block.
+              {t.dashboard.syllableBuilderDesc}
             </p>
           </div>
 
@@ -351,7 +353,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               {/* Consonants Row */}
               <div className="space-y-1.5">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#7A736E]">
-                  Consonant ({selectedConsonant})
+                  {t.dashboard.consonant} ({selectedConsonant})
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {consonants.map((c) => (
@@ -375,7 +377,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               {/* Vowels Row */}
               <div className="space-y-1.5">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#7A736E]">
-                  Vowel ({selectedVowel})
+                  {t.dashboard.vowel} ({selectedVowel})
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {vowels.map((v) => (

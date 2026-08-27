@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LessonNode, KleoMood } from '../../types';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { ExerciseCard } from './ExerciseCard';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import confetti from 'canvas-confetti';
@@ -22,6 +23,7 @@ export const LessonPlayer: React.FC<LessonPlayerProps> = ({
   onClose,
   equippedCosmetics
 }) => {
+  const { t } = useTranslation();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [kleoMood, setKleoMood] = useState<KleoMood>('happy');
   const [kleoSpeech, setKleoSpeech] = useState<string>("You've got this! Take your time!");
@@ -116,9 +118,9 @@ export const LessonPlayer: React.FC<LessonPlayerProps> = ({
             <div className="flex justify-end pt-2">
               <button
                 onClick={handleNextExercise}
-                className="glass-button btn-primary text-sm px-6 py-3"
+                className="glass-button btn-primary text-sm px-6 py-3 cursor-pointer"
               >
-                Next Exercise <ArrowRight size={18} />
+                {t.lesson.nextExercise} <ArrowRight size={18} />
               </button>
             </div>
           </>
@@ -131,20 +133,20 @@ export const LessonPlayer: React.FC<LessonPlayerProps> = ({
 
             <div className="space-y-2">
               <h2 className="font-brand text-3xl font-extrabold text-slate-100">
-                Lesson Complete! 🌟
+                {t.lesson.lessonComplete}
               </h2>
               <p className="text-slate-400 text-sm max-w-md mx-auto">
-                You mastered <span className="text-sky-300 font-bold">{node.title}</span>! Kleo is super proud of your consistency!
+                You mastered <span className="text-sky-300 font-bold">{node.title}</span>!
               </p>
             </div>
 
             <div className="flex items-center justify-center gap-4 py-4">
               <div className="bg-slate-900/90 border border-sky-500/40 p-4 rounded-2xl min-w-32 shadow-lg">
-                <span className="text-xs text-slate-400 uppercase font-bold block">XP Earned</span>
+                <span className="text-xs text-slate-400 uppercase font-bold block">{t.lesson.xpEarned}</span>
                 <span className="text-2xl font-extrabold text-sky-400">+{node.xpReward} XP</span>
               </div>
               <div className="bg-slate-900/90 border border-amber-500/40 p-4 rounded-2xl min-w-32 shadow-lg">
-                <span className="text-xs text-slate-400 uppercase font-bold block">Kleo Bond</span>
+                <span className="text-xs text-slate-400 uppercase font-bold block">{t.lesson.kleoBond}</span>
                 <span className="text-2xl font-extrabold text-amber-400">+15 Bond XP</span>
               </div>
             </div>
@@ -154,9 +156,9 @@ export const LessonPlayer: React.FC<LessonPlayerProps> = ({
                 onComplete(node.xpReward);
                 onClose();
               }}
-              className="glass-button btn-orange text-lg font-bold px-8 py-3.5"
+              className="glass-button btn-orange text-lg font-bold px-8 py-3.5 cursor-pointer"
             >
-              Collect Rewards & Return
+              {t.lesson.collectRewards}
             </button>
           </div>
         )}

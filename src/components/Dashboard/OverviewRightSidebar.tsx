@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useFriendsStore } from '../../store/useFriendsStore';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { AppView } from '../../types';
 
 interface OverviewRightSidebarProps {
@@ -81,6 +82,7 @@ function buildCalendarGrid(year: number, month: number, today: Date): CalendarDa
 export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNavigate }) => {
   const { isDarkMode, profile } = useAppStore();
   const { friends, setActiveChatFriendId } = useFriendsStore();
+  const { t } = useTranslation();
 
   // Use the real current date from the user's system
   const realToday = useMemo(() => new Date(), []);
@@ -93,10 +95,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
   const [isOnlineHidden, setIsOnlineHidden] = useState(false);
   const [isFullCalendarOpen, setIsFullCalendarOpen] = useState(false);
 
-  const fullMonthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
+  const fullMonthNames = t.calendar.monthNames;
 
   const handlePrevMonth = () => {
     if (viewMonth === 0) {
@@ -273,19 +272,15 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
             </div>
           </div>
 
-          {/* Days of the Week: Mo Tu We Th Fr Sa Su */}
+          {/* Days of the Week */}
           <div
             className={`grid grid-cols-7 text-center text-[11px] font-semibold tracking-wide ${
               isDarkMode ? 'text-slate-400/80' : 'text-slate-400'
             }`}
           >
-            <span>Mo</span>
-            <span>Tu</span>
-            <span>We</span>
-            <span>Th</span>
-            <span>Fr</span>
-            <span>Sa</span>
-            <span>Su</span>
+            {t.calendar.daysShort.map((d, i) => (
+              <span key={i}>{d}</span>
+            ))}
           </div>
 
           {/* Days Grid */}
@@ -339,7 +334,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
                 isDarkMode ? 'text-[#f97316] hover:text-[#fb923c]' : 'text-[#f06543] hover:text-[#ea580c]'
               }`}
             >
-              full calendar
+              {t.calendar.viewFullCalendar}
             </button>
             <button
               onClick={() => setIsCalendarHidden(true)}
@@ -347,7 +342,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
                 isDarkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-400 hover:text-slate-700'
               }`}
             >
-              hide
+              {t.common.close}
             </button>
           </div>
         </div>
@@ -365,10 +360,10 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
               isDarkMode ? 'text-[#f97316]' : 'text-[#f06543]'
             }`}
           >
-            <CalendarIcon size={15} /> Show Calendar
+            <CalendarIcon size={15} /> {t.calendar.title}
           </span>
           <span className={`text-[11px] font-semibold ${isDarkMode ? 'text-[#f97316]' : 'text-[#f06543]'}`}>
-            show
+            {t.calendar.title}
           </span>
         </button>
       )}

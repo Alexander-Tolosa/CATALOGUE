@@ -19,6 +19,7 @@ import {
 import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
 import { useAppStore } from '../../store/useAppStore';
 import { useKleoStore } from '../../store/useKleoStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 import { processAIChatMessage } from '../../lib/aiService';
 import { ChatScenario } from '../../types';
@@ -43,6 +44,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
 }) => {
   const { isChatbotOpen, setIsChatbotOpen, profile, addXP, savePhraseToReview } = useAppStore();
   const { react } = useKleoStore();
+  const { t } = useTranslation();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedScenario] = useState<ChatScenario>('free_chat');
@@ -55,7 +57,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
     {
       id: '1',
       sender: 'ai',
-      text: `I can tell you're ready to master a new language today! Would you like to practice Japanese, Korean, or English grammar with me? 🐾`,
+      text: t.chatbox.greeting,
       timestamp: '10:42 AM',
       scenario: 'free_chat'
     }
@@ -316,7 +318,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
                 <span className="w-2 h-2 rounded-full bg-[#FF6B35] animate-bounce" />
                 <span className="w-2 h-2 rounded-full bg-[#FF6B35] animate-bounce [animation-delay:0.2s]" />
                 <span className="w-2 h-2 rounded-full bg-[#FF6B35] animate-bounce [animation-delay:0.4s]" />
-                <span className="font-bold text-[#FF6B35] text-xs">Kleo is thinking...</span>
+                <span className="font-bold text-[#FF6B35] text-xs">{t.chatbox.thinking}</span>
               </div>
             </div>
           )}
@@ -346,7 +348,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
               type="text"
               value={inputMsg}
               onChange={e => setInputMsg(e.target.value)}
-              placeholder="Type your message..."
+              placeholder={t.chatbox.placeholder}
               className="flex-1 bg-transparent border-none text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none"
             />
 
@@ -355,7 +357,7 @@ export const GlobalAIChatbox: React.FC<GlobalAIChatboxProps> = ({
               type="submit"
               disabled={!inputMsg.trim() || isSending}
               className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-[#F06543] disabled:opacity-30 disabled:hover:text-slate-400 transition-colors cursor-pointer shrink-0"
-              title="Send message"
+              title={t.chatbox.send}
             >
               <Send size={18} />
             </button>

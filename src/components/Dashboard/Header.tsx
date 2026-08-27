@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { UserProfile, LanguageTrack, AppView } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import {
   Mail,
   Bell,
@@ -84,6 +85,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
 }) => {
   const { isDarkMode, toggleThemeMode, isSidebarExpanded } = useAppStore();
   const { googleUser } = useAuthStore();
+  const { t, getLanguageName } = useTranslation();
 
   const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
 
@@ -171,7 +173,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                 ? 'bg-[#151c2e] border-[#24304c] text-amber-400'
                 : 'bg-[#FFF4EE] border-[#FDE3D5] text-[#F06543]'
             }`}
-            title={`You're on a ${profile.streakDays} Day Study Streak!`}
+            title={`${profile.streakDays} ${t.header.dayStreakTitle}`}
           >
             <span
               className="material-symbols-outlined text-base streak-pulse text-amber-500"
@@ -180,7 +182,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
               local_fire_department
             </span>
             <span className="font-extrabold text-xs tracking-tight">
-              {profile.streakDays} <span className="hidden sm:inline">Day Streak</span>
+              {profile.streakDays} <span className="hidden sm:inline">{t.common.dayStreak}</span>
             </span>
           </div>
         </div>
@@ -304,7 +306,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                       : 'hover:bg-[#f6f1e8] text-slate-800'
                   }`}
                 >
-                  <span>Toggle dark mode</span>
+                  <span>{t.header.toggleDarkMode}</span>
                   {isDarkMode ? (
                     <Sun className="w-4 h-4 text-amber-400" />
                   ) : (
@@ -324,13 +326,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <FlagIcon country={profile.selectedLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
-                      <span>
-                        {profile.selectedLanguage === 'ko'
-                          ? 'Korean'
-                          : profile.selectedLanguage === 'ja'
-                          ? 'Japanese'
-                          : 'English'}
-                      </span>
+                      <span>{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
                     </span>
                     <Globe className="w-4 h-4 text-[#F06543]" />
                   </button>
@@ -341,7 +337,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                       className={`mx-2 my-1 rounded-xl p-1 border space-y-1 ${
                         isDarkMode
                           ? 'bg-[#1a2032] border-[#28324a]'
-                          : 'bg-[#f6f1e8] border-[#e0d6c7]'
+                          : 'bg-[#faf6f0] border-[#e8dfd3]'
                       }`}
                     >
                       <button
@@ -350,18 +346,20 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                           setIsLangSubmenuOpen(false);
                           setIsProfileMenuOpen(false);
                         }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between ${
+                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
                           profile.selectedLanguage === 'en'
-                            ? 'bg-[#F06543] text-white'
-                            : 'text-slate-300 hover:bg-slate-700/40'
+                            ? 'bg-[#F06543] text-white shadow-xs'
+                            : isDarkMode
+                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
                         }`}
                       >
                         <span className="flex items-center gap-2">
                           <FlagIcon country="en" className="w-4 h-3 rounded-2xs" />
-                          <span>English</span>
+                          <span>{t.header.english}</span>
                         </span>
                         {profile.selectedLanguage === 'en' && (
-                          <CheckCircle2 className="w-3 h-3 text-white" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                         )}
                       </button>
 
@@ -371,18 +369,20 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                           setIsLangSubmenuOpen(false);
                           setIsProfileMenuOpen(false);
                         }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between ${
+                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
                           profile.selectedLanguage === 'ko'
-                            ? 'bg-[#F06543] text-white'
-                            : 'text-slate-300 hover:bg-slate-700/40'
+                            ? 'bg-[#F06543] text-white shadow-xs'
+                            : isDarkMode
+                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
                         }`}
                       >
                         <span className="flex items-center gap-2">
                           <FlagIcon country="ko" className="w-4 h-3 rounded-2xs" />
-                          <span>Korean</span>
+                          <span>{t.header.korean}</span>
                         </span>
                         {profile.selectedLanguage === 'ko' && (
-                          <CheckCircle2 className="w-3 h-3 text-white" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                         )}
                       </button>
 
@@ -392,18 +392,20 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                           setIsLangSubmenuOpen(false);
                           setIsProfileMenuOpen(false);
                         }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between ${
+                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
                           profile.selectedLanguage === 'ja'
-                            ? 'bg-[#F06543] text-white'
-                            : 'text-slate-300 hover:bg-slate-700/40'
+                            ? 'bg-[#F06543] text-white shadow-xs'
+                            : isDarkMode
+                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
                         }`}
                       >
                         <span className="flex items-center gap-2">
                           <FlagIcon country="ja" className="w-4 h-3 rounded-2xs" />
-                          <span>Japanese</span>
+                          <span>{t.header.japanese}</span>
                         </span>
                         {profile.selectedLanguage === 'ja' && (
-                          <CheckCircle2 className="w-3 h-3 text-white" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                         )}
                       </button>
                     </div>
@@ -422,7 +424,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                       : 'hover:bg-[#f6f1e8] text-slate-800'
                   }`}
                 >
-                  <span>Help</span>
+                  <span>{t.header.help}</span>
                   <HelpCircle className="w-4 h-4 text-slate-400" />
                 </button>
 
@@ -435,7 +437,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                       : 'hover:bg-[#f6f1e8] text-slate-800'
                   }`}
                 >
-                  <span>Print this page</span>
+                  <span>{t.header.printPage}</span>
                   <Printer className="w-4 h-4 text-slate-400" />
                 </button>
               </div>
@@ -455,7 +457,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   ? 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
-              title="25 Unread Tutor Prompts & Messages"
+              title={t.header.messagesTitle}
             >
               <Mail className="w-5 h-5 stroke-[1.8]" />
               {/* Red Badge 25 */}
@@ -473,23 +475,23 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                     : 'bg-white border-[#e0d6c7] text-slate-900'
                 }`}
               >
-                <div className="flex items-center justify-between pb-2 border-b border-slate-700/40">
-                  <span className="font-extrabold text-xs tracking-tight">Kleo AI Tutor Messages</span>
+                <div className={`flex items-center justify-between pb-2 border-b ${isDarkMode ? 'border-slate-700/40' : 'border-[#e0d6c7]'}`}>
+                  <span className="font-extrabold text-xs tracking-tight">{t.header.messagesTitle}</span>
                   <span className="text-[10px] font-bold text-[#e11d48] bg-rose-500/15 px-2 py-0.5 rounded-full">
-                    25 New
+                    {t.header.unreadTutorMessages}
                   </span>
                 </div>
                 <div className="py-2 space-y-2 max-h-56 overflow-y-auto text-xs">
                   <div className="p-2.5 rounded-xl bg-[#F06543]/10 border border-[#F06543]/20 space-y-1">
-                    <p className="font-bold text-[#F06543]">🐾 Kleo Tip of the Day</p>
-                    <p className="text-[11px] text-slate-300 dark:text-slate-300 leading-relaxed">
-                      "Remember that Korean polite endings (~요) soften your requests in cafes and restaurants!"
+                    <p className="font-bold text-[#F06543]">{t.header.kleoTipOfDay}</p>
+                    <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {t.header.kleoTipContent}
                     </p>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-800/40 border border-slate-700/40 space-y-1">
-                    <p className="font-semibold text-slate-200">Flashcard Review Reminder</p>
-                    <p className="text-[11px] text-slate-400">
-                      You have 2 review items scheduled for spaced repetition review today.
+                  <div className={`p-2.5 rounded-xl border space-y-1 ${isDarkMode ? 'bg-slate-800/40 border-slate-700/40' : 'bg-[#faf6f0] border-[#e8dfd3]'}`}>
+                    <p className={`font-semibold ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}>{t.header.reviewReminderTitle}</p>
+                    <p className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                      {t.header.reviewReminderContent}
                     </p>
                   </div>
                 </div>
@@ -510,7 +512,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   ? 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
-              title="38 Notifications & Activity Updates"
+              title={t.header.notificationsTitle}
             >
               <Bell className="w-5 h-5 stroke-[1.8]" />
               {/* Red Badge 38 */}
@@ -528,20 +530,20 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                     : 'bg-white border-[#e0d6c7] text-slate-900'
                 }`}
               >
-                <div className="flex items-center justify-between pb-2 border-b border-slate-700/40">
-                  <span className="font-extrabold text-xs tracking-tight">Notifications</span>
+                <div className={`flex items-center justify-between pb-2 border-b ${isDarkMode ? 'border-slate-700/40' : 'border-[#e0d6c7]'}`}>
+                  <span className="font-extrabold text-xs tracking-tight">{t.header.notificationsTitle}</span>
                   <span className="text-[10px] font-bold text-[#e11d48] bg-rose-500/15 px-2 py-0.5 rounded-full">
-                    38 Unread
+                    {t.header.unreadNotifications}
                   </span>
                 </div>
                 <div className="py-2 space-y-2 max-h-56 overflow-y-auto text-xs">
                   <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                    <p className="font-bold text-amber-400">🔥 5-Day Streak Maintained</p>
-                    <p className="text-[11px] text-slate-300 mt-0.5">Keep studying today to reach Day 6!</p>
+                    <p className={`font-bold ${isDarkMode ? 'text-amber-400' : 'text-amber-700'}`}>{t.header.streakMaintainedTitle}</p>
+                    <p className={`text-[11px] mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{t.header.streakMaintainedContent}</p>
                   </div>
                   <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                    <p className="font-bold text-emerald-400">✨ XP Milestone Reached</p>
-                    <p className="text-[11px] text-slate-300 mt-0.5">Level {profile.level} unlocked with {profile.xp} total XP.</p>
+                    <p className={`font-bold ${isDarkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>{t.header.milestoneReachedTitle}</p>
+                    <p className={`text-[11px] mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{t.header.milestoneReachedContent}</p>
                   </div>
                 </div>
               </div>
@@ -562,7 +564,9 @@ export const TopAppBar: React.FC<HeaderProps> = ({
           >
             <button
               onClick={() => setIsHelpModalOpen(false)}
-              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-slate-800/40 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className={`absolute top-5 right-5 p-1.5 rounded-full transition-colors cursor-pointer ${
+                isDarkMode ? 'hover:bg-slate-800/40 text-slate-400 hover:text-white' : 'hover:bg-slate-200 text-slate-600 hover:text-slate-950'
+              }`}
             >
               <X className="w-5 h-5" />
             </button>
@@ -573,39 +577,39 @@ export const TopAppBar: React.FC<HeaderProps> = ({
               </div>
               <div>
                 <h3 className="font-display font-black text-xl tracking-tight">
-                  CATALOGUE Help & Guide
+                  {t.header.helpTitle}
                 </h3>
-                <p className="text-xs text-slate-400">
-                  Quick tips to maximize your daily language learning
+                <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  {t.header.helpSubtitle}
                 </p>
               </div>
             </div>
 
             <div className="space-y-3 text-xs leading-relaxed">
-              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/40 space-y-1">
+              <div className={`p-3 rounded-xl border space-y-1 ${isDarkMode ? 'bg-slate-800/40 border-slate-700/40' : 'bg-[#faf6f0] border-[#e8dfd3]'}`}>
                 <p className="font-bold text-[#F06543] flex items-center gap-1.5">
-                  <Flame className="w-4 h-4 text-amber-500" /> Daily Streaks
+                  <Flame className="w-4 h-4 text-amber-500" /> {t.header.dailyStreaksTitle}
                 </p>
-                <p className="text-slate-300">
-                  Complete at least one lesson or review session daily to increase your streak and earn bonus bond XP.
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/40 space-y-1">
-                <p className="font-bold text-sky-400 flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4" /> Kleo AI Companion
-                </p>
-                <p className="text-slate-300">
-                  Ask Kleo grammar questions anytime via the chat button or practice coffee ordering and job interviews in the Chatroom.
+                <p className={isDarkMode ? 'text-slate-300' : 'text-slate-700'}>
+                  {t.header.dailyStreaksDesc}
                 </p>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/40 space-y-1">
-                <p className="font-bold text-emerald-400 flex items-center gap-1.5">
-                  <BookOpen className="w-4 h-4" /> Spaced Repetition (SM-2)
+              <div className={`p-3 rounded-xl border space-y-1 ${isDarkMode ? 'bg-slate-800/40 border-slate-700/40' : 'bg-[#faf6f0] border-[#e8dfd3]'}`}>
+                <p className={`font-bold flex items-center gap-1.5 ${isDarkMode ? 'text-sky-400' : 'text-sky-600'}`}>
+                  <Sparkles className="w-4 h-4" /> {t.header.kleoCompanionTitle}
                 </p>
-                <p className="text-slate-300">
-                  Save translations directly into your Review Deck to reinforce vocabulary with proven memory intervals.
+                <p className={isDarkMode ? 'text-slate-300' : 'text-slate-700'}>
+                  {t.header.kleoCompanionDesc}
+                </p>
+              </div>
+
+              <div className={`p-3 rounded-xl border space-y-1 ${isDarkMode ? 'bg-slate-800/40 border-slate-700/40' : 'bg-[#faf6f0] border-[#e8dfd3]'}`}>
+                <p className={`font-bold flex items-center gap-1.5 ${isDarkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>
+                  <BookOpen className="w-4 h-4" /> {t.header.spacedRepetitionTitle}
+                </p>
+                <p className={isDarkMode ? 'text-slate-300' : 'text-slate-700'}>
+                  {t.header.spacedRepetitionDesc}
                 </p>
               </div>
             </div>
@@ -615,7 +619,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                 onClick={() => setIsHelpModalOpen(false)}
                 className="px-5 py-2.5 rounded-xl bg-[#F06543] hover:bg-[#E05432] text-white font-extrabold text-xs transition-all shadow-md cursor-pointer"
               >
-                Got it!
+                {t.common.gotIt}
               </button>
             </div>
           </div>

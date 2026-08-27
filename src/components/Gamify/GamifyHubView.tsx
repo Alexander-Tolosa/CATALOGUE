@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserProfile, Badge } from '../../types';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { Trophy, Flame, Heart, Award, Calendar, Zap, CheckCircle2, Lock } from 'lucide-react';
 
 interface GamifyHubViewProps {
@@ -13,6 +14,8 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
   onRefillHearts,
   onUpdateDailyGoal
 }) => {
+  const { t } = useTranslation();
+
   // Generate 35-day streak calendar heatmap
   const days = Array.from({ length: 35 }, (_, i) => {
     const d = new Date();
@@ -43,12 +46,12 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
       <div className="glass-panel p-6 bg-gradient-to-r from-amber-950 via-slate-950 to-orange-950 border border-amber-500/40 shadow-xl flex items-center justify-between">
         <div>
           <span className="text-xs font-black text-amber-400 uppercase tracking-widest block mb-1">
-            Habit Building & Achievements Hub
+            {t.gamify.title}
           </span>
           <h2 className="font-brand text-3xl font-black text-white flex items-center gap-2">
-            <Trophy size={28} className="text-amber-400" /> Gamification Center
+            <Trophy size={28} className="text-amber-400" /> {t.gamify.title}
           </h2>
-          <p className="text-xs text-slate-300 mt-1">Track your streak heatmap, XP ranks, weekly league, and badges</p>
+          <p className="text-xs text-slate-300 mt-1">{t.gamify.subtitle}</p>
         </div>
       </div>
 
@@ -58,14 +61,14 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
         <div className="glass-panel p-5 bg-slate-950/90 border border-slate-800 text-center space-y-2">
           <Flame size={28} fill="#f97316" className="mx-auto text-orange-500" />
           <div className="text-3xl font-black text-white">{profile.streakDays} Days</div>
-          <span className="text-xs text-slate-400 uppercase font-bold tracking-wider block">Consecutive Streak</span>
+          <span className="text-xs text-slate-400 uppercase font-bold tracking-wider block">{t.gamify.consecutiveStreak}</span>
         </div>
 
         {/* XP / Level */}
         <div className="glass-panel p-5 bg-slate-950/90 border border-slate-800 text-center space-y-2">
           <Award size={28} className="mx-auto text-sky-400" />
           <div className="text-3xl font-black text-white">{profile.xp} XP</div>
-          <span className="text-xs text-slate-400 uppercase font-bold tracking-wider block">Level {profile.level} Master</span>
+          <span className="text-xs text-slate-400 uppercase font-bold tracking-wider block">Level {profile.level} {t.gamify.levelMaster}</span>
         </div>
 
         {/* Hearts Life Refill */}
@@ -74,9 +77,9 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
           <div className="text-3xl font-black text-white">{profile.hearts} / {profile.maxHearts}</div>
           <button
             onClick={onRefillHearts}
-            className="text-xs font-black text-rose-300 bg-rose-950 border border-rose-800 px-3 py-1 rounded-full hover:bg-rose-900"
+            className="text-xs font-black text-rose-300 bg-rose-950 border border-rose-800 px-3 py-1 rounded-full hover:bg-rose-900 cursor-pointer"
           >
-            Practice to Refill Hearts ❤️
+            {t.gamify.refillHearts}
           </button>
         </div>
       </div>
@@ -85,7 +88,7 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
       <div className="glass-panel p-6 bg-slate-950/90 border border-slate-800 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-brand font-black text-slate-100 text-base flex items-center gap-2">
-            <Zap size={20} className="text-amber-400" /> Adjustable Daily Goal Pace
+            <Zap size={20} className="text-amber-400" /> {t.gamify.dailyGoalTitle}
           </h3>
           <span className="text-xs text-slate-400">Adjust anytime without losing streak status</span>
         </div>
@@ -93,37 +96,37 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
         <div className="grid grid-cols-3 gap-4">
           <button
             onClick={() => onUpdateDailyGoal(5)}
-            className={`p-4 rounded-2xl border text-center transition-all ${
+            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
               profile.dailyGoalMinutes === 5
                 ? 'bg-sky-950 border-sky-400 text-white font-black shadow-lg'
                 : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
             }`}
           >
-            <div className="text-sm font-black">Casual</div>
+            <div className="text-sm font-black">{t.gamify.casual}</div>
             <div className="text-xs text-slate-400 mt-1">5 min / day</div>
           </button>
 
           <button
             onClick={() => onUpdateDailyGoal(10)}
-            className={`p-4 rounded-2xl border text-center transition-all ${
+            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
               profile.dailyGoalMinutes === 10
                 ? 'bg-sky-950 border-sky-400 text-white font-black shadow-lg'
                 : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
             }`}
           >
-            <div className="text-sm font-black">Regular</div>
+            <div className="text-sm font-black">{t.gamify.regular}</div>
             <div className="text-xs text-slate-400 mt-1">10 min / day</div>
           </button>
 
           <button
             onClick={() => onUpdateDailyGoal(20)}
-            className={`p-4 rounded-2xl border text-center transition-all ${
+            className={`p-4 rounded-2xl border text-center transition-all cursor-pointer ${
               profile.dailyGoalMinutes === 20
                 ? 'bg-sky-950 border-sky-400 text-white font-black shadow-lg'
                 : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
             }`}
           >
-            <div className="text-sm font-black">Intense</div>
+            <div className="text-sm font-black">{t.gamify.intense}</div>
             <div className="text-xs text-slate-400 mt-1">20 min / day</div>
           </button>
         </div>
@@ -133,7 +136,7 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
       <div className="glass-panel p-6 bg-slate-950/90 border border-slate-800 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-brand font-black text-slate-100 text-base flex items-center gap-2">
-            <Calendar size={20} className="text-emerald-400" /> 35-Day Habit Streak Heatmap
+            <Calendar size={20} className="text-emerald-400" /> {t.gamify.heatmapTitle}
           </h3>
           <span className="text-xs text-orange-400 font-bold">🔥 Active Streak Logged</span>
         </div>
@@ -160,7 +163,7 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
         {/* Weekly Leaderboard */}
         <div className="glass-panel p-6 bg-slate-950/90 border border-slate-800 space-y-4">
           <h3 className="font-brand font-black text-slate-100 text-base flex items-center gap-2">
-            <Trophy size={20} className="text-amber-400" /> Weekly League Rankings
+            <Trophy size={20} className="text-amber-400" /> {t.gamify.leagueRankings}
           </h3>
 
           <div className="space-y-2">
@@ -189,7 +192,7 @@ export const GamifyHubView: React.FC<GamifyHubViewProps> = ({
         {/* Milestones & Badges Grid */}
         <div className="glass-panel p-6 bg-slate-950/90 border border-slate-800 space-y-4">
           <h3 className="font-brand font-black text-slate-100 text-base flex items-center gap-2">
-            <Award size={20} className="text-sky-400" /> Milestones & Badges
+            <Award size={20} className="text-sky-400" /> {t.gamify.milestonesBadges}
           </h3>
 
           <div className="grid grid-cols-2 gap-3">

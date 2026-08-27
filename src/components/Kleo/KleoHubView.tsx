@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useKleoStore } from '../../store/useKleoStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { KleoAvatar } from './KleoAvatar';
 
 export const KleoHubView: React.FC = () => {
   const { mood, bondXp, bondLevel, equippedCosmetics, equipCosmetic, react } = useKleoStore();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'Head' | 'Neck' | 'Eyes'>('Head');
 
   const wardrobeItems = [
@@ -81,10 +83,10 @@ export const KleoHubView: React.FC = () => {
             {/* Pet Kleo Button */}
             <button
               onClick={() => react('correct')}
-              className="absolute -bottom-3 bg-[#5affff] text-[#003737] font-black text-xs px-6 py-2 rounded-full shadow-[0_0_15px_rgba(90,255,255,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5"
+              className="absolute -bottom-3 bg-[#5affff] text-[#003737] font-black text-xs px-6 py-2 rounded-full shadow-[0_0_15px_rgba(90,255,255,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">sparkles</span>
-              Pet Kleo
+              {t.kleoHub.petKleo}
             </button>
           </div>
 
@@ -94,8 +96,8 @@ export const KleoHubView: React.FC = () => {
         {/* Bond Status Box */}
         <div className="glass-card rounded-3xl p-6 border border-[#5affff]/20 space-y-4 shadow-xl">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-[#bacac9] uppercase tracking-widest block">BOND STATUS</span>
-            <div className="font-display text-xl font-bold text-[#5affff]">Level 18: Inseparable</div>
+            <span className="text-[10px] font-bold text-[#bacac9] uppercase tracking-widest block">{t.kleoHub.bondStatus}</span>
+            <div className="font-display text-xl font-bold text-[#5affff]">Level {bondLevel}: Inseparable</div>
             <div className="flex justify-between items-center text-xs font-bold text-[#bacac9] pt-1">
               <span>Progress</span>
               <span>2,450 / 3,000 XP</span>
@@ -129,21 +131,25 @@ export const KleoHubView: React.FC = () => {
       <section className="flex-1 w-full space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h2 className="font-display text-2xl font-bold text-white">Kleo's Wardrobe</h2>
-            <p className="text-xs text-[#bacac9]">Personalize your companion with earned items</p>
+            <h2 className="font-display text-2xl font-bold text-white">{t.kleoHub.wardrobe}</h2>
+            <p className="text-xs text-[#bacac9]">{t.kleoHub.subtitle}</p>
           </div>
 
           {/* Category Tabs */}
           <div className="bg-[#161b2b] p-1 rounded-xl border border-white/5 flex gap-1">
-            {(['Head', 'Neck', 'Eyes'] as const).map((tab) => (
+            {([
+              { id: 'Head', label: t.kleoHub.head },
+              { id: 'Neck', label: t.kleoHub.neck },
+              { id: 'Eyes', label: t.kleoHub.eyes }
+            ] as const).map((tab) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  activeTab === tab ? 'bg-[#25293a] text-[#5affff]' : 'text-[#bacac9] hover:text-white'
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === tab.id ? 'bg-[#25293a] text-[#5affff]' : 'text-[#bacac9] hover:text-white'
                 }`}
               >
-                {tab}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -165,7 +171,7 @@ export const KleoHubView: React.FC = () => {
             >
               {item.isEquipped && (
                 <span className="absolute top-3 right-3 bg-[#5affff] text-[#003737] font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  EQUIPPED
+                  {t.kleoHub.equipped}
                 </span>
               )}
 

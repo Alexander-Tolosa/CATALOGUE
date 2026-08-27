@@ -31,6 +31,7 @@ import {
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useFriendsStore } from '../../store/useFriendsStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { AwardsSection } from './AwardsSection';
 import { FriendsHub } from './FriendsHub';
 import { SecuritySignInSection } from './SecuritySignInSection';
@@ -55,6 +56,7 @@ export const ProfilePageView: React.FC = () => {
   const { profile, isDarkMode, selectLanguageTrack } = useAppStore();
   const { googleUser, logout } = useAuthStore();
   const { friends, setActiveChatFriendId } = useFriendsStore();
+  const { t } = useTranslation();
 
   const [activeSubNav, setActiveSubNav] = useState<SubNavTab>('profile');
   const [activeContentTab, setActiveContentTab] = useState<ContentSubTab>('about');
@@ -469,7 +471,7 @@ export const ProfilePageView: React.FC = () => {
                       className="px-5 py-2 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer self-start sm:self-end"
                     >
                       <Edit size={14} />
-                      <span>Edit</span>
+                      <span>{t.profile.editProfile}</span>
                     </button>
                   </div>
 

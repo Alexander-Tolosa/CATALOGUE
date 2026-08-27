@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LanguageTrack, ReviewItem } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { FlagIcon } from '../Common/FlagIcon';
 import { checkAndCensorText, triggerEthicalWarning } from '../../lib/ethicalGuard';
 
@@ -261,6 +262,7 @@ const CustomLanguageDropdown: React.FC<CustomLanguageDropdownProps> = ({
 
 export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }) => {
   const { isDarkMode } = useAppStore();
+  const { t } = useTranslation();
   const [fromLang, setFromLang] = useState<LangOption>('English');
   const [toLang, setToLang] = useState<LangOption>('Japanese');
   const [inputText, setInputText] = useState('');
@@ -583,20 +585,18 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
       <div className="max-w-5xl mx-auto space-y-6 relative z-10">
         {/* Centralized Hero Section */}
         <div className="text-center flex flex-col items-center justify-center space-y-3 pt-2 pb-4">
-
-
           {/* Bold Title */}
           <h1 className={`text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight ${
             isDarkMode ? 'text-white' : 'text-slate-900'
           }`}>
-            AI Context Translator
+            {t.translator.title}
           </h1>
 
           {/* Descriptive Subtitle */}
           <p className={`text-xs md:text-sm max-w-lg leading-relaxed font-medium ${
             isDarkMode ? 'text-slate-400' : 'text-slate-600'
           }`}>
-            Translate phrase structures with native audio pronunciation, formality insights & grammar breakdown.
+            {t.translator.subtitle}
           </p>
         </div>
 
@@ -638,7 +638,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                   ? 'bg-slate-800 border-white/10 text-slate-300 hover:text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/10'
                   : 'bg-white border-slate-200 text-slate-600 hover:text-orange-500 hover:border-orange-500/50 hover:bg-orange-50'
               }`}
-              title="Swap Languages (<->)"
+              title={t.translator.swapLanguages}
             >
               <span className="material-symbols-outlined text-lg block transition-transform hover:rotate-180 duration-300">
                 swap_horiz
@@ -710,7 +710,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                   value={inputText}
                   onChange={(e) => handleInputChange(e.target.value)}
                   rows={6}
-                  placeholder={`Type or paste ${fromLang} text here (live auto-translate)...`}
+                  placeholder={t.translator.placeholder}
                   className={`w-full h-full bg-transparent resize-none focus:outline-none text-base md:text-lg font-medium leading-relaxed ${
                     isDarkMode
                       ? 'text-white placeholder-slate-500'
@@ -737,7 +737,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                     title={isListening ? 'Click to stop listening' : 'Speak into Microphone'}
                   >
                     <span className="material-symbols-outlined text-base">mic</span>
-                    <span>{isListening ? 'Listening...' : 'Voice Input'}</span>
+                    <span>{isListening ? t.translator.listening : t.translator.voiceInput}</span>
                   </button>
 
                   {/* Source TTS Speaker Button */}
@@ -769,7 +769,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                   ) : (
                     <span className="material-symbols-outlined text-sm">translate</span>
                   )}
-                  <span>{isLoading ? 'Translating...' : 'Translate'}</span>
+                  <span>{isLoading ? t.translator.translating : t.translator.translateButton}</span>
                 </button>
               </div>
             </div>
@@ -790,7 +790,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                 {/* Toast badge */}
                 {copiedToast && (
                   <span className="bg-emerald-500 text-white font-bold text-[10px] px-2.5 py-0.5 rounded-full shadow-md animate-bounce">
-                    Copied!
+                    {t.translator.copied}
                   </span>
                 )}
               </div>
@@ -802,7 +802,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                     <span className="material-symbols-outlined text-3xl text-orange-400 animate-spin">
                       sync
                     </span>
-                    <p className="text-xs font-semibold text-slate-400">Translating context...</p>
+                    <p className="text-xs font-semibold text-slate-400">{t.translator.translating}</p>
                   </div>
                 ) : translatedText ? (
                   <div className="space-y-3">
@@ -887,7 +887,7 @@ export const TranslatorView: React.FC<TranslatorViewProps> = ({ onSaveToReview }
                   <span className="material-symbols-outlined text-base">
                     {isSaved ? 'check' : 'bookmark_add'}
                   </span>
-                  <span>{isSaved ? 'Saved to Deck' : 'Save to Deck'}</span>
+                  <span>{isSaved ? t.translator.savedToDeck : t.translator.saveToDeck}</span>
                 </button>
               </div>
             </div>

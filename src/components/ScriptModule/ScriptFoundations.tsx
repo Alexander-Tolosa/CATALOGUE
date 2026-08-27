@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { LanguageTrack } from '../../types';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { KOREAN_FOUNDATIONS } from '../../data/koreanData';
 import { JAPANESE_FOUNDATIONS } from '../../data/japaneseData';
 import { ENGLISH_FOUNDATIONS } from '../../data/englishData';
@@ -46,6 +47,7 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
   language,
   onFinishFoundations
 }) => {
+  const { t } = useTranslation();
   // Selected Hangul Consonant & Vowel
   const [selectedBlock, setSelectedBlock] = useState<{ consonant: string; vowel: string }>({
     consonant: 'ㄱ',
@@ -226,11 +228,11 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-800/80 pb-6">
         <div>
           <div className="flex items-center gap-2 text-xs font-extrabold text-cyan-400 uppercase tracking-widest">
-            <Globe size={15} /> Script & Foundations Hub
+            <Globe size={15} /> {t.script.title}
           </div>
 
           <h2 className="font-brand text-3xl font-extrabold text-white mt-1.5 tracking-tight flex items-center gap-3">
-            MULTI-LANGUAGE SCRIPT FOUNDATIONS
+            {t.script.title}
             <span className="text-xs font-mono font-normal px-3 py-1 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300">
               {language === 'ko' ? 'Korean (한글 40자)' : language === 'ja' ? 'Japanese (五十音 46자)' : 'English (Alphabet A-Z)'}
             </span>
@@ -269,9 +271,9 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
 
           <button
             onClick={onFinishFoundations}
-            className="glass-button btn-primary text-xs font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white shadow-lg shadow-sky-500/20 transition-transform active:scale-95"
+            className="glass-button btn-primary text-xs font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white shadow-lg shadow-sky-500/20 transition-transform active:scale-95 cursor-pointer"
           >
-            Continue to Skill Tree <ArrowRight size={16} />
+            {t.script.continueToSkillTree} <ArrowRight size={16} />
           </button>
         </div>
       </div>

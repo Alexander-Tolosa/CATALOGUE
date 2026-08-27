@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createWorker } from 'tesseract.js';
 import { LanguageTrack, ReviewItem } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { FlagIcon } from '../Common/FlagIcon';
 import {
   Camera,
@@ -471,6 +472,7 @@ const CustomLanguageDropdown: React.FC<CustomLanguageDropdownProps> = ({
 
 export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
   const { isDarkMode } = useAppStore();
+  const { t } = useTranslation();
 
   // Mode: Live Camera vs. Uploaded Image
   const [activeMode, setActiveMode] = useState<'camera' | 'upload'>('upload');
@@ -1028,13 +1030,13 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
             </div>
             <div>
               <h1 className="font-display font-extrabold text-xl tracking-tight flex items-center gap-2">
-                Camera & Word Scanner
+                {t.scanner.title}
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/15 text-[#F06543] border border-orange-500/30 uppercase tracking-wider">
                   AI OCR Vision
                 </span>
               </h1>
               <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                Point camera at foreign words, menus, or signs to extract text and translate instantly.
+                {t.scanner.subtitle}
               </p>
             </div>
           </div>
@@ -1055,7 +1057,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
               }`}
             >
               <Camera size={14} />
-              <span>Live Camera</span>
+              <span>{t.scanner.liveCamera}</span>
             </button>
             <button
               onClick={() => setActiveMode('upload')}
@@ -1066,7 +1068,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
               }`}
             >
               <Upload size={14} />
-              <span>Upload Photo</span>
+              <span>{t.scanner.uploadPhoto}</span>
             </button>
           </div>
         </div>
@@ -1076,7 +1078,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
           <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-[280px]">
             {/* Source Language Custom Dropdown */}
             <CustomLanguageDropdown
-              label="Scan From"
+              label={t.scanner.scanFrom}
               value={fromLang}
               onChange={(newFrom) => {
                 if (newFrom === toLang) {
@@ -1104,7 +1106,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
 
             {/* Target Language Custom Dropdown */}
             <CustomLanguageDropdown
-              label="Translate To"
+              label={t.scanner.translateTo}
               value={toLang}
               onChange={(newTo) => {
                 if (newTo === fromLang) {
@@ -1249,31 +1251,16 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                         : 'border-slate-300 hover:border-orange-500/70 bg-slate-50/70'
                     }`}
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-[#F06543] mb-3">
-                      <span className="material-symbols-outlined text-3xl">content_paste_go</span>
+                    <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 mb-3">
+                      <ImageIcon size={28} />
                     </div>
-
-                    <span className={`font-display font-extrabold text-base ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                      Paste (Ctrl + V), Drag, or Click Image
-                    </span>
-
-                    <span className={`text-xs mt-1 max-w-xs text-center ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                      Copy any screenshot or picture to clipboard and press <strong className="text-orange-500">Ctrl + V</strong> anywhere!
-                    </span>
-
-                    <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePasteFromClipboard();
-                        }}
-                        className="px-3.5 py-1.5 rounded-xl bg-orange-500/15 border border-orange-500/30 text-[#F06543] font-extrabold text-xs flex items-center gap-1.5 hover:bg-orange-500/25 transition-all cursor-pointer shadow-xs"
-                      >
-                        <span className="material-symbols-outlined text-sm">content_paste</span>
-                        <span>Paste from Clipboard</span>
-                      </button>
-
+                    <h3 className={`font-bold text-sm ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                      Drop Image Here or Paste (Ctrl+V)
+                    </h3>
+                    <p className="text-xs text-slate-400 max-w-xs mt-1">
+                      Supports JPG, PNG, WebP screenshots, receipts, product packaging or study notes.
+                    </p>
+                    <div className="mt-4 flex items-center gap-2">
                       <button
                         type="button"
                         onClick={(e) => {
@@ -1315,7 +1302,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                 className="py-3 px-8 rounded-2xl bg-gradient-to-r from-[#F06543] to-[#F97316] text-white font-extrabold text-sm shadow-[0_4px_20px_rgba(240,101,67,0.4)] flex items-center gap-2.5 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
               >
                 <ScanLine size={18} />
-                <span>{isScanning ? 'Processing Frame...' : 'Snap & Translate'}</span>
+                <span>{isScanning ? 'Processing Frame...' : t.scanner.snapAndTranslate}</span>
               </button>
             </div>
           )}
@@ -1355,7 +1342,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                 isDarkMode ? 'text-slate-400' : 'text-slate-500'
               }`}>
                 <FlagIcon code={LANG_CONFIG[fromLang].code} size="sm" />
-                <span>Extracted {fromLang} Text</span>
+                <span>{t.scanner.extractedText} ({fromLang})</span>
               </span>
 
               {scannedText && (

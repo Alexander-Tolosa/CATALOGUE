@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import { AppView } from '../../types';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { LogoutModal } from './LogoutModal';
 import catalogueLogo from '../../assets/catalogue_logo.png';
 import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
@@ -152,6 +153,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 }) => {
   const { isDarkMode, setSidebarExpanded, triggerAppRefresh } = useAppStore();
   const { googleUser, isAuthenticated, logout } = useAuthStore();
+  const { t } = useTranslation();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -197,14 +199,14 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   };
 
   const navItems: { id: AppView; label: string; icon: string }[] = [
-    { id: 'dashboard', label: 'Overview', icon: 'grid_view' },
-    { id: 'learn', label: 'Skill Tree', icon: 'school' },
-    { id: 'letters', label: 'Writing & Letters', icon: 'translate' },
-    { id: 'matching', label: 'Word Match', icon: 'style' },
-    { id: 'translator', label: 'Translator', icon: 'language' },
-    { id: 'scanner', label: 'Scan & Translate', icon: 'document_scanner' },
-    { id: 'gamify', label: 'Leaderboard & Stats', icon: 'leaderboard' },
-    { id: 'review', label: 'Review Deck', icon: 'rebase_edit' }
+    { id: 'dashboard', label: t.sidebar.overview, icon: 'grid_view' },
+    { id: 'learn', label: t.sidebar.skillTree, icon: 'school' },
+    { id: 'letters', label: t.sidebar.writingLetters, icon: 'translate' },
+    { id: 'matching', label: t.sidebar.wordMatch, icon: 'style' },
+    { id: 'translator', label: t.sidebar.translator, icon: 'language' },
+    { id: 'scanner', label: t.sidebar.scanTranslate, icon: 'document_scanner' },
+    { id: 'gamify', label: t.sidebar.leaderboardStats, icon: 'leaderboard' },
+    { id: 'review', label: t.sidebar.reviewDeck, icon: 'rebase_edit' }
   ];
 
   return (
@@ -238,7 +240,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         <div
           onClick={handleBrandClick}
           className="mb-1.5 w-full flex items-center justify-center cursor-pointer select-none py-1 group shrink-0"
-          title="Refresh Dashboard"
+          title={t.sidebar.refreshDashboard}
         >
           <motion.div
             whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
@@ -343,7 +345,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             onClick={() => onSelectView('kleo')}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
-            title={!isExpanded ? 'Kleo Companion Hub' : undefined}
+            title={!isExpanded ? t.sidebar.kleoTutor : undefined}
             className={`relative overflow-visible w-full h-11 rounded-xl border flex items-center transition-all duration-200 shadow-md cursor-pointer ${
               activeView === 'kleo'
                 ? 'bg-gradient-to-r from-[#f97316] to-[#ff7849] text-white border-[#f97316] shadow-[0_0_20px_rgba(249,115,22,0.45)]'
@@ -372,14 +374,14 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                       activeView === 'kleo' ? 'text-white' : 'text-[#f97316]'
                     }`}
                   >
-                    Kleo Companion
+                    {t.sidebar.kleoTutor}
                   </span>
                   <span
                     className={`text-[10px] truncate ${
                       activeView === 'kleo' ? 'text-white/85' : 'text-slate-500 dark:text-slate-400'
                     }`}
                   >
-                    Wardrobe & Bond
+                    AI Companion
                   </span>
                 </motion.div>
               )}
@@ -393,7 +395,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             onClick={() => setIsLogoutModalOpen(true)}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.95 }}
-            title={!isExpanded ? 'LOG OUT' : undefined}
+            title={!isExpanded ? t.sidebar.logout : undefined}
             className={`cursor-pointer transition-all duration-200 flex items-center justify-center bg-[#f05252] hover:bg-[#e04141] text-white shadow-[0_4px_16px_rgba(240,82,82,0.45)] ring-4 ring-red-400/25 border border-red-300/40 rounded-full ${
               isExpanded
                 ? 'w-full h-11 px-4 gap-2.5'
@@ -411,7 +413,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                   transition={{ duration: 0.18 }}
                   className="font-black text-xs uppercase tracking-wider text-white whitespace-nowrap"
                 >
-                  LOG OUT
+                  {t.sidebar.logout}
                 </motion.span>
               )}
             </AnimatePresence>
@@ -490,7 +492,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                   <div className="w-5 h-5 rounded-full overflow-hidden shrink-0 border border-white/30">
                     <img src={kleoChatbotLogo} alt="Kleo" className="w-full h-full object-cover" />
                   </div>
-                  <span>Kleo Companion Hub</span>
+                  <span>{t.sidebar.kleoTutor}</span>
                 </button>
 
                 {isAuthenticated && googleUser && (
@@ -502,7 +504,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     className="w-full h-11 flex items-center justify-center gap-2 bg-[#f05252] hover:bg-[#e04141] text-white font-black text-xs uppercase tracking-wider rounded-full shadow-[0_4px_16px_rgba(240,82,82,0.45)] ring-4 ring-red-400/25 border border-red-300/40 cursor-pointer transition-all active:scale-95"
                   >
                     <LogoutPillIcon size={19} />
-                    <span>LOG OUT</span>
+                    <span>{t.sidebar.logout}</span>
                   </button>
                 )}
               </div>

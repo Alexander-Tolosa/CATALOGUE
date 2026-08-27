@@ -1,6 +1,7 @@
 import React from 'react';
 import { LessonNode, LanguageTrack } from '../../types';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { BookOpen, Star, Gift, Trophy, ArrowLeft, FastForward, Check, Sparkles } from 'lucide-react';
 
 interface SkillTreePathProps {
@@ -20,37 +21,39 @@ export const SkillTreePath: React.FC<SkillTreePathProps> = ({
   onOpenGuidebook,
   equippedCosmetics
 }) => {
+  const { t } = useTranslation();
+
   const currentUnitTitle =
     selectedLanguage === 'ko'
-      ? 'Hangul Foundations & Conversational Mastery'
+      ? t.learn.foundationHangul
       : selectedLanguage === 'ja'
-      ? 'Hiragana, Katakana & Radical Mastery'
-      : 'Phonics & Spoken English Fluency';
+      ? t.learn.foundationNihongo
+      : t.learn.foundationEnglish;
 
   return (
     <div className="flex-1 max-w-xl mx-auto space-y-8 pb-20">
-      {/* 1. Million-Dollar Bright Unit Header Banner */}
+      {/* 1. Bright Unit Header Banner */}
       <div className="bg-gradient-to-r from-emerald-600 via-teal-500 to-sky-600 text-white p-6 rounded-3xl shadow-2xl flex items-center justify-between gap-4 border border-white/20 relative overflow-hidden">
         {/* Glow Aura */}
         <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-white/20 rounded-full blur-2xl pointer-events-none" />
 
         <div className="space-y-1 relative z-10">
           <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-100">
-            <ArrowLeft size={16} /> SECTION 1, UNIT 1
+            <ArrowLeft size={16} /> {t.learn.section1Unit1}
           </div>
           <h2 className="font-brand text-2xl md:text-3xl font-black tracking-tight text-white drop-shadow-md">
             {currentUnitTitle}
           </h2>
           <p className="text-xs text-emerald-100/90 font-medium">
-            3-minute micro-lessons • Adaptive AI repetition engine
+            {t.learn.microLessonsDesc}
           </p>
         </div>
 
         <button
           onClick={onOpenGuidebook}
-          className="bg-slate-950/40 hover:bg-slate-950/60 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 transition-all shrink-0 shadow-lg border border-white/30 hover:scale-105"
+          className="bg-slate-950/40 hover:bg-slate-950/60 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 transition-all shrink-0 shadow-lg border border-white/30 hover:scale-105 cursor-pointer"
         >
-          <BookOpen size={16} /> GUIDEBOOK
+          <BookOpen size={16} /> {t.learn.guidebook}
         </button>
       </div>
 
@@ -60,7 +63,7 @@ export const SkillTreePath: React.FC<SkillTreePathProps> = ({
         <div className="relative flex flex-col items-center">
           {/* START Tooltip Pill */}
           <div className="mb-3 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-xl shadow-emerald-500/30 animate-bounce flex items-center gap-1">
-            <Sparkles size={14} /> START HERE
+            <Sparkles size={14} /> {t.learn.startHere}
           </div>
 
           {/* Active Glowing Circle Node Button */}

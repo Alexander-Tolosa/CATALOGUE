@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { useKleoStore } from '../../store/useKleoStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 import { isAllowedTopic, STANDARD_REFUSAL_RESPONSE } from '../../lib/kleoPrompt';
@@ -35,6 +36,7 @@ interface Message {
 export const KleoChatRoomView: React.FC = () => {
   const { isDarkMode, profile, addXP, savePhraseToReview, addStruggledWords } = useAppStore();
   const { mood, equippedCosmetics, react, addBondXp } = useKleoStore();
+  const { t } = useTranslation();
 
   // Selected Chat Roleplay Scenario State
   const [selectedScenario, setSelectedScenario] = useState<ChatScenario>('free_chat');
@@ -570,7 +572,7 @@ export const KleoChatRoomView: React.FC = () => {
                               <span className="material-symbols-outlined text-xs">
                                 {savedCorrections[corr.id] ? 'check' : 'bookmark_add'}
                               </span>
-                              <span>{savedCorrections[corr.id] ? 'Saved to Review' : 'Save to Review'}</span>
+                              <span>{savedCorrections[corr.id] ? t.chatbox.savedToReview : t.chatbox.saveToReview}</span>
                             </button>
                           </div>
                         </div>
@@ -625,8 +627,8 @@ export const KleoChatRoomView: React.FC = () => {
               onChange={(e) => setInputMsg(e.target.value)}
               placeholder={
                 isListening
-                  ? 'Listening to speech...'
-                  : 'Type your message...'
+                  ? t.chatbox.listening
+                  : t.chatbox.placeholder
               }
               className={`flex-1 px-2 py-1.5 text-xs md:text-sm font-medium focus:outline-none bg-transparent ${
                 isDarkMode ? 'text-white placeholder-slate-500' : 'text-slate-900 placeholder-slate-400'
@@ -652,7 +654,7 @@ export const KleoChatRoomView: React.FC = () => {
                     ? 'text-slate-600 opacity-40 cursor-not-allowed'
                     : 'text-slate-400 hover:text-[#F06543]'
                 }`}
-                title="Send message"
+                title={t.chatbox.send}
               >
                 <span className="material-symbols-outlined text-lg">send</span>
               </button>

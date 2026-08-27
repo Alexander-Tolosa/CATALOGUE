@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import sadSiameseCat from '../../assets/sad_siamese_cat.png';
 
 interface LogoutModalProps {
@@ -15,6 +16,7 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
   onConfirm
 }) => {
   const { isDarkMode } = useAppStore();
+  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -59,11 +61,12 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
             </div>
 
             {/* Heading */}
-            <h2 className="font-extrabold text-2xl tracking-normal mb-6 mt-1">
-              Log out of{' '}
-              <span className="text-[#F06543] dark:text-[#ff7849]">CATALOGUE</span>
-              <span className="inline-block ml-1.5">?</span>
+            <h2 className="font-extrabold text-2xl tracking-normal mb-2 mt-1">
+              {t.logoutModal.title}
             </h2>
+            <p className="text-xs text-slate-400 dark:text-slate-300 mb-6 leading-relaxed">
+              {t.logoutModal.description}
+            </p>
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-3.5">
@@ -82,7 +85,7 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
                 >
                   <path d="M12 8V4l8 8-8 8v-4H4V8h8z" fill="#0C4A41" />
                 </svg>
-                <span>Keep studying</span>
+                <span>{t.logoutModal.stayLoggedIn}</span>
               </button>
 
               {/* Danger Button: Log Out Anyway */}
@@ -99,14 +102,14 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
                   className="shrink-0"
                 >
                   <path
-                    d="M16 17l5-5-5-5M21 12H9M13 21H7a2 2 0 01-2-2V5a2 2 0 012-2h6"
-                    stroke="#FFFFFF"
-                    strokeWidth="2.4"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span>Log out anyway</span>
+                <span>{t.logoutModal.confirmLogout}</span>
               </button>
             </div>
           </div>

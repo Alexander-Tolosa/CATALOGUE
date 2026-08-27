@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LessonNode, LanguageTrack } from '../../types';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { LessonPlayer } from '../Lesson/LessonPlayer';
 
 interface LearnViewProps {
@@ -21,14 +22,15 @@ export const LearnView: React.FC<LearnViewProps> = ({
   onCompleteNode,
   equippedCosmetics
 }) => {
+  const { t } = useTranslation();
   const [activeSessionNode, setActiveSessionNode] = useState<LessonNode | null>(null);
 
   const unitTitle =
     selectedLanguage === 'ko'
-      ? 'Foundation of Hangul'
+      ? t.learn.foundationHangul
       : selectedLanguage === 'ja'
-      ? 'Foundation of Nihongo'
-      : 'Foundation of English Phonics';
+      ? t.learn.foundationNihongo
+      : t.learn.foundationEnglish;
 
   return (
     <div className="pt-20 px-4 md:px-8 pb-16 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 items-start">
@@ -37,9 +39,9 @@ export const LearnView: React.FC<LearnViewProps> = ({
         <div className="max-w-2xl mx-auto flex flex-col items-center">
           {/* Unit Heading */}
           <div className="text-center mb-10">
-            <span className="text-[#5affff] font-bold text-xs uppercase tracking-widest">Unit 1</span>
+            <span className="text-[#5affff] font-bold text-xs uppercase tracking-widest">{t.learn.unit1}</span>
             <h2 className="font-display text-3xl font-extrabold text-white mt-1">{unitTitle}</h2>
-            <p className="text-xs text-[#bacac9] mt-1.5">Master the scripts and basic interactions.</p>
+            <p className="text-xs text-[#bacac9] mt-1.5">{t.learn.masterScriptsDesc}</p>
           </div>
 
           {/* Skill Map Vertical Snake Path */}
@@ -58,7 +60,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
                 <h3 className="font-display text-lg font-bold text-[#5affff]">
                   {nodes[0] ? nodes[0].title : 'Letters: Foundations 1'}
                 </h3>
-                <p className="text-xs text-[#bacac9]">Mastered 100%</p>
+                <p className="text-xs text-[#bacac9]">{t.learn.mastered100}</p>
               </div>
               {/* Connection Line */}
               <div className="absolute top-24 left-1/2 -translate-x-1/2 h-20 w-1 bg-[#5affff]"></div>
@@ -101,7 +103,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
               </div>
               <div className="mt-4 text-center">
                 <h3 className="font-display text-lg font-bold text-white">Phrases: Self Intro</h3>
-                <p className="text-xs text-[#bacac9]">Locked</p>
+                <p className="text-xs text-[#bacac9]">{t.learn.locked}</p>
               </div>
               {/* Connection Line */}
               <div className="absolute top-24 left-1/2 -translate-x-1/2 h-20 w-1 bg-[#2f3445]"></div>
@@ -114,7 +116,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
               </div>
               <div className="mt-4 text-center">
                 <h3 className="font-display text-lg font-bold text-white">Dialogues: At the Store</h3>
-                <p className="text-xs text-[#bacac9]">Locked</p>
+                <p className="text-xs text-[#bacac9]">{t.learn.locked}</p>
               </div>
             </div>
           </div>
@@ -123,13 +125,13 @@ export const LearnView: React.FC<LearnViewProps> = ({
 
       {/* Right Side Stats Panel */}
       <aside className="w-full lg:w-80 space-y-6 shrink-0">
-        <h3 className="font-display text-lg font-bold text-white">Current Unit Stats</h3>
+        <h3 className="font-display text-lg font-bold text-white">{t.learn.unitStats}</h3>
 
         <div className="space-y-4">
           {/* Daily Goal Card */}
           <div className="glass-panel p-4 rounded-2xl space-y-2">
             <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-[#bacac9]">Daily Goal</span>
+              <span className="text-[#bacac9]">{t.dashboard.dailyGoal}</span>
               <span className="text-[#5affff]">1,250 XP</span>
             </div>
             <div className="w-full h-2 bg-[#2f3445] rounded-full overflow-hidden">
@@ -170,7 +172,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
           {/* Pro CTA */}
           <button className="w-full py-3.5 px-4 bg-[#5affff] text-[#003737] font-extrabold rounded-xl shadow-[0_4px_15px_rgba(90,255,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 text-xs">
             <span className="material-symbols-outlined text-lg">auto_awesome</span>
-            Unlock Pro Features
+            {t.learn.unlockPro}
           </button>
         </div>
       </aside>

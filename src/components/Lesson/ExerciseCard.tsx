@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Exercise, KleoMood } from '../../types';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { StrokeTracingCanvas } from '../ScriptModule/StrokeTracingCanvas';
 import { Volume2, Mic, CheckCircle2, XCircle } from 'lucide-react';
 
@@ -9,6 +10,7 @@ interface ExerciseCardProps {
 }
 
 export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }) => {
+  const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [assembledSentence, setAssembledSentence] = useState<string[]>([]);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -98,11 +100,11 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
               if (isSubmitted) {
                 if (option === exercise.correctAnswer) {
                   btnStyle = 'bg-emerald-950/90 border-emerald-500 text-emerald-200 font-bold';
-                } else if (isSelected && !isCorrect) {
-                  btnStyle = 'bg-rose-950/90 border-rose-500 text-rose-200';
+                } else if (isSelected) {
+                  btnStyle = 'bg-rose-950/90 border-rose-500 text-rose-200 line-through';
                 }
               } else if (isSelected) {
-                btnStyle = 'bg-sky-950 border-sky-400 text-sky-100 font-bold shadow-lg';
+                btnStyle = 'bg-sky-600/90 border-sky-400 text-white font-bold shadow-lg shadow-sky-500/20';
               }
 
               return (
@@ -110,15 +112,17 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
                   key={idx}
                   onClick={() => handleMultipleChoiceSelect(option)}
                   disabled={isSubmitted}
-                  className={`p-4 rounded-xl border text-left flex items-center justify-between transition-all font-medium ${btnStyle}`}
+                  className={`p-4 rounded-xl border text-left font-medium transition-all ${btnStyle}`}
                 >
-                  <span className="font-kr font-jp">{option}</span>
-                  {isSubmitted && option === exercise.correctAnswer && (
-                    <CheckCircle2 size={20} className="text-emerald-400 shrink-0" />
-                  )}
-                  {isSubmitted && isSelected && !isCorrect && (
-                    <XCircle size={20} className="text-rose-400 shrink-0" />
-                  )}
+                  <div className="flex items-center justify-between">
+                    <span>{option}</span>
+                    {isSubmitted && option === exercise.correctAnswer && (
+                      <CheckCircle2 size={18} className="text-emerald-400" />
+                    )}
+                    {isSubmitted && isSelected && option !== exercise.correctAnswer && (
+                      <XCircle size={18} className="text-rose-400" />
+                    )}
+                  </div>
                 </button>
               );
             })}
@@ -128,17 +132,17 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
         {/* 2. Sentence Assembly */}
         {exercise.type === 'sentence-assembly' && exercise.options && (
           <div className="space-y-4">
-            {/* Target Assembly Drop Slot */}
-            <div className="min-h-16 p-3 bg-slate-950 rounded-xl border border-dashed border-sky-500/40 flex flex-wrap items-center gap-2">
+            {/* Answer Assembly Drop Zone */}
+            <div className="min-h-16 p-3 rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/50 flex flex-wrap gap-2 items-center">
               {assembledSentence.length === 0 ? (
-                <span className="text-xs text-slate-500 italic">Click word bubbles below in order to assemble...</span>
+                <span className="text-sm text-slate-500 italic">Tap words below to assemble the sentence</span>
               ) : (
                 assembledSentence.map((word, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleToggleWordBubble(word)}
                     disabled={isSubmitted}
-                    className="bg-sky-600 text-white font-bold px-3 py-1.5 rounded-lg text-sm font-kr shadow-md hover:bg-sky-700"
+                    className="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg font-bold text-sm shadow-md transition-all animate-scaleUp"
                   >
                     {word}
                   </button>
@@ -146,7 +150,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
               )}
             </div>
 
-            {/* Word Bubbles Pool */}
+            {/* Word Bank */}
             <div className="flex flex-wrap gap-2 pt-2">
               {exercise.options.map((word, idx) => {
                 const isUsed = assembledSentence.includes(word);
@@ -155,10 +159,10 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
                     key={idx}
                     onClick={() => handleToggleWordBubble(word)}
                     disabled={isUsed || isSubmitted}
-                    className={`px-4 py-2 rounded-xl border font-bold text-sm font-kr transition-all ${
+                    className={`px-3 py-2 rounded-lg font-bold text-sm transition-all ${
                       isUsed
-                        ? 'opacity-30 border-slate-800 bg-slate-900 cursor-not-allowed'
-                        : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-slate-200'
+                        ? 'bg-slate-800 text-slate-600 border border-slate-800 cursor-not-allowed opacity-40'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 active:scale-95'
                     }`}
                   >
                     {word}
@@ -169,7 +173,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
           </div>
         )}
 
-        {/* 3. Tracing Exercise */}
+        {/* 3. Stroke Tracing Canvas */}
         {exercise.type === 'tracing' && exercise.targetScript && (
           <StrokeTracingCanvas
             character={exercise.targetScript}
@@ -184,7 +188,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
 
         {/* 4. Speaking Exercise */}
         {exercise.type === 'speaking' && (
-          <div className="flex flex-col items-center justify-center p-6 space-y-4">
+          <div className="flex flex-col items-center justify-center py-6 space-y-4">
             <button
               onClick={() => {
                 setIsRecording(true);
@@ -199,7 +203,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
               className={`p-6 rounded-full border-2 transition-all ${
                 isRecording
                   ? 'bg-rose-600 border-rose-400 animate-pulse text-white'
-                  : 'bg-sky-600 hover:bg-sky-500 border-sky-300 text-white shadow-xl'
+                  : 'bg-sky-600 hover:bg-sky-500 border-sky-300 text-white shadow-xl cursor-pointer'
               }`}
             >
               <Mic size={32} />
@@ -219,7 +223,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
             : 'bg-rose-950/70 border-rose-800/80 text-rose-200'
         }`}>
           <div className="font-bold flex items-center gap-2">
-            {isCorrect ? '🎉 Great Job!' : '💡 Don\'t worry, mistakes help us learn!'}
+            {isCorrect ? t.lesson.greatJob : '💡 Don\'t worry, mistakes help us learn!'}
           </div>
           {exercise.explanation && <p className="text-sm mt-1">{exercise.explanation}</p>}
           {exercise.culturalNote && (
@@ -235,13 +239,13 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onAnswer }
         <button
           onClick={checkAnswer}
           disabled={isSubmitted}
-          className={`w-full py-3.5 rounded-xl font-bold font-brand text-lg transition-all ${
+          className={`w-full py-3.5 rounded-xl font-bold font-brand text-lg transition-all cursor-pointer ${
             isSubmitted
               ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
               : 'btn-primary'
           }`}
         >
-          {isSubmitted ? 'Answer Submitted' : 'Check Answer'}
+          {isSubmitted ? t.lesson.answerSubmitted : t.lesson.checkAnswer}
         </button>
       )}
     </div>

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { MatchingCategoryId, LanguageTrack } from '../../types';
 import { MATCHING_CATEGORIES, MATCHING_PAIRS } from '../../data/matchingData';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { useKleoStore } from '../../store/useKleoStore';
 import { Sparkles, ArrowRight, Play, CheckCircle2, Zap } from 'lucide-react';
@@ -64,12 +65,12 @@ export const MatchingCategorySelect: React.FC<MatchingCategorySelectProps> = ({
 }) => {
   const { isDarkMode } = useAppStore();
   const { equippedCosmetics } = useKleoStore();
+  const { t, getLanguageName } = useTranslation();
 
   const lang: LanguageTrack = currentLanguage || 'ko';
   const categories = MATCHING_CATEGORIES[lang] || MATCHING_CATEGORIES.ko;
 
-  const langName =
-    lang === 'ko' ? 'Korean' : lang === 'ja' ? 'Japanese' : 'English';
+  const langName = getLanguageName(lang);
 
   const languageOptions: { id: LanguageTrack; name: string; nativeName: string }[] = [
     { id: 'ko', name: 'Korean', nativeName: '한국어' },
@@ -86,7 +87,7 @@ export const MatchingCategorySelect: React.FC<MatchingCategorySelectProps> = ({
             translate
           </span>
           <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Target Language:
+            {t.matching.title}
           </span>
         </div>
 
@@ -131,21 +132,21 @@ export const MatchingCategorySelect: React.FC<MatchingCategorySelectProps> = ({
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-display tracking-tight leading-tight">
-              {langName} <span className="text-[#F06543]">Word Match</span>
+              {langName} <span className="text-[#F06543]">{t.matching.title}</span>
             </h1>
 
             <p className={`text-xs sm:text-sm font-medium leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-              Select a category to begin. Match native {langName} words with their pronunciation on the left to their English definitions on the right to test your vocabulary recall and speech!
+              {t.matching.subtitle}
             </p>
 
             {/* Pair Count / Difficulty Selector */}
             <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Round Size:</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t.matching.roundSize}:</span>
               <div className="inline-flex p-1 rounded-xl bg-slate-900/30 border border-slate-700/50 backdrop-blur-xs">
                 {[
-                  { count: 6, label: 'Quick (6)' },
-                  { count: 8, label: 'Standard (8)' },
-                  { count: 10, label: 'Master (10)' }
+                  { count: 6, label: t.matching.quick },
+                  { count: 8, label: t.matching.standard },
+                  { count: 10, label: t.matching.master }
                 ].map((option) => (
                   <button
                     key={option.count}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, LanguageTrack } from '../../types';
 import { Settings, Volume2, Type, Shield, User, Globe, Sun, Moon, Palette } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { useTranslation } from '../../lib/i18n/useTranslation';
 import { FlagIcon } from '../Common/FlagIcon';
 
 interface SettingsViewProps {
@@ -11,6 +12,7 @@ interface SettingsViewProps {
 
 export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLanguage }) => {
   const { isDarkMode, toggleThemeMode } = useAppStore();
+  const { t } = useTranslation();
   const [audioSpeed, setAudioSpeed] = useState<number>(1.0);
   const [fontSize, setFontSize] = useState<string>('medium');
   const [colorblindMode, setColorblindMode] = useState<boolean>(false);
@@ -23,13 +25,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
       }`}>
         <div>
           <span className="text-xs font-black text-[#FF6B35] uppercase tracking-widest block mb-1">
-            Application Preferences
+            {t.settings.title}
           </span>
           <h2 className="font-display text-2xl md:text-3xl font-black flex items-center gap-2">
-            <Settings size={26} className="text-[#FF6B35]" /> Platform Settings
+            <Settings size={26} className="text-[#FF6B35]" /> {t.settings.title}
           </h2>
           <p className={`text-xs mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-            Configure theme mode, active language tracks, audio playback, font display, and accessibility
+            {t.settings.subtitle}
           </p>
         </div>
       </div>
@@ -41,7 +43,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
         <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
           isDarkMode ? 'text-white' : 'text-slate-900'
         }`}>
-          <Palette size={18} className="text-[#FF6B35]" /> Appearance & Theme Mode
+          <Palette size={18} className="text-[#FF6B35]" /> {t.settings.appearance}
         </h3>
 
         <div className="grid grid-cols-2 gap-4">
@@ -66,7 +68,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             </div>
             <div>
               <span className={`font-display text-sm font-black block ${!isDarkMode ? 'text-slate-900' : 'text-white'}`}>
-                Light Mode ☀️
+                {t.settings.lightMode} ☀️
               </span>
               <span className={`text-[11px] block mt-0.5 ${!isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>
                 Crisp off-white canvas with high-contrast text and vibrant orange CTAs
@@ -95,7 +97,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             </div>
             <div>
               <span className={`font-display text-sm font-black block ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                Dark Mode 🌙
+                {t.settings.darkMode} 🌙
               </span>
               <span className={`text-[11px] block mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                 Deep obsidian navy background optimized for night study sessions
@@ -112,7 +114,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
         <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
           isDarkMode ? 'text-white' : 'text-slate-900'
         }`}>
-          <Globe size={18} className="text-sky-400" /> Active Language Track
+          <Globe size={18} className="text-sky-400" /> {t.settings.languageTrack}
         </h3>
 
         <div className="grid grid-cols-3 gap-3">
@@ -127,7 +129,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             }`}
           >
             <FlagIcon code="kr" size="lg" className="mb-2" />
-            <span className="text-xs">Korean (한글)</span>
+            <span className="text-xs">{t.settings.korean} (한국어)</span>
           </button>
 
           <button
@@ -141,7 +143,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             }`}
           >
             <FlagIcon code="jp" size="lg" className="mb-2" />
-            <span className="text-xs">Japanese (日本語)</span>
+            <span className="text-xs">{t.settings.japanese} (日本語)</span>
           </button>
 
           <button
@@ -155,7 +157,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             }`}
           >
             <FlagIcon code="us" size="lg" className="mb-2" />
-            <span className="text-xs">English</span>
+            <span className="text-xs">{t.settings.english}</span>
           </button>
         </div>
       </div>
@@ -167,7 +169,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
         <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
           isDarkMode ? 'text-white' : 'text-slate-900'
         }`}>
-          <Volume2 size={18} className="text-emerald-400" /> Audio & Accessibility Options
+          <Volume2 size={18} className="text-emerald-400" /> {t.settings.audioSpeed}
         </h3>
 
         <div className="space-y-3">
@@ -175,7 +177,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             isDarkMode ? 'bg-[#0b0f19] border-[#1e293b]' : 'bg-slate-50 border-slate-200'
           }`}>
             <div>
-              <div className={`text-xs font-black ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>Audio Playback Speed</div>
+              <div className={`text-xs font-black ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>{t.settings.audioSpeed}</div>
               <div className={`text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Adjust TTS speech speed for listening exercises</div>
             </div>
             <select

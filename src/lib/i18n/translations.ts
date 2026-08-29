@@ -80,6 +80,7 @@ export interface Translations {
     description: string;
     stayLoggedIn: string;
     confirmLogout: string;
+    streakSafe: string;
   };
   dashboard: {
     welcome: string;
@@ -487,10 +488,11 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       refreshDashboard: 'Refresh Dashboard'
     },
     logoutModal: {
-      title: 'Ready to take a break?',
-      description: 'Your progress is automatically saved to the cloud. Log back in anytime to continue your study streak!',
-      stayLoggedIn: 'Stay Logged In',
-      confirmLogout: 'Yes, Sign Out'
+      title: 'Taking a break?',
+      description: "Kleo's saving your spot. Your streak and progress stay right where you left them.",
+      stayLoggedIn: 'Keep studying',
+      confirmLogout: 'Sign out',
+      streakSafe: 'day streak safe'
     },
     dashboard: {
       welcome: 'Welcome',
@@ -897,10 +899,11 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       refreshDashboard: '대시보드 새로고침'
     },
     logoutModal: {
-      title: '잠시 쉬어가시겠습니까?',
-      description: '학습 진행 상황은 클라우드에 안전하게 자동 저장됩니다. 언제든지 다시 로그인하여 연속 학습을 이어가세요!',
-      stayLoggedIn: '로그인 유지',
-      confirmLogout: '로그아웃'
+      title: '잠시 쉬어가시나요?',
+      description: 'Kleo가 학습 자리를 지켜둘게요. 연속 학습과 진행 상황은 안전하게 유지됩니다.',
+      stayLoggedIn: '계속 학습하기',
+      confirmLogout: '로그아웃',
+      streakSafe: '일 연속 학습 안전 보관'
     },
     dashboard: {
       welcome: '환영합니다',
@@ -1307,10 +1310,11 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       refreshDashboard: 'ダッシュボード更新'
     },
     logoutModal: {
-      title: 'ログアウトしますか？',
-      description: '学習の進捗はクラウドに安全に自動保存されます。いつでも再ログインして連続学習を再開できます！',
-      stayLoggedIn: 'ログインを維持',
-      confirmLogout: 'ログアウトする'
+      title: '休憩しますか？',
+      description: 'Kleoが進捗をしっかりキープしています。連続記録と学習データはそのまま保存されます。',
+      stayLoggedIn: '学習を続ける',
+      confirmLogout: 'サインアウト',
+      streakSafe: '日連続ストリーク保護中'
     },
     dashboard: {
       welcome: 'ようこそ',

@@ -198,16 +198,31 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     triggerAppRefresh();
   };
 
-  const navItems: { id: AppView; label: string; icon: string }[] = [
-    { id: 'dashboard', label: t.sidebar.overview, icon: 'grid_view' },
-    { id: 'learn', label: t.sidebar.skillTree, icon: 'school' },
-    { id: 'letters', label: t.sidebar.writingLetters, icon: 'translate' },
-    { id: 'matching', label: t.sidebar.wordMatch, icon: 'style' },
-    { id: 'translator', label: t.sidebar.translator, icon: 'language' },
-    { id: 'scanner', label: t.sidebar.scanTranslate, icon: 'document_scanner' },
-    { id: 'gamify', label: t.sidebar.leaderboardStats, icon: 'leaderboard' },
-    { id: 'review', label: t.sidebar.reviewDeck, icon: 'rebase_edit' }
+  const navItems: { id: AppView; label: string; icon: string; shortcut: string }[] = [
+    { id: 'dashboard', label: t.sidebar.overview, icon: 'grid_view', shortcut: '⌘ 1' },
+    { id: 'learn', label: t.sidebar.skillTree, icon: 'school', shortcut: '⌘ 2' },
+    { id: 'letters', label: t.sidebar.writingLetters, icon: 'translate', shortcut: '⌘ 3' },
+    { id: 'matching', label: t.sidebar.wordMatch, icon: 'style', shortcut: '⌘ 4' },
+    { id: 'translator', label: t.sidebar.translator, icon: 'language', shortcut: '⌘ 5' },
+    { id: 'scanner', label: t.sidebar.scanTranslate, icon: 'document_scanner', shortcut: '⌘ 6' },
+    { id: 'gamify', label: t.sidebar.leaderboardStats, icon: 'leaderboard', shortcut: '⌘ 7' },
+    { id: 'review', label: t.sidebar.reviewDeck, icon: 'rebase_edit', shortcut: '⌘ 8' }
   ];
+
+  // Keyboard shortcut listener (Ctrl/Cmd + 1-8)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey) {
+        const num = parseInt(e.key, 10);
+        if (num >= 1 && num <= navItems.length) {
+          e.preventDefault();
+          onSelectView(navItems[num - 1].id);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onSelectView, navItems]);
 
   return (
     <>
@@ -239,15 +254,15 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         {/* Centered Brand Mascot Logo (Clicking logo reloads/refreshes the dashboard) */}
         <div
           onClick={handleBrandClick}
-          className="mb-1.5 w-full flex items-center justify-center cursor-pointer select-none py-1 group shrink-0"
+          className="mb-1 w-full flex items-center justify-center cursor-pointer select-none py-1 group shrink-0"
           title={t.sidebar.refreshDashboard}
         >
           <motion.div
             whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
             whileTap={{ scale: 0.92 }}
             animate={{
-              width: isExpanded ? 60 : 46,
-              height: isExpanded ? 60 : 46
+              width: isExpanded ? 56 : 46,
+              height: isExpanded ? 56 : 46
             }}
             transition={{ type: 'spring', stiffness: 350, damping: 24 }}
             className="flex items-center justify-center shrink-0 mx-auto"
@@ -260,7 +275,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           </motion.div>
         </div>
 
-        {/* Navigation Items (Clean, vibrant modern buttons without heavy neumorphic inset wells) */}
+        {/* Navigation Items (Clean, vibrant modern buttons) */}
         <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar pt-3 pb-1.5 w-full px-2.5">
           {navItems.map((item, idx) => {
             const isActive = activeView === item.id;

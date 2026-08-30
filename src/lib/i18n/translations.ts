@@ -111,6 +111,19 @@ export interface Translations {
     kanjiHiraganaBuilderDesc: string;
     alphabetPhonicsBuilderTitle: string;
     alphabetPhonicsBuilderDesc: string;
+    quickActions: string;
+    last7Days: string;
+    masteryDistribution: string;
+    todayProgress: string;
+    viewCurriculum: string;
+    avgStudyTime: string;
+    streakConsistency: string;
+    vocabularyMastery: string;
+    grammarMastery: string;
+    scriptMastery: string;
+    goodMorning: string;
+    goodAfternoon: string;
+    goodEvening: string;
   };
   calendar: {
     title: string;
@@ -522,7 +535,20 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       kanjiHiraganaBuilderTitle: 'Kana & Kanji Reference',
       kanjiHiraganaBuilderDesc: 'Explore Japanese phonetics and common kanji radicals.',
       alphabetPhonicsBuilderTitle: 'Phonics & Letter Builder',
-      alphabetPhonicsBuilderDesc: 'Practice English alphabet blends and phonetic pronunciations.'
+      alphabetPhonicsBuilderDesc: 'Practice English alphabet blends and phonetic pronunciations.',
+      quickActions: 'Quick actions',
+      last7Days: 'LAST 7 DAYS',
+      masteryDistribution: 'MASTERY DISTRIBUTION',
+      todayProgress: 'Today',
+      viewCurriculum: 'Tap to view curriculum ↗',
+      avgStudyTime: 'Avg daily study',
+      streakConsistency: 'Streak target met',
+      vocabularyMastery: 'Vocabulary',
+      grammarMastery: 'Grammar & Syntax',
+      scriptMastery: 'Scripts & Sounds',
+      goodMorning: 'Good morning',
+      goodAfternoon: 'Good afternoon',
+      goodEvening: 'Good evening'
     },
     calendar: {
       title: 'Study Calendar',
@@ -933,7 +959,20 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       kanjiHiraganaBuilderTitle: '가나 및 한자 가이드',
       kanjiHiraganaBuilderDesc: '일본어 발음 체계와 기초 한자 부수를 탐색하세요.',
       alphabetPhonicsBuilderTitle: '파닉스 및 알파벳 조합',
-      alphabetPhonicsBuilderDesc: '영어 26개 알파벳과 발음 기호를 연습하세요.'
+      alphabetPhonicsBuilderDesc: '영어 26개 알파벳과 발음 기호를 연습하세요.',
+      quickActions: '빠른 실행',
+      last7Days: '최근 7일 학습',
+      masteryDistribution: '학습 성취도 분석',
+      todayProgress: '오늘의 학습',
+      viewCurriculum: '전체 커리큘럼 보기 ↗',
+      avgStudyTime: '일평균 학습',
+      streakConsistency: '연속 학습 달성',
+      vocabularyMastery: '어휘',
+      grammarMastery: '문법 및 회화',
+      scriptMastery: '문자 및 발음',
+      goodMorning: '좋은 아침이에요',
+      goodAfternoon: '좋은 오후예요',
+      goodEvening: '좋은 저녁이에요'
     },
     calendar: {
       title: '학습 캘린더',
@@ -1344,7 +1383,20 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       kanjiHiraganaBuilderTitle: 'ひらがな・カタカナ・漢字',
       kanjiHiraganaBuilderDesc: '五十音表と漢字の部首を学習します。',
       alphabetPhonicsBuilderTitle: 'フォニックス＆アルファベット',
-      alphabetPhonicsBuilderDesc: '英語の26文字と発音記号を練習します。'
+      alphabetPhonicsBuilderDesc: '英語の26文字と発音記号を練習します。',
+      quickActions: 'クイックアクション',
+      last7Days: '直近7日間の学習',
+      masteryDistribution: '習熟度分布',
+      todayProgress: '本日の進捗',
+      viewCurriculum: 'カリキュラムを見る ↗',
+      avgStudyTime: '1日平均学習',
+      streakConsistency: 'ストリーク維持',
+      vocabularyMastery: '語彙',
+      grammarMastery: '文法・構文',
+      scriptMastery: '文字・発音',
+      goodMorning: 'おはようございます',
+      goodAfternoon: 'こんにちは',
+      goodEvening: 'こんばんは'
     },
     calendar: {
       title: '学習カレンダー',

@@ -149,6 +149,15 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     set((state) => {
       const nextMode = !state.isDarkMode;
       localStorage.setItem('catalogue_theme_dark', String(nextMode));
+      if (typeof document !== 'undefined') {
+        if (nextMode) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      }
       return { isDarkMode: nextMode };
     });
   },

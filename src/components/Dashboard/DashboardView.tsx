@@ -510,25 +510,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>
 
                 {/* Primary Action Button */}
-                <div className="pt-3 mt-3 border-t border-[#EDE5DA]/80 dark:border-slate-800/80 flex flex-col gap-2.5">
+                <div className="pt-4 mt-4 border-t border-[#EDE5DA]/80 dark:border-slate-800/80 flex flex-col gap-3">
                   <button
                     onClick={() => nextNode && onSelectNode(nextNode)}
-                    className="w-full py-3 px-4 rounded-2xl bg-gradient-to-b from-[#38a169] to-[#2e8455] text-white font-extrabold text-sm tracking-wide shadow-[0_4px_0_#1c5335,0_8px_16px_rgba(46,132,85,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] active:translate-y-1 active:shadow-[0_1px_0_#1c5335,0_4px_8px_rgba(46,132,85,0.25)] transition-all cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-b from-[#38a169] to-[#2e8455] text-white font-extrabold text-sm tracking-wide shadow-[0_4px_0_#1c5335,0_8px_16px_rgba(46,132,85,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:brightness-105 active:translate-y-1 active:shadow-[0_1px_0_#1c5335,0_4px_8px_rgba(46,132,85,0.25)] transition-all cursor-pointer flex items-center justify-center gap-2 select-none"
                   >
                     <span>{t.dashboard.continueLesson}</span>
                     <span className="material-symbols-outlined text-base">arrow_forward</span>
                   </button>
 
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-3">
                     <button
                       onClick={() => onNavigate('matching')}
-                      className="flex-1 py-2 px-2 rounded-xl bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 text-xs font-bold shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] transition-all text-center cursor-pointer"
+                      className="flex-1 py-2.5 sm:py-3 px-3 rounded-xl bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 text-xs font-bold shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] transition-all text-center cursor-pointer"
                     >
                       Word Match
                     </button>
                     <button
                       onClick={() => onNavigate('review')}
-                      className="flex-1 py-2 px-2 rounded-xl bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 text-xs font-bold shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] transition-all text-center cursor-pointer"
+                      className="flex-1 py-2.5 sm:py-3 px-3 rounded-xl bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 text-xs font-bold shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] transition-all text-center cursor-pointer"
                     >
                       Review Deck
                     </button>

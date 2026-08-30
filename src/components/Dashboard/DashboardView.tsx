@@ -4,9 +4,18 @@ import { UserProfile, LanguageTrack, LessonNode, ReviewItem, AppView } from '../
 import { useKleoStore } from '../../store/useKleoStore';
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../lib/i18n/useTranslation';
-import { KleoAvatar } from '../Kleo/KleoAvatar';
 import { DashboardLoader } from './DashboardLoader';
 import { OverviewRightSidebar } from './OverviewRightSidebar';
+import {
+  GraduationCap,
+  RotateCw,
+  Layers,
+  Scan,
+  MessageSquare,
+  Type,
+  Globe,
+  Award
+} from 'lucide-react';
 import kleoHalfBody from '../../assets/kleo_2d_half_body.png';
 import kleoChatbotLogo from '../../assets/kleo_chatbot_logo.png';
 
@@ -122,13 +131,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 12 : 0 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
-        className={`pt-20 px-4 md:px-6 lg:px-8 pb-24 max-w-7xl mx-auto transition-colors duration-200 ${
+        className={`pt-20 px-4 sm:px-6 lg:px-8 pb-24 w-full transition-colors duration-200 ${
           isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#FAF6F0] text-[#2B2725]'
         }`}
       >
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
+        <div className="flex flex-col lg:flex-row gap-6 items-start w-full">
           {/* Main Dashboard Workspace Content */}
-          <div className="flex-1 min-w-0 space-y-6">
+          <div className="flex-1 min-w-0 space-y-6 w-full">
             
             {/* 1. Header Section: Greeting */}
             <div className="space-y-1">
@@ -139,7 +148,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 }`}>
                   {greetingText}, {firstName}!
                 </h1>
-                <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#7A736E] dark:text-slate-400 bg-white/70 dark:bg-slate-800/70 px-3 py-1.5 rounded-xl border border-[#EDE5DA] dark:border-slate-700">
+                <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#7A736E] dark:text-slate-300 bg-[#FAF6F0] dark:bg-[#131b2e] px-3.5 py-1.5 rounded-xl border border-white/90 dark:border-white/[0.04] shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_5px_rgba(255,255,255,0.03),2px_2px_5px_rgba(0,0,0,0.55)]">
                   <span className="material-symbols-outlined text-sm text-[#F06543]">translate</span>
                   <span>{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
                 </div>
@@ -183,7 +192,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
 
             {/* 3. Quick Actions Section (Below Banner, Full Width) */}
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               <div className="flex items-center justify-between px-1">
                 <h3 className="font-extrabold text-xs uppercase tracking-wider text-[#7A736E] dark:text-slate-400">
                   {t.dashboard.quickActions}
@@ -192,14 +201,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
 
               {/* Horizontal Quick Actions Grid across full width */}
-              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 sm:gap-3">
+              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2.5 sm:gap-3.5">
                 {/* Action 1: Lessons */}
                 <button
                   onClick={() => onNavigate('learn')}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 hover:border-[#F06543]/50 hover:shadow-md transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
+                  className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-4px_-4px_10px_rgba(255,255,255,1),4px_4px_10px_rgba(215,200,185,0.6)] dark:shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,1),2px_2px_6px_rgba(215,200,185,0.7)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">school</span>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] group-hover:scale-110 transition-transform">
+                    <GraduationCap className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
                     Lessons
@@ -209,16 +218,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Action 2: Review Deck */}
                 <button
                   onClick={() => onNavigate('review')}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 hover:border-[#F06543]/50 hover:shadow-md transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group relative"
+                  className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-4px_-4px_10px_rgba(255,255,255,1),4px_4px_10px_rgba(215,200,185,0.6)] dark:shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,1),2px_2px_6px_rgba(215,200,185,0.7)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group relative"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">autorenew</span>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] group-hover:scale-110 transition-transform">
+                    <RotateCw className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
                     Review
                   </span>
                   {savedPhrases.length > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-[#F06543] text-white text-[9px] font-black rounded-full flex items-center justify-center">
+                    <span className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-[#F06543] text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs">
                       {savedPhrases.length}
                     </span>
                   )}
@@ -227,10 +236,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Action 3: Word Match */}
                 <button
                   onClick={() => onNavigate('matching')}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 hover:border-[#F06543]/50 hover:shadow-md transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
+                  className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-4px_-4px_10px_rgba(255,255,255,1),4px_4px_10px_rgba(215,200,185,0.6)] dark:shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,1),2px_2px_6px_rgba(215,200,185,0.7)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">style</span>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] group-hover:scale-110 transition-transform">
+                    <Layers className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
                     Match
@@ -240,10 +249,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Action 4: Scanner & Lens */}
                 <button
                   onClick={() => onNavigate('scanner')}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 hover:border-[#F06543]/50 hover:shadow-md transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
+                  className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-4px_-4px_10px_rgba(255,255,255,1),4px_4px_10px_rgba(215,200,185,0.6)] dark:shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,1),2px_2px_6px_rgba(215,200,185,0.7)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">document_scanner</span>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] group-hover:scale-110 transition-transform">
+                    <Scan className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
                     Scanner
@@ -253,10 +262,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Action 5: Kleo AI Tutor */}
                 <button
                   onClick={() => onNavigate('chatbot')}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 hover:border-[#F06543]/50 hover:shadow-md transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
+                  className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-4px_-4px_10px_rgba(255,255,255,1),4px_4px_10px_rgba(215,200,185,0.6)] dark:shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,1),2px_2px_6px_rgba(215,200,185,0.7)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">forum</span>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] group-hover:scale-110 transition-transform">
+                    <MessageSquare className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
                     Kleo AI
@@ -266,10 +275,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Action 6: Scripts & Alphabet */}
                 <button
                   onClick={() => onNavigate('letters')}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 hover:border-[#F06543]/50 hover:shadow-md transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
+                  className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-4px_-4px_10px_rgba(255,255,255,1),4px_4px_10px_rgba(215,200,185,0.6)] dark:shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,1),2px_2px_6px_rgba(215,200,185,0.7)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">translate</span>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] group-hover:scale-110 transition-transform">
+                    <Type className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
                     Scripts
@@ -279,10 +288,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Action 7: Translator */}
                 <button
                   onClick={() => onNavigate('translator')}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 hover:border-[#F06543]/50 hover:shadow-md transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
+                  className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-4px_-4px_10px_rgba(255,255,255,1),4px_4px_10px_rgba(215,200,185,0.6)] dark:shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,1),2px_2px_6px_rgba(215,200,185,0.7)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">g_translate</span>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] group-hover:scale-110 transition-transform">
+                    <Globe className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
                     Translate
@@ -292,10 +301,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Action 8: Gamify Hub & Badges */}
                 <button
                   onClick={() => onNavigate('gamify')}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 hover:border-[#F06543]/50 hover:shadow-md transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
+                  className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-4px_-4px_10px_rgba(255,255,255,1),4px_4px_10px_rgba(215,200,185,0.6)] dark:shadow-[-3px_-3px_8px_rgba(255,255,255,0.03),3px_3px_8px_rgba(0,0,0,0.55)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,1),2px_2px_6px_rgba(215,200,185,0.7)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-xl">military_tech</span>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] group-hover:scale-110 transition-transform">
+                    <Award className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
                     Badges
@@ -308,13 +317,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
               
               {/* Card 1: LAST 7 DAYS Study Activity Bar Chart */}
-              <div className="p-5 sm:p-6 rounded-[28px] bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 shadow-xs flex flex-col justify-between">
+              <div className="p-5 sm:p-6 rounded-[28px] bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(215,200,185,0.6)] dark:shadow-[-4px_-4px_12px_rgba(255,255,255,0.03),4px_4px_12px_rgba(0,0,0,0.55)] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-extrabold text-xs uppercase tracking-wider text-[#7A736E] dark:text-slate-400">
                       {t.dashboard.last7Days}
                     </h3>
-                    <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-[#F2ECE4] dark:bg-[#0c101c] px-2.5 py-1 rounded-full shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] border border-white/40 dark:border-white/[0.02]">
                       🔥 100% Active
                     </span>
                   </div>
@@ -333,16 +342,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             {mins} min
                           </div>
 
-                          {/* Animated Vertical Bar */}
-                          <div className="w-full max-w-[18px] bg-[#FAF6F0] dark:bg-slate-800 rounded-full h-24 flex items-end justify-center p-0.5">
+                          {/* Neumorphic Sunken Bar Well */}
+                          <div className="w-full max-w-[18px] bg-[#EDE5DA] dark:bg-[#0b0e18] rounded-full h-24 flex items-end justify-center p-0.5 shadow-[inset_2px_2px_5px_rgba(215,200,185,0.65),inset_-2px_-2px_5px_rgba(255,255,255,0.95)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.75),inset_-2px_-2px_5px_rgba(255,255,255,0.03)] border border-white/30 dark:border-white/[0.02]">
                             <motion.div
                               initial={{ height: 0 }}
                               animate={{ height: `${heightPercent}%` }}
                               transition={{ duration: 0.6, delay: idx * 0.08, ease: 'easeOut' }}
                               className={`w-full rounded-full transition-colors ${
                                 isToday
-                                  ? 'bg-[#F06543] shadow-xs'
-                                  : 'bg-[#38A169] dark:bg-[#48BB78]'
+                                  ? 'bg-gradient-to-t from-[#ff5a36] to-[#ff7b5a] shadow-[0_2px_8px_rgba(255,90,54,0.45)]'
+                                  : 'bg-gradient-to-t from-[#38A169] to-[#48BB78] shadow-[0_2px_6px_rgba(56,161,105,0.4)]'
                               }`}
                             />
                           </div>
@@ -362,13 +371,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>
 
                 {/* Subtext info */}
-                <div className="pt-3 mt-3 border-t border-[#F2ECE4] dark:border-slate-800/80 flex items-center justify-between text-[11px] text-[#7A736E] dark:text-slate-400 font-medium">
+                <div className="pt-3 mt-3 border-t border-[#EDE5DA]/80 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-[#7A736E] dark:text-slate-400 font-medium">
                   <span>{t.dashboard.avgStudyTime}: <strong className="text-[#2B2725] dark:text-slate-200 font-bold">14 min/day</strong></span>
                 </div>
               </div>
 
               {/* Card 2: MASTERY DISTRIBUTION Circular Donut Chart */}
-              <div className="p-5 sm:p-6 rounded-[28px] bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 shadow-xs flex flex-col justify-between">
+              <div className="p-5 sm:p-6 rounded-[28px] bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(215,200,185,0.6)] dark:shadow-[-4px_-4px_12px_rgba(255,255,255,0.03),4px_4px_12px_rgba(0,0,0,0.55)] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-extrabold text-xs uppercase tracking-wider text-[#7A736E] dark:text-slate-400">
@@ -378,43 +387,43 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   {/* Donut Progress and Breakdown */}
                   <div className="flex items-center gap-4 py-2">
-                    {/* SVG Radial Donut Chart */}
-                    <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
-                      <svg className="w-full h-full transform -rotate-90">
+                    {/* SVG Radial Donut Chart with Neumorphic Well */}
+                    <div className="relative w-24 h-24 rounded-full shadow-[inset_2px_2px_6px_rgba(215,200,185,0.5),inset_-2px_-2px_6px_rgba(255,255,255,0.95)] dark:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.65),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] bg-[#F2ECE4] dark:bg-[#0c101c] flex items-center justify-center shrink-0 border border-white/40 dark:border-white/[0.02]">
+                      <svg className="w-full h-full transform -rotate-90 p-1">
                         <circle
-                          className={isDarkMode ? 'text-slate-800' : 'text-[#F5EFE6]'}
-                          cx="48"
-                          cy="48"
+                          className={isDarkMode ? 'text-slate-800/60' : 'text-[#E5DCCF]/50'}
+                          cx="44"
+                          cy="44"
                           fill="transparent"
-                          r="38"
+                          r="35"
                           stroke="currentColor"
-                          strokeWidth="7"
+                          strokeWidth="6.5"
                         />
                         {/* Vocabulary Arc (Green) */}
                         <circle
                           className="text-[#38A169] transition-all duration-1000"
-                          cx="48"
-                          cy="48"
+                          cx="44"
+                          cy="44"
                           fill="transparent"
-                          r="38"
+                          r="35"
                           stroke="currentColor"
-                          strokeDasharray="238"
-                          strokeDashoffset={238 - (238 * 0.48)}
+                          strokeDasharray="220"
+                          strokeDashoffset={220 - (220 * 0.48)}
                           strokeLinecap="round"
-                          strokeWidth="7"
+                          strokeWidth="6.5"
                         />
                         {/* Grammar Arc (Orange) */}
                         <circle
                           className="text-[#F06543] transition-all duration-1000"
-                          cx="48"
-                          cy="48"
+                          cx="44"
+                          cy="44"
                           fill="transparent"
-                          r="38"
+                          r="35"
                           stroke="currentColor"
-                          strokeDasharray="238"
-                          strokeDashoffset={238 - (238 * 0.28)}
+                          strokeDasharray="220"
+                          strokeDashoffset={220 - (220 * 0.28)}
                           strokeLinecap="round"
-                          strokeWidth="7"
+                          strokeWidth="6.5"
                         />
                       </svg>
                       <div className="absolute flex flex-col items-center">
@@ -428,21 +437,21 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <div className="space-y-1.5 flex-1 min-w-0">
                       <div className="flex items-center justify-between text-xs">
                         <span className="flex items-center gap-1.5 font-medium text-[#7A736E] dark:text-slate-300">
-                          <span className="w-2 h-2 rounded-full bg-[#38A169]" />
+                          <span className="w-2 h-2 rounded-full bg-[#38A169] shadow-xs" />
                           <span className="truncate">{t.dashboard.vocabularyMastery}</span>
                         </span>
                         <strong className="font-bold text-[#2B2725] dark:text-white">48%</strong>
                       </div>
                       <div className="flex items-center justify-between text-xs">
                         <span className="flex items-center gap-1.5 font-medium text-[#7A736E] dark:text-slate-300">
-                          <span className="w-2 h-2 rounded-full bg-[#F06543]" />
+                          <span className="w-2 h-2 rounded-full bg-[#F06543] shadow-xs" />
                           <span className="truncate">{t.dashboard.grammarMastery}</span>
                         </span>
                         <strong className="font-bold text-[#2B2725] dark:text-white">35%</strong>
                       </div>
                       <div className="flex items-center justify-between text-xs">
                         <span className="flex items-center gap-1.5 font-medium text-[#7A736E] dark:text-slate-300">
-                          <span className="w-2 h-2 rounded-full bg-[#805AD5]" />
+                          <span className="w-2 h-2 rounded-full bg-[#805AD5] shadow-xs" />
                           <span className="truncate">{t.dashboard.scriptMastery}</span>
                         </span>
                         <strong className="font-bold text-[#2B2725] dark:text-white">17%</strong>
@@ -452,7 +461,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>
 
                 {/* Bottom Action Link */}
-                <div className="pt-3 mt-3 border-t border-[#F2ECE4] dark:border-slate-800/80 text-center">
+                <div className="pt-3 mt-3 border-t border-[#EDE5DA]/80 dark:border-slate-800/80 text-center">
                   <button
                     onClick={() => onNavigate('learn')}
                     className="text-xs font-bold text-[#38A169] dark:text-emerald-400 hover:underline cursor-pointer inline-flex items-center gap-1"
@@ -463,7 +472,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
 
               {/* Card 3: TODAY'S PROGRESS & Primary CTA */}
-              <div className="p-5 sm:p-6 rounded-[28px] bg-white dark:bg-[#131b2e] border border-[#EDE5DA] dark:border-slate-800 shadow-xs flex flex-col justify-between">
+              <div className="p-5 sm:p-6 rounded-[28px] bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(215,200,185,0.6)] dark:shadow-[-4px_-4px_12px_rgba(255,255,255,0.03),4px_4px_12px_rgba(0,0,0,0.55)] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-extrabold text-xs uppercase tracking-wider text-[#7A736E] dark:text-slate-400">
@@ -475,23 +484,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </span>
                   </div>
 
-                  {/* Metrics Stack */}
+                  {/* Metrics Stack with Soft Inset Panels */}
                   <div className="space-y-2 py-1">
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-xs sm:text-sm p-2.5 rounded-xl bg-[#F2ECE4] dark:bg-[#0c101c] shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.03)] border border-white/50 dark:border-white/[0.02]">
                       <span className="text-[#7A736E] dark:text-slate-400 font-medium">⚡ Total XP</span>
                       <strong className="font-display font-extrabold text-base text-[#1E2433] dark:text-white">
                         {profile.xp || 140} XP
                       </strong>
                     </div>
 
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-xs sm:text-sm p-2.5 rounded-xl bg-[#F2ECE4] dark:bg-[#0c101c] shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.03)] border border-white/50 dark:border-white/[0.02]">
                       <span className="text-[#7A736E] dark:text-slate-400 font-medium">⏱ Daily Study Goal</span>
                       <strong className="font-bold text-[#2B2725] dark:text-white">
                         {profile.minutesCompletedToday} / {profile.dailyGoalMinutes} min
                       </strong>
                     </div>
 
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-xs sm:text-sm p-2.5 rounded-xl bg-[#F2ECE4] dark:bg-[#0c101c] shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.03)] border border-white/50 dark:border-white/[0.02]">
                       <span className="text-[#7A736E] dark:text-slate-400 font-medium">❤️ Health Hearts</span>
                       <strong className="font-bold text-[#F06543]">
                         {profile.hearts}/{profile.maxHearts} Safe
@@ -501,25 +510,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>
 
                 {/* Primary Action Button */}
-                <div className="pt-3 mt-3 border-t border-[#F2ECE4] dark:border-slate-800/80 flex flex-col gap-2">
+                <div className="pt-3 mt-3 border-t border-[#EDE5DA]/80 dark:border-slate-800/80 flex flex-col gap-2.5">
                   <button
                     onClick={() => nextNode && onSelectNode(nextNode)}
-                    className="w-full py-3 px-4 rounded-2xl bg-[#38A169] hover:bg-[#2F855A] text-white font-extrabold text-sm tracking-wide shadow-[0_4px_0_#22543D] active:translate-y-1 active:shadow-none transition-all cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full py-3 px-4 rounded-2xl bg-gradient-to-b from-[#38a169] to-[#2e8455] text-white font-extrabold text-sm tracking-wide shadow-[0_4px_0_#1c5335,0_8px_16px_rgba(46,132,85,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] active:translate-y-1 active:shadow-[0_1px_0_#1c5335,0_4px_8px_rgba(46,132,85,0.25)] transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
                     <span>{t.dashboard.continueLesson}</span>
                     <span className="material-symbols-outlined text-base">arrow_forward</span>
                   </button>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <button
                       onClick={() => onNavigate('matching')}
-                      className="flex-1 py-1.5 px-2 rounded-xl bg-[#FAF6F0] dark:bg-slate-800 hover:bg-[#F2ECE4] dark:hover:bg-slate-700 text-[#2B2725] dark:text-slate-200 text-xs font-bold transition-all text-center cursor-pointer"
+                      className="flex-1 py-2 px-2 rounded-xl bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 text-xs font-bold shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] transition-all text-center cursor-pointer"
                     >
                       Word Match
                     </button>
                     <button
                       onClick={() => onNavigate('review')}
-                      className="flex-1 py-1.5 px-2 rounded-xl bg-[#FAF6F0] dark:bg-slate-800 hover:bg-[#F2ECE4] dark:hover:bg-slate-700 text-[#2B2725] dark:text-slate-200 text-xs font-bold transition-all text-center cursor-pointer"
+                      className="flex-1 py-2 px-2 rounded-xl bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 text-xs font-bold shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] transition-all text-center cursor-pointer"
                     >
                       Review Deck
                     </button>
@@ -529,11 +538,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
 
             {/* 4. Interactive Syllable & Script Foundations Lab (Collapsible / Accessible) */}
-            <div className={`p-6 rounded-[28px] border space-y-4 shadow-xs transition-all ${
-              isDarkMode
-                ? 'bg-[#131b2e] border-white/10 text-white'
-                : 'bg-white border-[#EDE5DA] text-[#2B2725]'
-            }`}>
+            <div className="p-6 rounded-[28px] bg-[#FAF6F0] dark:bg-[#131b2e] border border-white/90 dark:border-white/[0.04] shadow-[-6px_-6px_16px_rgba(255,255,255,1),6px_6px_16px_rgba(215,200,185,0.6)] dark:shadow-[-4px_-4px_12px_rgba(255,255,255,0.03),4px_4px_12px_rgba(0,0,0,0.55)] space-y-4 transition-all">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className={`font-display text-base font-bold ${isDarkMode ? 'text-white' : 'text-[#2B2725]'}`}>
@@ -545,7 +550,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>
                 <button
                   onClick={() => setShowSyllableBuilder(!showSyllableBuilder)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF6F0] dark:bg-slate-800 hover:bg-[#F2ECE4] dark:hover:bg-slate-700 text-[#2B2725] dark:text-slate-200 cursor-pointer transition-all flex items-center gap-1"
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] cursor-pointer transition-all flex items-center gap-1"
                 >
                   <span>{showSyllableBuilder ? 'Hide Lab' : 'Practice Lab'}</span>
                   <span className="material-symbols-outlined text-sm">
@@ -562,11 +567,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   className="flex flex-col md:flex-row items-center gap-6 pt-2"
                 >
                   {/* Dynamic Syllable Display Card */}
-                  <div className="w-32 h-32 rounded-2xl bg-[#FAF6F0] dark:bg-slate-800 border border-[#EDE5DA] dark:border-slate-700 flex flex-col items-center justify-center p-3 shadow-inner shrink-0 relative">
+                  <div className="w-32 h-32 rounded-2xl bg-[#F2ECE4] dark:bg-[#0c101c] shadow-[inset_3px_3px_8px_rgba(215,200,185,0.6),inset_-3px_-3px_8px_rgba(255,255,255,0.95)] dark:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.7),inset_-3px_-3px_8px_rgba(255,255,255,0.03)] border border-white/50 dark:border-white/[0.02] flex flex-col items-center justify-center p-3 shrink-0 relative">
                     <span className="font-kr font-black text-4xl text-[#2B2725] dark:text-white">
                       {selectedConsonant}{selectedVowel}
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-[#F06543] mt-2 bg-[#FFF4EE] dark:bg-slate-700 px-2 py-0.5 rounded-full border border-[#FDE3D5] dark:border-slate-600">
+                    <span className="text-[10px] font-mono font-bold text-[#F06543] mt-2 bg-[#FFF4EE] dark:bg-slate-700 px-2 py-0.5 rounded-full border border-[#FDE3D5] dark:border-slate-600 shadow-2xs">
                       {selectedConsonant} + {selectedVowel} ➔ {selectedConsonant}{selectedVowel}
                     </span>
                   </div>
@@ -585,10 +590,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             onClick={() => setSelectedConsonant(c)}
                             className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${
                               selectedConsonant === c
-                                ? 'bg-[#F06543] text-white shadow-sm scale-105'
-                                : isDarkMode
-                                ? 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'
-                                : 'bg-[#FAF6F0] text-[#2B2725] hover:bg-[#F2EAE0] border border-[#EDE5DA]'
+                                ? 'bg-gradient-to-br from-[#ff6b4a] to-[#f05a36] text-white shadow-[0_3px_8px_rgba(240,90,54,0.4),inset_0_1px_0_rgba(255,255,255,0.4)] scale-105'
+                                : 'bg-[#FAF6F0] dark:bg-[#151c2e] text-[#2B2725] dark:text-slate-300 shadow-[-2px_-2px_5px_rgba(255,255,255,0.95),2px_2px_5px_rgba(215,200,185,0.5)] dark:shadow-[-2px_-2px_4px_rgba(255,255,255,0.03),2px_2px_4px_rgba(0,0,0,0.5)] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6)] border border-white/70 dark:border-white/[0.03]'
                             }`}
                           >
                             {c}
@@ -609,10 +612,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             onClick={() => setSelectedVowel(v)}
                             className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${
                               selectedVowel === v
-                                ? 'bg-[#F06543] text-white shadow-sm scale-105'
-                                : isDarkMode
-                                ? 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'
-                                : 'bg-[#FAF6F0] text-[#2B2725] hover:bg-[#F2EAE0] border border-[#EDE5DA]'
+                                ? 'bg-gradient-to-br from-[#ff6b4a] to-[#f05a36] text-white shadow-[0_3px_8px_rgba(240,90,54,0.4),inset_0_1px_0_rgba(255,255,255,0.4)] scale-105'
+                                : 'bg-[#FAF6F0] dark:bg-[#151c2e] text-[#2B2725] dark:text-slate-300 shadow-[-2px_-2px_5px_rgba(255,255,255,0.95),2px_2px_5px_rgba(215,200,185,0.5)] dark:shadow-[-2px_-2px_4px_rgba(255,255,255,0.03),2px_2px_4px_rgba(0,0,0,0.5)] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6)] border border-white/70 dark:border-white/[0.03]'
                             }`}
                           >
                             {v}

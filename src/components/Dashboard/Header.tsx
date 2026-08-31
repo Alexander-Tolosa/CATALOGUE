@@ -150,7 +150,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
           damping: 28,
           mass: 0.85
         }}
-        className={`fixed top-0 right-0 h-16 backdrop-blur-md border-b flex items-center justify-between px-3 sm:px-5 md:px-6 z-40 transition-colors duration-200 select-none ${
+        className={`fixed top-0 right-0 h-16 backdrop-blur-md border-b flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 z-40 transition-colors duration-200 select-none ${
           isDarkMode
             ? 'bg-[#0e1322]/95 border-[#1d2538] text-white'
             : 'bg-[#ffffff]/95 border-[#e8dfd3] text-[#2b2725] shadow-xs'
@@ -189,8 +189,8 @@ export const TopAppBar: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Right Section: [Profile Avatar + Username] -> [Messages] -> [Notifications] */}
-        <div className="flex items-center gap-3 sm:gap-4 md:gap-5 min-w-0">
+        {/* Right Section: [Profile Avatar + Username] -> [Messages] -> [Notifications] (Inset inward from far right) */}
+        <div className="flex items-center gap-3.5 sm:gap-5 md:gap-6 min-w-0 mr-2 sm:mr-4 md:mr-6 lg:mr-8">
           {/* 1. User Profile Icon with ONLY Username Beside It */}
           <div className="relative" ref={profileMenuRef}>
             <div className="flex items-center gap-2 sm:gap-2.5 select-none">

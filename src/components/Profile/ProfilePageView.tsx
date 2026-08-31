@@ -29,7 +29,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useFriendsStore } from '../../store/useFriendsStore';
 import { useTranslation } from '../../lib/i18n/useTranslation';
-import { AwardsSection } from './AwardsSection';
+import { CertificationsSection } from './AwardsSection';
 import { FriendsHub } from './FriendsHub';
 import { SecuritySignInSection } from './SecuritySignInSection';
 import { EditProfileModal } from './EditProfileModal';
@@ -40,7 +40,7 @@ type SubNavTab =
   | 'profile'
   | 'settings'
   | 'privacy'
-  | 'awards'
+  | 'certifications'
   | 'portfolio'
   | 'photos'
   | 'parents'
@@ -217,20 +217,20 @@ export const ProfilePageView: React.FC = () => {
               <span>Security & Sign-in</span>
             </button>
 
-            {/* 4. Awards */}
+            {/* 4. Certifications */}
             <button
-              onClick={() => setActiveSubNav('awards')}
+              onClick={() => setActiveSubNav('certifications')}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                activeSubNav === 'awards'
+                activeSubNav === 'certifications'
                   ? 'bg-rose-500/15 text-[#e11d48] font-black border border-rose-500/30 shadow-xs'
                   : isDarkMode
                   ? 'text-slate-300 hover:bg-slate-800/50 hover:text-white'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
-              <div className={`w-2 h-2 rounded-full ${activeSubNav === 'awards' ? 'bg-[#e11d48]' : 'bg-transparent'}`} />
-              <Star size={16} className={activeSubNav === 'awards' ? 'text-[#e11d48]' : 'text-slate-400'} />
-              <span>Awards (40)</span>
+              <div className={`w-2 h-2 rounded-full ${activeSubNav === 'certifications' ? 'bg-[#e11d48]' : 'bg-transparent'}`} />
+              <Award size={16} className={activeSubNav === 'certifications' ? 'text-[#e11d48]' : 'text-slate-400'} />
+              <span>Certifications</span>
             </button>
 
             {/* 5. Portfolio */}
@@ -468,8 +468,8 @@ export const ProfilePageView: React.FC = () => {
                     </p>
                   </div>
 
-                  {/* Awards Section (Matching Screenshot) */}
-                  <AwardsSection onViewAll={() => setActiveSubNav('awards')} />
+                  {/* Certifications Section (Matching Screenshot) */}
+                  <CertificationsSection onViewAll={() => setActiveSubNav('certifications')} />
                 </div>
               )}
 
@@ -623,11 +623,11 @@ export const ProfilePageView: React.FC = () => {
             <SecuritySignInSection />
           )}
 
-          {activeSubNav === 'awards' && (
+          {activeSubNav === 'certifications' && (
             <div className={`p-6 rounded-3xl border space-y-6 ${
               isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
             }`}>
-              <AwardsSection showAll={true} />
+              <CertificationsSection showAll={true} />
             </div>
           )}
 

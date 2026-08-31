@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, Shield, Star, Trophy, ChevronRight, X, Printer, CheckCircle2, Download, ExternalLink, Sparkles } from 'lucide-react';
-import { CertificateAward, BadgeAward } from '../../types';
+import { Award, ChevronRight, X, Printer, CheckCircle2, FileText, Download, ExternalLink, Sparkles } from 'lucide-react';
+import { CertificateAward } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
 
 export const CERTIFICATES_DATA: CertificateAward[] = [
@@ -47,70 +47,20 @@ export const CERTIFICATES_DATA: CertificateAward[] = [
   }
 ];
 
-export const BADGES_DATA: BadgeAward[] = [
-  {
-    id: 'badge-1',
-    title: 'Exam BADGE',
-    course: 'CSIT 223 - HCI / BSIT 2C',
-    awardedDate: 'Mar 12, 2026',
-    iconType: 'badge',
-    iconColor: '#38bdf8',
-    description: 'Awarded for achieving 100% mastery score in the CSIT 223 Midterm UI/UX Practical Exam.'
-  },
-  {
-    id: 'badge-2',
-    title: 'Gold star',
-    course: 'TLE 10 -BLELIAS',
-    awardedDate: 'Aug 10, 2022',
-    iconType: 'star',
-    iconColor: '#eab308',
-    description: 'Recognized with First Honors for outstanding technical vocational output in TLE 10.'
-  },
-  {
-    id: 'badge-3',
-    title: '7-Day Streak Polyglot',
-    course: 'CATALOGUE Daily Language Habit Tracker',
-    awardedDate: 'Sep 18, 2023',
-    iconType: 'trophy',
-    iconColor: '#f97316',
-    description: 'Maintained an unbroken daily study streak for 7 consecutive days.'
-  },
-  {
-    id: 'badge-4',
-    title: 'Kleo Companion Bond Master',
-    course: 'AI Language Companion Integration',
-    awardedDate: 'Jan 15, 2024',
-    iconType: 'medal',
-    iconColor: '#ec4899',
-    description: 'Reached Bond Level 5 with Kleo the AI Companion by completing 50+ roleplay scenarios.'
-  },
-  {
-    id: 'badge-5',
-    title: 'Spaced Repetition Review Deck Pro',
-    course: 'SM-2 Memory Retention Mastery',
-    awardedDate: 'Feb 02, 2026',
-    iconType: 'trophy',
-    iconColor: '#10b981',
-    description: 'Successfully reviewed over 250 vocabulary terms with 95%+ accuracy.'
-  }
-];
-
-interface AwardsSectionProps {
+interface CertificationsSectionProps {
   onViewAll?: () => void;
   showAll?: boolean;
 }
 
-export const AwardsSection: React.FC<AwardsSectionProps> = ({ onViewAll, showAll = false }) => {
+export const CertificationsSection: React.FC<CertificationsSectionProps> = ({ onViewAll, showAll = false }) => {
   const { isDarkMode, profile } = useAppStore();
   const [selectedCert, setSelectedCert] = useState<CertificateAward | null>(null);
-  const [selectedBadge, setSelectedBadge] = useState<BadgeAward | null>(null);
 
-  const certificates = showAll ? CERTIFICATES_DATA : CERTIFICATES_DATA.slice(0, 1);
-  const badges = showAll ? BADGES_DATA : BADGES_DATA.slice(0, 2);
+  const certificates = showAll ? CERTIFICATES_DATA : CERTIFICATES_DATA.slice(0, 2);
 
   return (
-    <div className="space-y-6">
-      {/* Header with Title and Count (Matching Screenshot: Awards 40 >) */}
+    <div className="space-y-4">
+      {/* Header with Title and Count */}
       <div className="flex items-center justify-between">
         <button
           onClick={onViewAll}
@@ -118,17 +68,22 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ onViewAll, showAll
             isDarkMode ? 'text-white hover:text-sky-400' : 'text-slate-900 hover:text-[#F06543]'
           }`}
         >
-          <span>Awards</span>
+          <span className="flex items-center gap-2">
+            <Award className="w-5 h-5 text-[#F06543]" />
+            <span>Certifications</span>
+          </span>
           <span className={`px-2.5 py-0.5 rounded-full text-xs font-black ${
             isDarkMode ? 'bg-[#1b253b] text-slate-300' : 'bg-slate-200 text-slate-800'
           }`}>
-            40
+            {CERTIFICATES_DATA.length}
           </span>
-          <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          {onViewAll && (
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          )}
         </button>
       </div>
 
-      {/* 1. Certificate Table (Matching Screenshot) */}
+      {/* Official Verified Certificates Table */}
       <div className={`rounded-2xl border overflow-hidden transition-colors shadow-xs ${
         isDarkMode ? 'bg-[#101625] border-[#1d273d]' : 'bg-white border-slate-200'
       }`}>
@@ -138,9 +93,9 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ onViewAll, showAll
               <tr className={`border-b font-bold tracking-wider uppercase text-[11px] ${
                 isDarkMode ? 'bg-[#151c2e] border-[#1e293b] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'
               }`}>
-                <th className="py-3 px-4 sm:px-6 w-1/3">Certificate</th>
-                <th className="py-3 px-4 sm:px-6 w-1/2">Course</th>
-                <th className="py-3 px-4 sm:px-6 w-1/6 text-right sm:text-left">Awarded</th>
+                <th className="py-3 px-4 sm:px-6 w-5/12">Certificate</th>
+                <th className="py-3 px-4 sm:px-6 w-5/12">Course</th>
+                <th className="py-3 px-4 sm:px-6 w-2/12 text-right sm:text-left">Awarded</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/30">
@@ -156,12 +111,9 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ onViewAll, showAll
                     <div className="flex items-center gap-3">
                       {/* Certificate Document Icon */}
                       <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 shadow-2xs ${
-                        isDarkMode ? 'bg-slate-800/70 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-300 text-slate-700'
+                        isDarkMode ? 'bg-slate-800/70 border-slate-700 text-slate-300' : 'bg-orange-50 border-orange-200 text-[#F06543]'
                       }`}>
-                        <div className="w-4 h-5 border-t-2 border-r-2 border-slate-400 bg-white/10 rounded-xs flex flex-col justify-around p-0.5">
-                          <div className="w-full h-0.5 bg-slate-400 rounded-full" />
-                          <div className="w-2/3 h-0.5 bg-slate-400 rounded-full" />
-                        </div>
+                        <FileText size={16} />
                       </div>
                       <span className={`font-semibold text-xs transition-colors ${
                         isDarkMode ? 'text-slate-200 group-hover:text-white' : 'text-slate-900 group-hover:text-[#F06543]'
@@ -179,76 +131,6 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ onViewAll, showAll
                     isDarkMode ? 'text-slate-400' : 'text-slate-600'
                   }`}>
                     {cert.awardedDate}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* 2. Badge Table (Matching Screenshot) */}
-      <div className={`rounded-2xl border overflow-hidden transition-colors shadow-xs ${
-        isDarkMode ? 'bg-[#101625] border-[#1d273d]' : 'bg-white border-slate-200'
-      }`}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className={`border-b font-bold tracking-wider uppercase text-[11px] ${
-                isDarkMode ? 'bg-[#151c2e] border-[#1e293b] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'
-              }`}>
-                <th className="py-3 px-4 sm:px-6 w-1/3">Badge</th>
-                <th className="py-3 px-4 sm:px-6 w-1/2">Course</th>
-                <th className="py-3 px-4 sm:px-6 w-1/6 text-right sm:text-left">Awarded</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/30">
-              {badges.map((badge) => (
-                <tr
-                  key={badge.id}
-                  onClick={() => setSelectedBadge(badge)}
-                  className={`cursor-pointer transition-colors group ${
-                    isDarkMode ? 'hover:bg-[#182136]' : 'hover:bg-slate-50'
-                  }`}
-                >
-                  <td className="py-3.5 px-4 sm:px-6">
-                    <div className="flex items-center gap-3">
-                      {/* Badge Icon Visual */}
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-2xs"
-                        style={{
-                          backgroundColor: `${badge.iconColor}15`,
-                          border: `1px solid ${badge.iconColor}40`
-                        }}
-                      >
-                        {badge.iconType === 'badge' && (
-                          <Shield className="w-4 h-4" style={{ color: badge.iconColor }} />
-                        )}
-                        {badge.iconType === 'star' && (
-                          <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        )}
-                        {badge.iconType === 'trophy' && (
-                          <Trophy className="w-4 h-4" style={{ color: badge.iconColor }} />
-                        )}
-                        {badge.iconType === 'medal' && (
-                          <Sparkles className="w-4 h-4" style={{ color: badge.iconColor }} />
-                        )}
-                      </div>
-                      <span className={`font-semibold text-xs transition-colors ${
-                        isDarkMode ? 'text-slate-200 group-hover:text-white' : 'text-slate-900 group-hover:text-[#F06543]'
-                      }`}>
-                        {badge.title}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-3.5 px-4 sm:px-6">
-                    <span className="font-semibold text-sky-400 hover:underline">
-                      {badge.course}
-                    </span>
-                  </td>
-                  <td className={`py-3.5 px-4 sm:px-6 text-xs whitespace-nowrap ${
-                    isDarkMode ? 'text-slate-400' : 'text-slate-600'
-                  }`}>
-                    {badge.awardedDate}
                   </td>
                 </tr>
               ))}
@@ -282,7 +164,7 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ onViewAll, showAll
                 </div>
                 <button
                   onClick={() => setSelectedCert(null)}
-                  className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                  className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
                 >
                   <X size={18} />
                 </button>
@@ -358,69 +240,9 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ onViewAll, showAll
           </div>
         )}
       </AnimatePresence>
-
-      {/* Interactive Badge View Modal */}
-      <AnimatePresence>
-        {selectedBadge && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className={`w-full max-w-md rounded-3xl border shadow-2xl p-6 space-y-4 ${
-                isDarkMode ? 'bg-[#0f1422] border-[#222d46] text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            >
-              <div className="flex justify-between items-start">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
-                  style={{
-                    backgroundColor: `${selectedBadge.iconColor}20`,
-                    border: `2px solid ${selectedBadge.iconColor}`
-                  }}
-                >
-                  <Shield size={28} style={{ color: selectedBadge.iconColor }} />
-                </div>
-                <button
-                  onClick={() => setSelectedBadge(null)}
-                  className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-sky-400">
-                  Course Achievement Badge
-                </span>
-                <h3 className="font-display font-black text-xl text-white mt-0.5">
-                  {selectedBadge.title}
-                </h3>
-                <p className="text-xs font-semibold text-slate-300 mt-1">
-                  {selectedBadge.course}
-                </p>
-              </div>
-
-              <p className="text-xs text-slate-400 leading-relaxed bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
-                {selectedBadge.description}
-              </p>
-
-              <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800">
-                <span>Awarded on: <strong>{selectedBadge.awardedDate}</strong></span>
-                <span className="text-emerald-400 font-bold">Earned & Verified</span>
-              </div>
-
-              <div className="pt-2 flex justify-end">
-                <button
-                  onClick={() => setSelectedBadge(null)}
-                  className="px-4 py-2 rounded-xl bg-[#F06543] hover:bg-[#E05432] text-white font-bold text-xs transition-colors cursor-pointer"
-                >
-                  Close
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
+
+// Backward-compatible alias export
+export const AwardsSection = CertificationsSection;

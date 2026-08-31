@@ -1021,7 +1021,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
     <div className="max-w-6xl mx-auto space-y-6 pb-24 px-2 sm:px-4">
       {/* Top Header Card */}
       <div className={`p-5 rounded-3xl border transition-all ${
-        isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b] text-white shadow-xl' : 'bg-white border-slate-200 text-slate-800 shadow-sm'
+        isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b] text-white shadow-xl' : 'bg-white border-[#EDE5DA] text-slate-800 shadow-sm'
       }`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
@@ -1035,7 +1035,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                   AI OCR Vision
                 </span>
               </h1>
-              <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
                 {t.scanner.subtitle}
               </p>
             </div>
@@ -1043,7 +1043,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
 
           {/* Mode Switcher Tabs */}
           <div className={`flex items-center p-1 rounded-2xl border self-start md:self-auto ${
-            isDarkMode ? 'bg-[#1e293b]/70 border-slate-700' : 'bg-slate-100 border-slate-200'
+            isDarkMode ? 'bg-[#1e293b]/70 border-slate-700' : 'bg-[#FAF6F0] border-[#EDE5DA]'
           }`}>
             <button
               onClick={() => {
@@ -1145,8 +1145,8 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Camera Viewport / Photo Uploader (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
-          <div className={`relative rounded-3xl overflow-hidden border aspect-[4/3] flex items-center justify-center ${
-            isDarkMode ? 'bg-black border-[#1e293b]' : 'bg-slate-900 border-slate-200'
+          <div className={`relative rounded-3xl overflow-hidden border aspect-[4/3] flex items-center justify-center transition-all ${
+            isDarkMode ? 'bg-[#0f172a]/95 border-[#1e293b]' : 'bg-white border-[#EDE5DA] shadow-sm'
           }`}>
             {activeMode === 'camera' ? (
               cameraActive ? (
@@ -1156,7 +1156,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                     autoPlay
                     playsInline
                     muted
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover bg-black"
                   />
 
                   {/* Cyberpunk HUD Viewfinder & Laser Scanning Overlay */}
@@ -1202,16 +1202,18 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                 </>
               ) : (
                 <div className="text-center p-6 space-y-3">
-                  <div className="w-16 h-16 rounded-full bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mx-auto text-orange-400">
+                  <div className="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mx-auto text-[#F06543]">
                     <Camera size={28} />
                   </div>
-                  <h3 className="font-bold text-sm text-white">Camera is Inactive</h3>
-                  <p className="text-xs text-slate-400 max-w-xs mx-auto">
+                  <h3 className={`font-display font-bold text-sm ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                    Camera is Inactive
+                  </h3>
+                  <p className={`text-xs max-w-xs mx-auto leading-relaxed ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
                     {cameraError || 'Click below to turn on the camera stream and scan vocabulary.'}
                   </p>
                   <button
                     onClick={startCameraStream}
-                    className="py-2 px-4 rounded-xl bg-[#F06543] text-white font-bold text-xs shadow-lg hover:brightness-110 cursor-pointer"
+                    className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#F06543] to-[#F97316] text-white font-bold text-xs shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer"
                   >
                     Start Camera
                   </button>
@@ -1229,7 +1231,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                         setScannedText('');
                         setTranslatedText('');
                       }}
-                      className="absolute top-2 right-2 py-1 px-3 rounded-lg bg-black/70 text-white text-xs font-bold hover:bg-black/90 cursor-pointer"
+                      className="absolute top-2 right-2 py-1.5 px-3 rounded-xl bg-black/70 backdrop-blur-md text-white text-xs font-bold hover:bg-black/90 cursor-pointer"
                     >
                       Change Photo
                     </button>
@@ -1245,19 +1247,19 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                     onDrop={handleDrop}
                     className={`w-full h-full border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 cursor-pointer transition-all ${
                       isDragging
-                        ? 'border-orange-500 bg-orange-500/10 scale-[0.99]'
+                        ? 'border-[#F06543] bg-orange-500/10 scale-[0.99]'
                         : isDarkMode
-                        ? 'border-slate-700 hover:border-orange-500/70 bg-slate-900/40'
-                        : 'border-slate-300 hover:border-orange-500/70 bg-slate-50/70'
+                        ? 'border-slate-700/80 hover:border-orange-500/70 bg-[#131b2e]/60 hover:bg-[#131b2e]'
+                        : 'border-[#EDE5DA] hover:border-orange-500/70 bg-[#FAF6F0]/70 hover:bg-[#FAF6F0]'
                     }`}
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 mb-3">
+                    <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-[#F06543] mb-3">
                       <ImageIcon size={28} />
                     </div>
-                    <h3 className={`font-bold text-sm ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                    <h3 className={`font-display font-extrabold text-sm ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
                       Drop Image Here or Paste (Ctrl+V)
                     </h3>
-                    <p className="text-xs text-slate-400 max-w-xs mt-1">
+                    <p className={`text-xs max-w-xs mt-1 leading-relaxed ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
                       Supports JPG, PNG, WebP screenshots, receipts, product packaging or study notes.
                     </p>
                     <div className="mt-4 flex items-center gap-2">
@@ -1267,13 +1269,13 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                           e.stopPropagation();
                           fileInputRef.current?.click();
                         }}
-                        className={`px-3.5 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        className={`px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
                           isDarkMode
-                            ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
-                            : 'bg-white border-slate-300 text-slate-700 hover:text-slate-900 shadow-xs'
+                            ? 'bg-[#1e293b] border-slate-700 text-slate-200 hover:text-white hover:bg-slate-700'
+                            : 'bg-white border-[#EDE5DA] text-slate-700 hover:text-[#F06543] hover:border-orange-300'
                         }`}
                       >
-                        <Upload size={14} />
+                        <Upload size={14} className="text-[#F06543]" />
                         <span>Browse Files</span>
                       </button>
                     </div>
@@ -1310,7 +1312,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
           {/* OCR Progress Bar */}
           {isScanning && (
             <div className={`p-4 rounded-2xl border space-y-2 ${
-              isDarkMode ? 'bg-[#111827] border-[#1e293b]' : 'bg-white border-slate-200'
+              isDarkMode ? 'bg-[#111827] border-[#1e293b]' : 'bg-white border-[#EDE5DA] shadow-xs'
             }`}>
               <div className="flex items-center justify-between text-xs font-bold">
                 <span className="flex items-center gap-2 text-orange-400">
@@ -1319,7 +1321,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                 </span>
                 <span className="text-[#F06543]">{scanProgress}%</span>
               </div>
-              <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+              <div className={`w-full h-2 rounded-full overflow-hidden ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
                 <div
                   className="h-full bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-300"
                   style={{ width: `${Math.max(5, scanProgress)}%` }}
@@ -1333,13 +1335,13 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
         <div className="lg:col-span-5 space-y-4">
           {/* Scanned Original Text Card */}
           <div className={`p-5 rounded-3xl border transition-all ${
-            isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b]' : 'bg-white border-slate-200 shadow-sm'
+            isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b]' : 'bg-white border-[#EDE5DA] shadow-sm'
           }`}>
             <div className={`flex items-center justify-between pb-3 border-b ${
-              isDarkMode ? 'border-slate-800' : 'border-slate-100'
+              isDarkMode ? 'border-slate-800' : 'border-[#EDE5DA]/60'
             }`}>
               <span className={`text-xs font-extrabold uppercase tracking-wider flex items-center gap-2 ${
-                isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'
               }`}>
                 <FlagIcon code={LANG_CONFIG[fromLang].code} size="sm" />
                 <span>{t.scanner.extractedText} ({fromLang})</span>
@@ -1353,7 +1355,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                       ? 'bg-orange-500 text-white border-orange-500'
                       : isDarkMode
                       ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
-                      : 'bg-slate-100 border-slate-300 text-slate-700 hover:text-slate-900'
+                      : 'bg-[#FAF6F0] border-[#EDE5DA] text-slate-700 hover:text-slate-900'
                   }`}
                   title="Play pronunciation"
                 >
@@ -1375,17 +1377,17 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                 className={`w-full p-3 rounded-2xl text-sm font-medium border resize-none focus:outline-hidden transition-all ${
                   isDarkMode
                     ? 'bg-[#131b2e] border-slate-800 text-white focus:border-orange-500'
-                    : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-orange-500'
+                    : 'bg-[#FAF6F0] border-[#EDE5DA] text-slate-900 focus:border-orange-500'
                 }`}
               />
             </div>
 
             {/* Interactive Word Breakdown Pills */}
             {wordsList.length > 0 && (
-              <div className={`mt-3 pt-3 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`}>
+              <div className={`mt-3 pt-3 border-t ${isDarkMode ? 'border-slate-800' : 'border-[#EDE5DA]/60'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-[10px] font-bold uppercase tracking-wider ${
-                    isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                    isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'
                   }`}>
                     Tap Word For Single Breakdown:
                   </span>
@@ -1400,7 +1402,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                           ? 'bg-orange-500 text-white shadow-xs'
                           : isDarkMode
                           ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                          : 'bg-[#FAF6F0] border border-[#EDE5DA] hover:bg-[#FFF4EE] hover:border-orange-300 text-slate-700'
                       }`}
                     >
                       {word}
@@ -1411,7 +1413,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                 {/* Selected Single Word Translation Banner */}
                 {selectedWord && (
                   <div className={`mt-2.5 p-2.5 rounded-xl border flex items-center justify-between gap-2 text-xs animate-fadeIn ${
-                    isDarkMode ? 'bg-orange-950/30 border-orange-500/30 text-orange-300' : 'bg-orange-50 border-orange-200 text-orange-900'
+                    isDarkMode ? 'bg-orange-950/30 border-orange-500/30 text-orange-300' : 'bg-[#FFF4EE] border-[#FDE3D5] text-[#F06543]'
                   }`}>
                     <div className="flex items-center gap-2 truncate">
                       <span className={`font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{selectedWord}:</span>
@@ -1433,7 +1435,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                         setIsSaved(true);
                         setTimeout(() => setIsSaved(false), 2000);
                       }}
-                      className="px-2 py-0.5 rounded-md bg-[#F06543] text-white font-bold text-[10px] shrink-0 cursor-pointer"
+                      className="px-2 py-0.5 rounded-md bg-[#F06543] text-white font-bold text-[10px] shrink-0 cursor-pointer shadow-xs"
                     >
                       Save Word
                     </button>
@@ -1445,13 +1447,13 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
 
           {/* Translation Result Card */}
           <div className={`p-5 rounded-3xl border transition-all relative overflow-hidden ${
-            isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b]' : 'bg-white border-slate-200 shadow-sm'
+            isDarkMode ? 'bg-[#0f172a]/90 border-[#1e293b]' : 'bg-white border-[#EDE5DA] shadow-sm'
           }`}>
             <div className={`flex items-center justify-between pb-3 border-b ${
-              isDarkMode ? 'border-slate-800' : 'border-slate-100'
+              isDarkMode ? 'border-slate-800' : 'border-[#EDE5DA]/60'
             }`}>
               <span className={`text-xs font-extrabold uppercase tracking-wider flex items-center gap-2 ${
-                isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'
               }`}>
                 <FlagIcon code={LANG_CONFIG[toLang].code} size="sm" />
                 <span>{toLang} Translation</span>
@@ -1475,7 +1477,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                           ? 'bg-orange-500 text-white border-orange-500'
                           : isDarkMode
                           ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
-                          : 'bg-slate-100 border-slate-300 text-slate-700 hover:text-slate-900'
+                          : 'bg-[#FAF6F0] border-[#EDE5DA] text-slate-700 hover:text-slate-900'
                       }`}
                       title="Play Translation Pronunciation"
                     >
@@ -1488,7 +1490,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                           ? 'bg-emerald-500 text-white border-emerald-500'
                           : isDarkMode
                           ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
-                          : 'bg-slate-100 border-slate-300 text-slate-700 hover:text-slate-900'
+                          : 'bg-[#FAF6F0] border-[#EDE5DA] text-slate-700 hover:text-slate-900'
                       }`}
                       title="Copy translation"
                     >
@@ -1525,7 +1527,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
 
                   if (!directWord && !scannedText) {
                     return (
-                      <p className={`text-xs italic ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                      <p className={`text-xs italic ${isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'}`}>
                         Capture or type text to view translated meaning.
                       </p>
                     );
@@ -1542,10 +1544,10 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
                       {/* Clean Pronunciation Guide */}
                       {currentPhonetic && (
                         <div className={`flex items-center gap-2 pt-2 border-t ${
-                          isDarkMode ? 'border-slate-800' : 'border-slate-100'
+                          isDarkMode ? 'border-slate-800' : 'border-[#EDE5DA]/60'
                         }`}>
                           <span className={`text-[10px] font-extrabold uppercase tracking-wider ${
-                            isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                            isDarkMode ? 'text-slate-400' : 'text-[#7A736E]'
                           }`}>
                             Pronunciation:
                           </span>
@@ -1567,7 +1569,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({ onSaveToReview }) => {
             {/* Save to Review Deck CTA */}
             {(translatedText || scannedText) && (
               <div className={`pt-3 border-t flex items-center justify-between ${
-                isDarkMode ? 'border-slate-800' : 'border-slate-100'
+                isDarkMode ? 'border-slate-800' : 'border-[#EDE5DA]/60'
               }`}>
                 <button
                   onClick={handleSaveToReview}

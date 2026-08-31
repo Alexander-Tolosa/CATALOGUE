@@ -95,6 +95,8 @@ interface AppStoreState {
   setIsChatbotOpen: (isOpen: boolean) => void;
   toggleThemeMode: () => void;
   selectLanguageTrack: (lang: LanguageTrack) => void;
+  interfaceLanguage: LanguageTrack;
+  setInterfaceLanguage: (lang: LanguageTrack) => void;
   deductHeart: () => void;
   refillHearts: () => void;
   addXP: (amount: number) => void;
@@ -118,6 +120,19 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
       }
     }
     return DEFAULT_PROFILE;
+  })(),
+
+  interfaceLanguage: (() => {
+    const saved = localStorage.getItem('catalogue_interface_language');
+    if (saved === 'ko' || saved === 'ja' || saved === 'en') return saved;
+    const profileSaved = localStorage.getItem('catalogue_user_profile');
+    if (profileSaved) {
+      try {
+        const parsed = JSON.parse(profileSaved);
+        if (parsed.interfaceLanguage) return parsed.interfaceLanguage;
+      } catch {}
+    }
+    return 'en';
   })(),
 
   isDarkMode: (localStorage.getItem('catalogue_theme_dark') || localStorage.getItem('catalouge_theme_dark')) === 'true',
@@ -167,6 +182,15 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
       const updated = { ...state.profile, selectedLanguage: lang };
       localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
       return { profile: updated };
+    });
+  },
+
+  setInterfaceLanguage: (lang) => {
+    localStorage.setItem('catalogue_interface_language', lang);
+    set((state) => {
+      const updated = { ...state.profile, interfaceLanguage: lang };
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updated));
+      return { interfaceLanguage: lang, profile: updated };
     });
   },
 

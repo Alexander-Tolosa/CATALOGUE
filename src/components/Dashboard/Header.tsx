@@ -83,7 +83,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   onOpenPitchModal,
   onSelectView
 }) => {
-  const { isDarkMode, toggleThemeMode, isSidebarExpanded } = useAppStore();
+  const { isDarkMode, toggleThemeMode, isSidebarExpanded, interfaceLanguage, setInterfaceLanguage } = useAppStore();
   const { googleUser } = useAuthStore();
   const { t, getLanguageName } = useTranslation();
 
@@ -101,6 +101,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
   const [isBellOpen, setIsBellOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isLangSubmenuOpen, setIsLangSubmenuOpen] = useState(false);
+  const [isInterfaceLangSubmenuOpen, setIsInterfaceLangSubmenuOpen] = useState(false);
 
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const mailRef = useRef<HTMLDivElement>(null);
@@ -314,10 +315,114 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   )}
                 </button>
 
-                {/* 2. Active Language Track & Switcher */}
+                {/* 2. Interface Language Switcher */}
                 <div className="relative">
                   <button
-                    onClick={() => setIsLangSubmenuOpen(!isLangSubmenuOpen)}
+                    onClick={() => {
+                      setIsInterfaceLangSubmenuOpen(!isInterfaceLangSubmenuOpen);
+                      setIsLangSubmenuOpen(false);
+                    }}
+                    className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                      isDarkMode
+                        ? 'hover:bg-[#1a2032] text-slate-200'
+                        : 'hover:bg-[#f6f1e8] text-slate-800'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <FlagIcon country={interfaceLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
+                      <span>{t.header.interfaceLanguageLabel}: <span className="text-[#F06543]">{getLanguageName(interfaceLanguage)}</span></span>
+                    </span>
+                    <Globe className="w-4 h-4 text-[#F06543]" />
+                  </button>
+
+                  {/* Interface Language Submenu */}
+                  {isInterfaceLangSubmenuOpen && (
+                    <div
+                      className={`mx-2 my-1 rounded-xl p-1 border space-y-1 ${
+                        isDarkMode
+                          ? 'bg-[#1a2032] border-[#28324a]'
+                          : 'bg-[#faf6f0] border-[#e8dfd3]'
+                      }`}
+                    >
+                      <button
+                        onClick={() => {
+                          setInterfaceLanguage('en');
+                          setIsInterfaceLangSubmenuOpen(false);
+                          setIsProfileMenuOpen(false);
+                        }}
+                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                          interfaceLanguage === 'en'
+                            ? 'bg-[#F06543] text-white shadow-xs'
+                            : isDarkMode
+                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <FlagIcon country="en" className="w-4 h-3 rounded-2xs" />
+                          <span>{t.header.english}</span>
+                        </span>
+                        {interfaceLanguage === 'en' && (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setInterfaceLanguage('ko');
+                          setIsInterfaceLangSubmenuOpen(false);
+                          setIsProfileMenuOpen(false);
+                        }}
+                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                          interfaceLanguage === 'ko'
+                            ? 'bg-[#F06543] text-white shadow-xs'
+                            : isDarkMode
+                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <FlagIcon country="ko" className="w-4 h-3 rounded-2xs" />
+                          <span>{t.header.korean}</span>
+                        </span>
+                        {interfaceLanguage === 'ko' && (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setInterfaceLanguage('ja');
+                          setIsInterfaceLangSubmenuOpen(false);
+                          setIsProfileMenuOpen(false);
+                        }}
+                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                          interfaceLanguage === 'ja'
+                            ? 'bg-[#F06543] text-white shadow-xs'
+                            : isDarkMode
+                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <FlagIcon country="ja" className="w-4 h-3 rounded-2xs" />
+                          <span>{t.header.japanese}</span>
+                        </span>
+                        {interfaceLanguage === 'ja' && (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Study Track Switcher */}
+                <div className="relative">
+                  <button
+                    onClick={() => {
+                      setIsLangSubmenuOpen(!isLangSubmenuOpen);
+                      setIsInterfaceLangSubmenuOpen(false);
+                    }}
                     className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
                       isDarkMode
                         ? 'hover:bg-[#1a2032] text-slate-200'
@@ -326,9 +431,9 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <FlagIcon country={profile.selectedLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
-                      <span>{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
+                      <span>{t.header.studyTrackLabel}: <span className="text-emerald-500">{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span></span>
                     </span>
-                    <Globe className="w-4 h-4 text-[#F06543]" />
+                    <span className="material-symbols-outlined text-sm text-emerald-500">school</span>
                   </button>
 
                   {/* Language Track Submenu */}
@@ -348,7 +453,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                         }}
                         className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
                           profile.selectedLanguage === 'en'
-                            ? 'bg-[#F06543] text-white shadow-xs'
+                            ? 'bg-emerald-600 text-white shadow-xs'
                             : isDarkMode
                             ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
                             : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
@@ -371,7 +476,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                         }}
                         className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
                           profile.selectedLanguage === 'ko'
-                            ? 'bg-[#F06543] text-white shadow-xs'
+                            ? 'bg-emerald-600 text-white shadow-xs'
                             : isDarkMode
                             ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
                             : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
@@ -394,7 +499,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                         }}
                         className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
                           profile.selectedLanguage === 'ja'
-                            ? 'bg-[#F06543] text-white shadow-xs'
+                            ? 'bg-emerald-600 text-white shadow-xs'
                             : isDarkMode
                             ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
                             : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
@@ -412,7 +517,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   )}
                 </div>
 
-                {/* 3. Help */}
+                {/* 4. Help */}
                 <button
                   onClick={() => {
                     setIsProfileMenuOpen(false);
@@ -428,7 +533,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   <HelpCircle className="w-4 h-4 text-slate-400" />
                 </button>
 
-                {/* 4. Print this page */}
+                {/* 5. Print this page */}
                 <button
                   onClick={handlePrint}
                   className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${

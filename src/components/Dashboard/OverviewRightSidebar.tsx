@@ -409,7 +409,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
                         : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
-                  Following
+                  {t.calendar.following}
                 </span>
               </button>
 
@@ -434,7 +434,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
                         : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
-                  Followers
+                  {t.calendar.followers}
                 </span>
               </button>
             </div>
@@ -517,8 +517,8 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
             >
               <span>
                 {isFriendsExpanded
-                  ? 'Show less'
-                  : `View ${Math.max(1, currentFriendList.length - 3)} more`}
+                  ? t.calendar.showLess
+                  : `${t.calendar.viewMore} (${Math.max(1, currentFriendList.length - 3)})`}
               </span>
               <ChevronRight
                 size={16}
@@ -534,7 +534,7 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
                 isDarkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              hide
+              {t.calendar.hide}
             </button>
           </div>
         </div>
@@ -552,10 +552,10 @@ export const OverviewRightSidebar: React.FC<OverviewRightSidebarProps> = ({ onNa
               isDarkMode ? 'text-sky-400' : 'text-sky-600'
             }`}
           >
-            <Users size={15} /> Show Friends
+            <Users size={15} /> {t.calendar.showFriends}
           </span>
           <span className={`text-[11px] font-semibold ${isDarkMode ? 'text-sky-400' : 'text-sky-600'}`}>
-            show
+            {t.calendar.show}
           </span>
         </button>
       )}

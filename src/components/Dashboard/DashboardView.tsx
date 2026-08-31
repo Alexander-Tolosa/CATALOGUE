@@ -40,7 +40,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 }) => {
   const { isDarkMode } = useAppStore();
   const { mood, bondLevel, equippedCosmetics, speechText } = useKleoStore();
-  const { t, getLanguageName } = useTranslation();
+  const { t, getLanguageName, isKorean, isJapanese } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(!initialDashboardLoaded);
   const [showSyllableBuilder, setShowSyllableBuilder] = useState(false);
@@ -102,8 +102,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const completedNodesCount = profile.completedNodeIds.length || 3;
   const overallMastery = Math.min(100, Math.max(15, Math.round((completedNodesCount / totalNodesCount) * 100)));
 
-  // 7-day study consistency data (M, T, W, T, F, S, S)
-  const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  // 7-day study consistency data
+  const daysOfWeek = t.dashboard.daysLetters || ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const todayDayIndex = (new Date().getDay() + 6) % 7; // 0=Mon, 6=Sun
   const weeklyStudyMins = [12, 18, 15, 22, 10, profile.minutesCompletedToday || 8, 14];
 
@@ -111,13 +111,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const mascotTip = useMemo(() => {
     if (speechText) return speechText;
     if (profile.selectedLanguage === 'ko') {
-      return `Hangul syllable & vocabulary practice is active today. Complete 1 review session to keep your ${profile.streakDays || 5}-day streak going strong!`;
+      return isKorean
+        ? `오늘 한글 음절 및 어휘 학습이 진행 중입니다. 1회 복습을 완료하여 ${profile.streakDays || 5}일 연속 학습을 이어가세요!`
+        : isJapanese
+        ? `ハングルの音節・語彙学習が進んでいます。1回復習して${profile.streakDays || 5}日連続ストリークを維持しましょう！`
+        : `Hangul syllable & vocabulary practice is active today. Complete 1 review session to keep your ${profile.streakDays || 5}-day streak going strong!`;
     }
     if (profile.selectedLanguage === 'ja') {
-      return `Hiragana foundation & daily phrases are ready. Practice for ${profile.dailyGoalMinutes} minutes today to level up your bond!`;
+      return isKorean
+        ? `히라가나 기초 및 일상 회화가 준비되어 있습니다. 오늘 ${profile.dailyGoalMinutes}분 동안 학습하고 클레오와의 유대를 올려보세요!`
+        : isJapanese
+        ? `ひらがなの基礎と日常フレーズが準備されています。今日${profile.dailyGoalMinutes}分学習して絆レベルをアップしましょう！`
+        : `Hiragana foundation & daily phrases are ready. Practice for ${profile.dailyGoalMinutes} minutes today to level up your bond!`;
     }
-    return `English idioms and phonetic practice are loaded. Keep your study streak active today!`;
-  }, [speechText, profile.selectedLanguage, profile.streakDays, profile.dailyGoalMinutes]);
+    return isKorean
+      ? '영어 파닉스와 핵심 표현이 준비되었습니다. 오늘도 연속 학습을 유지하세요!'
+      : isJapanese
+      ? '英語のフォニックスと基本表現が準備されています。今日も学習を続けましょう！'
+      : 'English idioms and phonetic practice are loaded. Keep your study streak active today!';
+  }, [speechText, profile.selectedLanguage, profile.streakDays, profile.dailyGoalMinutes, isKorean, isJapanese]);
 
   return (
     <>
@@ -150,7 +162,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </h1>
                 <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#7A736E] dark:text-slate-300 bg-[#FAF6F0] dark:bg-[#131b2e] px-3.5 py-1.5 rounded-xl border border-white/90 dark:border-white/[0.04] shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_5px_rgba(255,255,255,0.03),2px_2px_5px_rgba(0,0,0,0.55)]">
                   <span className="material-symbols-outlined text-sm text-[#F06543]">translate</span>
-                  <span>{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
+                  <span>{t.dashboard.learningTrackBadge} {getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
                 </div>
               </div>
             </div>
@@ -181,7 +193,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     onClick={() => onNavigate('chatbot')}
                     className="text-xs font-bold text-[#f05a36] hover:text-[#d84824] dark:text-[#ff7e61] hover:underline flex items-center gap-1 cursor-pointer transition-colors"
                   >
-                    <span>Chat</span>
+                    <span>{t.dashboard.chatBtn}</span>
                     <span className="material-symbols-outlined text-sm">arrow_forward</span>
                   </button>
                 </div>
@@ -197,7 +209,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <h3 className="font-extrabold text-xs uppercase tracking-wider text-[#7A736E] dark:text-slate-400">
                   {t.dashboard.quickActions}
                 </h3>
-                <span className="text-[11px] font-bold text-[#F06543]">{activeNodes.length} nodes ready</span>
+                <span className="text-[11px] font-bold text-[#F06543]">{activeNodes.length} {t.dashboard.nodesReady}</span>
               </div>
 
               {/* Horizontal Quick Actions Grid across full width */}
@@ -211,7 +223,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <GraduationCap className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
-                    Lessons
+                    {t.dashboard.lessons}
                   </span>
                 </button>
 
@@ -224,7 +236,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <RotateCw className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
-                    Review
+                    {t.dashboard.review}
                   </span>
                   {savedPhrases.length > 0 && (
                     <span className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-[#F06543] text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs">
@@ -242,7 +254,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <Layers className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
-                    Match
+                    {t.dashboard.match}
                   </span>
                 </button>
 
@@ -255,7 +267,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <Scan className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
-                    Scanner
+                    {t.dashboard.scanner}
                   </span>
                 </button>
 
@@ -268,7 +280,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <MessageSquare className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
-                    Kleo AI
+                    {t.dashboard.kleoAi}
                   </span>
                 </button>
 
@@ -281,7 +293,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <Type className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
-                    Scripts
+                    {t.dashboard.scripts}
                   </span>
                 </button>
 
@@ -294,7 +306,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <Globe className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
-                    Translate
+                    {t.dashboard.translate}
                   </span>
                 </button>
 
@@ -307,7 +319,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <Award className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <span className="font-bold text-xs text-[#2B2725] dark:text-slate-200 group-hover:text-[#F06543] truncate">
-                    Badges
+                    {t.dashboard.badges}
                   </span>
                 </button>
               </div>
@@ -324,7 +336,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       {t.dashboard.last7Days}
                     </h3>
                     <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-[#F2ECE4] dark:bg-[#0c101c] px-2.5 py-1 rounded-full shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_1.5px_1.5px_3px_rgba(0,0,0,0.6),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.03)] border border-white/40 dark:border-white/[0.02]">
-                      🔥 100% Active
+                      🔥 100% {t.dashboard.activeStatus}
                     </span>
                   </div>
 
@@ -372,7 +384,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                 {/* Subtext info */}
                 <div className="pt-3 mt-3 border-t border-[#EDE5DA]/80 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-[#7A736E] dark:text-slate-400 font-medium">
-                  <span>{t.dashboard.avgStudyTime}: <strong className="text-[#2B2725] dark:text-slate-200 font-bold">14 min/day</strong></span>
+                  <span>{t.dashboard.avgStudyTime}: <strong className="text-[#2B2725] dark:text-slate-200 font-bold">14 {t.dashboard.minPerDay}</strong></span>
                 </div>
               </div>
 
@@ -487,23 +499,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   {/* Metrics Stack with Soft Inset Panels */}
                   <div className="space-y-2 py-1">
                     <div className="flex items-center justify-between text-xs sm:text-sm p-2.5 rounded-xl bg-[#F2ECE4] dark:bg-[#0c101c] shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.03)] border border-white/50 dark:border-white/[0.02]">
-                      <span className="text-[#7A736E] dark:text-slate-400 font-medium">⚡ Total XP</span>
+                      <span className="text-[#7A736E] dark:text-slate-400 font-medium">⚡ {t.dashboard.totalXp}</span>
                       <strong className="font-display font-extrabold text-base text-[#1E2433] dark:text-white">
                         {profile.xp || 140} XP
                       </strong>
                     </div>
 
                     <div className="flex items-center justify-between text-xs sm:text-sm p-2.5 rounded-xl bg-[#F2ECE4] dark:bg-[#0c101c] shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.03)] border border-white/50 dark:border-white/[0.02]">
-                      <span className="text-[#7A736E] dark:text-slate-400 font-medium">⏱ Daily Study Goal</span>
+                      <span className="text-[#7A736E] dark:text-slate-400 font-medium">⏱ {t.dashboard.dailyStudyGoal}</span>
                       <strong className="font-bold text-[#2B2725] dark:text-white">
                         {profile.minutesCompletedToday} / {profile.dailyGoalMinutes} min
                       </strong>
                     </div>
 
                     <div className="flex items-center justify-between text-xs sm:text-sm p-2.5 rounded-xl bg-[#F2ECE4] dark:bg-[#0c101c] shadow-[inset_1.5px_1.5px_3px_rgba(215,200,185,0.5),inset_-1.5px_-1.5px_3px_rgba(255,255,255,0.9)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.03)] border border-white/50 dark:border-white/[0.02]">
-                      <span className="text-[#7A736E] dark:text-slate-400 font-medium">❤️ Health Hearts</span>
+                      <span className="text-[#7A736E] dark:text-slate-400 font-medium">❤️ {t.dashboard.healthHearts}</span>
                       <strong className="font-bold text-[#F06543]">
-                        {profile.hearts}/{profile.maxHearts} Safe
+                        {profile.hearts}/{profile.maxHearts} {t.dashboard.safe}
                       </strong>
                     </div>
                   </div>
@@ -524,13 +536,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       onClick={() => onNavigate('matching')}
                       className="flex-1 py-2.5 sm:py-3 px-3 rounded-xl bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 text-xs font-bold shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] transition-all text-center cursor-pointer"
                     >
-                      Word Match
+                      {t.dashboard.wordMatchBtn}
                     </button>
                     <button
                       onClick={() => onNavigate('review')}
                       className="flex-1 py-2.5 sm:py-3 px-3 rounded-xl bg-[#FAF6F0] dark:bg-[#151c2e] hover:bg-white dark:hover:bg-[#1a233a] text-[#2B2725] dark:text-slate-200 text-xs font-bold shadow-[-3px_-3px_7px_rgba(255,255,255,0.95),3px_3px_7px_rgba(215,200,185,0.55)] dark:shadow-[-2px_-2px_6px_rgba(255,255,255,0.03),2px_2px_6px_rgba(0,0,0,0.55)] hover:scale-[1.02] active:scale-[0.98] active:shadow-[inset_2px_2px_4px_rgba(215,200,185,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/80 dark:border-white/[0.04] transition-all text-center cursor-pointer"
                     >
-                      Review Deck
+                      {t.dashboard.reviewDeckBtn}
                     </button>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserProfile, LanguageTrack } from '../../types';
-import { Settings, Volume2, Type, Shield, User, Globe, Sun, Moon, Palette } from 'lucide-react';
+import { Settings, Volume2, Type, Shield, User, Globe, Sun, Moon, Palette, Languages, CheckCircle2 } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../lib/i18n/useTranslation';
 import { FlagIcon } from '../Common/FlagIcon';
@@ -11,8 +11,8 @@ interface SettingsViewProps {
 }
 
 export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLanguage }) => {
-  const { isDarkMode, toggleThemeMode } = useAppStore();
-  const { t } = useTranslation();
+  const { isDarkMode, toggleThemeMode, interfaceLanguage, setInterfaceLanguage } = useAppStore();
+  const { t, getLanguageName } = useTranslation();
   const [audioSpeed, setAudioSpeed] = useState<number>(1.0);
   const [fontSize, setFontSize] = useState<string>('medium');
   const [colorblindMode, setColorblindMode] = useState<boolean>(false);
@@ -71,7 +71,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
                 {t.settings.lightMode} ☀️
               </span>
               <span className={`text-[11px] block mt-0.5 ${!isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>
-                Crisp off-white canvas with high-contrast text and vibrant orange CTAs
+                {t.settings.appearanceDesc}
               </span>
             </div>
           </button>
@@ -100,76 +100,159 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
                 {t.settings.darkMode} 🌙
               </span>
               <span className={`text-[11px] block mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                Deep obsidian navy background optimized for night study sessions
+                {t.settings.appearanceDesc}
               </span>
             </div>
           </button>
         </div>
       </div>
 
-      {/* 2. Active Language Tracks Config */}
+      {/* 2. Interface Language & Localization */}
       <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
         isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200 shadow-xs'
       }`}>
-        <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
-          isDarkMode ? 'text-white' : 'text-slate-900'
-        }`}>
-          <Globe size={18} className="text-sky-400" /> {t.settings.languageTrack}
-        </h3>
+        <div>
+          <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
+            isDarkMode ? 'text-white' : 'text-slate-900'
+          }`}>
+            <Languages size={18} className="text-[#FF6B35]" /> {t.settings.interfaceLanguage}
+          </h3>
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            {t.settings.interfaceLanguageDesc}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button
+            onClick={() => setInterfaceLanguage('en')}
+            className={`p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+              interfaceLanguage === 'en'
+                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm ring-1 ring-[#FF6B35]/30'
+                : isDarkMode
+                ? 'bg-[#0b0f19] border-[#1e293b] text-slate-300 hover:border-slate-700'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <FlagIcon code="us" size="md" />
+              <div>
+                <div className="text-xs font-bold">{t.settings.englishTrack}</div>
+                <div className="text-[10px] text-slate-400">English UI</div>
+              </div>
+            </div>
+            {interfaceLanguage === 'en' && <CheckCircle2 className="w-4 h-4 text-[#FF6B35]" />}
+          </button>
+
+          <button
+            onClick={() => setInterfaceLanguage('ko')}
+            className={`p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+              interfaceLanguage === 'ko'
+                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm ring-1 ring-[#FF6B35]/30'
+                : isDarkMode
+                ? 'bg-[#0b0f19] border-[#1e293b] text-slate-300 hover:border-slate-700'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <FlagIcon code="kr" size="md" />
+              <div>
+                <div className="text-xs font-bold">{t.settings.koreanTrack}</div>
+                <div className="text-[10px] text-slate-400">한국어 화면</div>
+              </div>
+            </div>
+            {interfaceLanguage === 'ko' && <CheckCircle2 className="w-4 h-4 text-[#FF6B35]" />}
+          </button>
+
+          <button
+            onClick={() => setInterfaceLanguage('ja')}
+            className={`p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+              interfaceLanguage === 'ja'
+                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm ring-1 ring-[#FF6B35]/30'
+                : isDarkMode
+                ? 'bg-[#0b0f19] border-[#1e293b] text-slate-300 hover:border-slate-700'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <FlagIcon code="jp" size="md" />
+              <div>
+                <div className="text-xs font-bold">{t.settings.japaneseTrack}</div>
+                <div className="text-[10px] text-slate-400">日本語画面</div>
+              </div>
+            </div>
+            {interfaceLanguage === 'ja' && <CheckCircle2 className="w-4 h-4 text-[#FF6B35]" />}
+          </button>
+        </div>
+      </div>
+
+      {/* 3. Active Learning Target Track */}
+      <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
+        isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200 shadow-xs'
+      }`}>
+        <div>
+          <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
+            isDarkMode ? 'text-white' : 'text-slate-900'
+          }`}>
+            <Globe size={18} className="text-emerald-400" /> {t.settings.languageTrack}
+          </h3>
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            {t.settings.languageTrackDesc}
+          </p>
+        </div>
 
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={() => onSelectLanguage('ko')}
             className={`p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'ko'
-                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
+                ? 'bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 font-black shadow-sm ring-1 ring-emerald-500/30'
                 : isDarkMode
                 ? 'bg-[#0b0f19] border-[#1e293b] text-slate-400 hover:border-slate-700'
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
             <FlagIcon code="kr" size="lg" className="mb-2" />
-            <span className="text-xs">{t.settings.korean} (한국어)</span>
+            <span className="text-xs">{t.settings.koreanTrack}</span>
           </button>
 
           <button
             onClick={() => onSelectLanguage('ja')}
             className={`p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'ja'
-                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
+                ? 'bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 font-black shadow-sm ring-1 ring-emerald-500/30'
                 : isDarkMode
                 ? 'bg-[#0b0f19] border-[#1e293b] text-slate-400 hover:border-slate-700'
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
             <FlagIcon code="jp" size="lg" className="mb-2" />
-            <span className="text-xs">{t.settings.japanese} (日本語)</span>
+            <span className="text-xs">{t.settings.japaneseTrack}</span>
           </button>
 
           <button
             onClick={() => onSelectLanguage('en')}
             className={`p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
               profile.selectedLanguage === 'en'
-                ? 'bg-[#fff7ed] dark:bg-[#FF6B35]/20 border-[#FF6B35] text-[#FF6B35] font-black shadow-sm'
+                ? 'bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 font-black shadow-sm ring-1 ring-emerald-500/30'
                 : isDarkMode
                 ? 'bg-[#0b0f19] border-[#1e293b] text-slate-400 hover:border-slate-700'
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
             <FlagIcon code="us" size="lg" className="mb-2" />
-            <span className="text-xs">{t.settings.english}</span>
+            <span className="text-xs">{t.settings.englishTrack}</span>
           </button>
         </div>
       </div>
 
-      {/* 3. Audio & Accessibility Config */}
+      {/* 4. Audio & Accessibility Config */}
       <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
         isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200 shadow-xs'
       }`}>
         <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
           isDarkMode ? 'text-white' : 'text-slate-900'
         }`}>
-          <Volume2 size={18} className="text-emerald-400" /> {t.settings.audioSpeed}
+          <Volume2 size={18} className="text-sky-400" /> {t.settings.audioSpeed}
         </h3>
 
         <div className="space-y-3">
@@ -178,7 +261,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
           }`}>
             <div>
               <div className={`text-xs font-black ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>{t.settings.audioSpeed}</div>
-              <div className={`text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Adjust TTS speech speed for listening exercises</div>
+              <div className={`text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{t.settings.soundEffectsDesc}</div>
             </div>
             <select
               value={audioSpeed}
@@ -187,9 +270,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
                 isDarkMode ? 'bg-[#131b2e] text-white border-slate-700' : 'bg-white text-slate-900 border-slate-300'
               }`}
             >
-              <option value={0.75}>0.75x (Slow)</option>
-              <option value={1.0}>1.0x (Normal)</option>
-              <option value={1.25}>1.25x (Fast)</option>
+              <option value={0.75}>0.75x</option>
+              <option value={1.0}>1.0x</option>
+              <option value={1.25}>1.25x</option>
             </select>
           </div>
 
@@ -197,8 +280,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             isDarkMode ? 'bg-[#0b0f19] border-[#1e293b]' : 'bg-slate-50 border-slate-200'
           }`}>
             <div>
-              <div className={`text-xs font-black ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>Colorblind Accessibility Palette</div>
-              <div className={`text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>High-contrast color profiles for UI elements</div>
+              <div className={`text-xs font-black ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>{t.settings.colorblindPalette}</div>
+              <div className={`text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{t.settings.colorblindPaletteDesc}</div>
             </div>
             <input
               type="checkbox"

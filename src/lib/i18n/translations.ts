@@ -60,6 +60,8 @@ export interface Translations {
     kleoCompanionDesc: string;
     spacedRepetitionTitle: string;
     spacedRepetitionDesc: string;
+    interfaceLanguageLabel: string;
+    studyTrackLabel: string;
   };
   sidebar: {
     overview: string;
@@ -112,6 +114,27 @@ export interface Translations {
     alphabetPhonicsBuilderTitle: string;
     alphabetPhonicsBuilderDesc: string;
     quickActions: string;
+    lessons: string;
+    review: string;
+    match: string;
+    scanner: string;
+    kleoAi: string;
+    scripts: string;
+    translate: string;
+    badges: string;
+    nodesReady: string;
+    mascotTip: string;
+    chatBtn: string;
+    totalXp: string;
+    dailyStudyGoal: string;
+    healthHearts: string;
+    safe: string;
+    activeStatus: string;
+    minPerDay: string;
+    daysLetters: string[];
+    wordMatchBtn: string;
+    reviewDeckBtn: string;
+    learningTrackBadge: string;
     last7Days: string;
     masteryDistribution: string;
     todayProgress: string;
@@ -138,6 +161,13 @@ export interface Translations {
     chat: string;
     viewAllFriends: string;
     noFriendsOnline: string;
+    following: string;
+    followers: string;
+    showLess: string;
+    viewMore: string;
+    hide: string;
+    showFriends: string;
+    show: string;
   };
   learn: {
     unit1: string;
@@ -394,12 +424,19 @@ export interface Translations {
     appearanceDesc: string;
     lightMode: string;
     darkMode: string;
+    interfaceLanguage: string;
+    interfaceLanguageDesc: string;
     languageTrack: string;
     languageTrackDesc: string;
     korean: string;
     japanese: string;
     english: string;
+    koreanTrack: string;
+    japaneseTrack: string;
+    englishTrack: string;
     audioSpeed: string;
+    colorblindPalette: string;
+    colorblindPaletteDesc: string;
     soundEffects: string;
     soundEffectsDesc: string;
     studyReminders: string;
@@ -462,6 +499,8 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       korean: 'Korean',
       japanese: 'Japanese',
       activeLanguage: 'Active Language',
+      interfaceLanguageLabel: 'Interface Language',
+      studyTrackLabel: 'Learning Track',
       help: 'Help',
       printPage: 'Print this page',
       dayStreakTitle: 'Day Study Streak!',
@@ -537,6 +576,27 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       alphabetPhonicsBuilderTitle: 'Phonics & Letter Builder',
       alphabetPhonicsBuilderDesc: 'Practice English alphabet blends and phonetic pronunciations.',
       quickActions: 'Quick actions',
+      lessons: 'Lessons',
+      review: 'Review',
+      match: 'Match',
+      scanner: 'Scanner',
+      kleoAi: 'Kleo AI',
+      scripts: 'Scripts',
+      translate: 'Translate',
+      badges: 'Badges',
+      nodesReady: 'nodes ready',
+      mascotTip: 'Meow! Welcome back! Ready to master a new script today?',
+      chatBtn: 'Chat',
+      totalXp: 'Total XP',
+      dailyStudyGoal: 'Daily Study Goal',
+      healthHearts: 'Health Hearts',
+      safe: 'Safe',
+      activeStatus: 'Active',
+      minPerDay: 'min/day',
+      daysLetters: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+      wordMatchBtn: 'Word Match',
+      reviewDeckBtn: 'Review Deck',
+      learningTrackBadge: 'Learning:',
       last7Days: 'LAST 7 DAYS',
       masteryDistribution: 'MASTERY DISTRIBUTION',
       todayProgress: 'Today',
@@ -562,7 +622,14 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       onlineCount: 'online',
       chat: 'Chat',
       viewAllFriends: 'View All Friends',
-      noFriendsOnline: 'No friends currently online'
+      noFriendsOnline: 'No friends currently online',
+      following: 'Following',
+      followers: 'Followers',
+      showLess: 'Show less',
+      viewMore: 'View more',
+      hide: 'hide',
+      showFriends: 'Show Friends',
+      show: 'show'
     },
     learn: {
       unit1: 'Unit 1',
@@ -819,12 +886,19 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       appearanceDesc: 'Switch between light and dark mode display styles.',
       lightMode: 'Light Mode',
       darkMode: 'Dark Mode',
-      languageTrack: 'Active Learning Track',
-      languageTrackDesc: 'Select the primary language track you are currently studying.',
+      interfaceLanguage: 'Interface & Localization Language',
+      interfaceLanguageDesc: 'Choose the language used for all UI menus, labels, and explanations.',
+      languageTrack: 'Active Learning Track (Language to Learn)',
+      languageTrackDesc: 'Choose the language words, letters, and vocabulary you want to learn.',
       korean: 'Korean',
       japanese: 'Japanese',
       english: 'English',
+      koreanTrack: 'Korean (한국어)',
+      japaneseTrack: 'Japanese (日本語)',
+      englishTrack: 'English (US)',
       audioSpeed: 'Audio Playback Speed',
+      colorblindPalette: 'Colorblind Accessibility Palette',
+      colorblindPaletteDesc: 'High-contrast color profiles for UI elements',
       soundEffects: 'Audio & Sound Effects',
       soundEffectsDesc: 'Enable native pronunciation audio and interactive chime effects.',
       studyReminders: 'Daily Notifications & Reminders',
@@ -886,6 +960,8 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       korean: '한국어 (Korean)',
       japanese: '일본어 (Japanese)',
       activeLanguage: '선택된 언어',
+      interfaceLanguageLabel: '인터페이스 언어',
+      studyTrackLabel: '학습 트랙',
       help: '도움말',
       printPage: '페이지 인쇄',
       dayStreakTitle: '일 연속 학습 달성 중!',
@@ -961,6 +1037,27 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       alphabetPhonicsBuilderTitle: '파닉스 및 알파벳 조합',
       alphabetPhonicsBuilderDesc: '영어 26개 알파벳과 발음 기호를 연습하세요.',
       quickActions: '빠른 실행',
+      lessons: '레슨',
+      review: '복습',
+      match: '단어 매칭',
+      scanner: '스캐너',
+      kleoAi: '클레오 AI',
+      scripts: '문자 학습',
+      translate: '번역기',
+      badges: '배지',
+      nodesReady: '개 노드 준비됨',
+      mascotTip: '야옹! 다시 오신 것을 환영해요! 오늘 새로운 글자를 마스터해볼까요?',
+      chatBtn: '대화하기',
+      totalXp: '총 경험치',
+      dailyStudyGoal: '일일 학습 목표',
+      healthHearts: '하트 체력',
+      safe: '안전',
+      activeStatus: '활동 중',
+      minPerDay: '분/일',
+      daysLetters: ['월', '화', '수', '목', '금', '토', '일'],
+      wordMatchBtn: '단어 매칭',
+      reviewDeckBtn: '복습 덱',
+      learningTrackBadge: '학습 중:',
       last7Days: '최근 7일 학습',
       masteryDistribution: '학습 성취도 분석',
       todayProgress: '오늘의 학습',
@@ -986,7 +1083,14 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       onlineCount: '명 온라인',
       chat: '대화하기',
       viewAllFriends: '전체 친구 보기',
-      noFriendsOnline: '현재 온라인인 친구가 없습니다'
+      noFriendsOnline: '현재 온라인인 친구가 없습니다',
+      following: '팔로잉',
+      followers: '팔로워',
+      showLess: '접기',
+      viewMore: '더 보기',
+      hide: '숨기기',
+      showFriends: '친구 보기',
+      show: '표시'
     },
     learn: {
       unit1: '유닛 1',
@@ -1243,12 +1347,19 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       appearanceDesc: '라이트 모드와 야간 다크 모드를 전환합니다.',
       lightMode: '라이트 모드',
       darkMode: '다크 모드',
-      languageTrack: '현재 학습 언어 트랙',
-      languageTrackDesc: '집중적으로 학습할 주요 언어를 선택하세요.',
+      interfaceLanguage: '인터페이스 및 표시 언어',
+      interfaceLanguageDesc: '모든 메뉴, 라벨 및 해설에 사용할 시스템 언어를 선택하세요.',
+      languageTrack: '학습 대상 언어 (배울 언어)',
+      languageTrackDesc: '학습하고 싶은 단어, 글자, 어휘의 대상 언어를 선택하세요.',
       korean: '한국어',
       japanese: '일본어',
       english: '영어',
+      koreanTrack: '한국어 (Korean)',
+      japaneseTrack: '일본어 (Japanese)',
+      englishTrack: '영어 (English)',
       audioSpeed: '음성 재생 속도',
+      colorblindPalette: '색각 이상 접근성 색상',
+      colorblindPaletteDesc: 'UI 요소를 위한 고대비 색상 프로필',
       soundEffects: '오디오 및 효과음',
       soundEffectsDesc: '원어민 발음 음성과 정답 효과음을 활성화합니다.',
       studyReminders: '학습 알림 및 연속 학습 지킴이',
@@ -1310,6 +1421,8 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       korean: '韓国語 (Korean)',
       japanese: '日本語 (Japanese)',
       activeLanguage: '選択中の言語',
+      interfaceLanguageLabel: '表示言語',
+      studyTrackLabel: '学習トラック',
       help: 'ヘルプ',
       printPage: 'このページを印刷',
       dayStreakTitle: '日連続学習ストリーク！',
@@ -1385,6 +1498,27 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       alphabetPhonicsBuilderTitle: 'フォニックス＆アルファベット',
       alphabetPhonicsBuilderDesc: '英語の26文字と発音記号を練習します。',
       quickActions: 'クイックアクション',
+      lessons: 'レッスン',
+      review: '復習',
+      match: '単語マッチ',
+      scanner: 'スキャナー',
+      kleoAi: 'Kleo AI',
+      scripts: '文字学習',
+      translate: '翻訳',
+      badges: 'バッジ',
+      nodesReady: '個のノード利用可能',
+      mascotTip: 'ニャー！おかえりなさい！今日も新しい文字をマスターしましょう！',
+      chatBtn: 'チャット',
+      totalXp: '合計XP',
+      dailyStudyGoal: '毎日の目標',
+      healthHearts: 'ライフハート',
+      safe: '安全',
+      activeStatus: 'アクティブ',
+      minPerDay: '分/日',
+      daysLetters: ['月', '火', '水', '木', '金', '土', '日'],
+      wordMatchBtn: '単語マッチ',
+      reviewDeckBtn: '復習デッキ',
+      learningTrackBadge: '学習中:',
       last7Days: '直近7日間の学習',
       masteryDistribution: '習熟度分布',
       todayProgress: '本日の進捗',
@@ -1410,7 +1544,14 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       onlineCount: '人オンライン',
       chat: 'チャット',
       viewAllFriends: 'すべての友達を見る',
-      noFriendsOnline: '現在オンラインの友達はいません'
+      noFriendsOnline: '現在オンラインの友達はいません',
+      following: 'フォロー中',
+      followers: 'フォロワー',
+      showLess: '折りたたむ',
+      viewMore: 'もっと見る',
+      hide: '非表示',
+      showFriends: '友達を表示',
+      show: '表示'
     },
     learn: {
       unit1: 'ユニット 1',
@@ -1667,12 +1808,19 @@ export const TRANSLATIONS: Record<LanguageTrack, Translations> = {
       appearanceDesc: 'ライトモードと夜間ダークモードを切り替えます。',
       lightMode: 'ライトモード',
       darkMode: 'ダークモード',
-      languageTrack: '学習中の言語トラック',
-      languageTrackDesc: '現在学習する主要言語トラックを選択します。',
+      interfaceLanguage: 'インターフェース表示言語',
+      interfaceLanguageDesc: 'すべてのメニュー、ラベル、説明に適用する表示言語を選択します。',
+      languageTrack: '学習対象言語（学ぶ言語）',
+      languageTrackDesc: '学習したい文字、単語、文法の言語トラックを選択します。',
       korean: '韓国語',
       japanese: '日本語',
       english: '英語',
+      koreanTrack: '韓国語 (한국어)',
+      japaneseTrack: '日本語 (Japanese)',
+      englishTrack: '英語 (English)',
       audioSpeed: '音声再生速度',
+      colorblindPalette: 'カラーユニバーサルデザイン',
+      colorblindPaletteDesc: 'UI要素のハイコントラスト配色プロファイル',
       soundEffects: '音声＆効果音',
       soundEffectsDesc: 'ネイティブ発音音声や正解効果音を有効にします。',
       studyReminders: '学習リマインダー通知',

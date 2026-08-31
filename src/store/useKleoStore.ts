@@ -20,7 +20,7 @@ interface KleoStoreState {
 
 export const useKleoStore = create<KleoStoreState>((set) => ({
   mood: 'happy',
-  speechText: "Meow! Welcome back! Ready to master a new script today?",
+  speechText: '',
   bondXp: 245,
   bondLevel: 5,
   equippedCosmetics: { hat: 'blue_beret' },

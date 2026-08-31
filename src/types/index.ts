@@ -243,6 +243,7 @@ export type UserProfile = {
   name: string;
   lifecycleState: UserLifecycleState;
   selectedLanguage: LanguageTrack;
+  interfaceLanguage?: LanguageTrack;
   dailyGoalMinutes: number;
   minutesCompletedToday: number;
   xp: number;

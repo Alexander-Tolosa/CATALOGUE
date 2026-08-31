@@ -4,13 +4,6 @@ import {
   X,
   Check,
   User,
-  Mail,
-  Phone,
-  BookOpen,
-  GraduationCap,
-  MapPin,
-  Calendar,
-  HeartHandshake,
   Image as ImageIcon,
   Upload,
   Sparkles,
@@ -18,8 +11,7 @@ import {
   RotateCcw,
   Palette,
   Eye,
-  FileText,
-  Quote
+  FileText
 } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { AVATAR_PRESETS, BANNER_PRESETS } from '../../lib/profilePresets';
@@ -29,12 +21,6 @@ interface EditProfileModalProps {
   onClose: () => void;
   initialTab?: 'visuals' | 'about' | 'info';
 }
-
-const BIO_TEMPLATES = [
-  "Polyglot in training mastering Korean Hangul & Japanese Kana. Passionate about cross-cultural communication and linguistics! 🌏✨",
-  "BSIT student at CLASE building language learning tools with AI assistance. Exploring Asian writing scripts daily! 💻📚",
-  "Lifelong learner dedicated to expanding vocabulary and fluency. Aiming for daily study streaks with Kleo! 🐾🔥"
-];
 
 export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   isOpen,
@@ -60,15 +46,15 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       relationship: 'Mother / Guardian',
       phone: '+63 918 765 4321'
     },
-    bio: 'There is currently no information about this member.',
-    joinedDate: 'Sep 4, 2020',
+    bio: 'Tell us a bit about you',
+    joinedDate: 'Jun 24, 2021',
     lastActivity: '3 hours ago'
   };
 
   const [displayName, setDisplayName] = useState(profile.name || personal.fullName || 'ALEXANDER MICHAEL TOLOSA');
   const [avatarUrl, setAvatarUrl] = useState<string>(profile.avatarUrl || personal.avatarUrl || '');
   const [bannerUrl, setBannerUrl] = useState<string>(profile.bannerUrl || personal.bannerUrl || '');
-  const [bio, setBio] = useState<string>(personal.bio || '');
+  const [bio, setBio] = useState<string>(personal.bio || 'Tell us a bit about you');
 
   useEffect(() => {
     if (isOpen) {
@@ -76,7 +62,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       setDisplayName(profile.name || personal.fullName || 'ALEXANDER MICHAEL TOLOSA');
       setAvatarUrl(profile.avatarUrl || personal.avatarUrl || '');
       setBannerUrl(profile.bannerUrl || personal.bannerUrl || '');
-      setBio(personal.bio || '');
+      setBio(personal.bio || 'Tell us a bit about you');
     }
   }, [isOpen, initialTab, profile.name, profile.avatarUrl, profile.bannerUrl, personal.bio]);
 
@@ -150,7 +136,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       fullName: formData.fullName.trim() || finalName,
       avatarUrl: avatarUrl || undefined,
       bannerUrl: bannerUrl || undefined,
-      bio: bio.trim() || 'There is currently no information about this member.',
+      bio: bio.trim() || 'Tell us a bit about you',
       studentId: formData.studentId,
       department: formData.department,
       program: formData.program,
@@ -177,7 +163,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const isBannerGradient = bannerUrl.startsWith('linear-gradient') || !bannerUrl;
   const bannerBackground = bannerUrl
     ? (isBannerGradient ? bannerUrl : `url("${bannerUrl}") center/cover no-repeat`)
-    : 'linear-gradient(135deg, #1b6875 0%, #2ea2b0 35%, #1e7887 70%, #155561 100%)';
+    : 'linear-gradient(135deg, #101c36 0%, #1a294d 50%, #0d1629 100%)';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-5 animate-fadeIn select-none">
@@ -219,60 +205,77 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         </div>
 
         {/* Real-time Interactive Profile Header Preview */}
-        <div className="p-4 sm:p-5 bg-slate-950/40 border-b border-slate-800/60">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
-              <Eye size={12} className="text-sky-400" /> Live Preview
+        <div className="p-4 sm:p-5 bg-slate-950/60 border-b border-slate-800/80">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <Eye size={13} className="text-sky-400" /> Live Profile Card Preview
             </span>
             <span className="text-[10px] font-bold text-emerald-400">Updates in real-time</span>
           </div>
 
-          <div className="rounded-2xl border border-white/10 overflow-hidden shadow-lg bg-[#111728] relative">
+          <div className="rounded-3xl border border-white/10 overflow-hidden shadow-2xl bg-[#111624] relative text-left">
             {/* Banner Preview Area */}
             <div
-              className="h-24 sm:h-28 relative overflow-hidden flex items-start justify-end p-3 transition-all duration-300"
+              className="h-28 sm:h-32 relative overflow-hidden transition-all duration-300"
               style={{ background: bannerBackground }}
             >
-              <div className="absolute inset-0 bg-black/15 pointer-events-none" />
-              <div className="relative z-10 px-2.5 py-0.5 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/20 text-slate-200 text-[10px] font-bold">
-                Student
-              </div>
+              <div className="absolute inset-0 bg-black/20 pointer-events-none" />
             </div>
 
-            {/* Avatar & Display Name Overlap */}
-            <div className="px-4 pb-3 pt-0 relative flex items-end justify-between">
-              <div className="flex items-end gap-3 -mt-10 sm:-mt-12">
-                <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] shadow-xl shrink-0">
-                  <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/50 flex items-center justify-center">
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt="Preview Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      <svg viewBox="0 0 100 100" className="w-full h-full object-cover" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="50" fill="#38BDF8" />
-                        <path d="M 22 92 C 22 75 35 68 50 68 C 65 68 78 75 78 92 Z" fill="#10B981" />
-                        <rect x="44" y="52" width="12" height="18" fill="#8D5B4C" />
-                        <ellipse cx="50" cy="46" rx="16" ry="18" fill="#8D5B4C" />
-                        <path d="M 44 54 Q 50 60 56 54" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                        <path d="M 33 42 C 33 28 42 22 50 22 C 58 22 67 28 67 42 C 67 33 60 28 50 28 C 40 28 33 33 33 42 Z" fill="#1F2937" />
-                      </svg>
-                    )}
+            {/* Overlapping Avatar & Display Name */}
+            <div className="px-5 pb-5 pt-0 relative">
+              <div className="flex items-end justify-between gap-3 -mt-12 sm:-mt-14 mb-3">
+                {/* Avatar with Ring & Green Online Status Dot */}
+                <div className="relative shrink-0">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] via-[#22d3ee] to-[#0ea5e9] shadow-2xl">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/50 flex items-center justify-center">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt="Preview Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <svg viewBox="0 0 100 100" className="w-full h-full object-cover" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="50" cy="50" r="50" fill="#38BDF8" />
+                          <path d="M 22 92 C 22 75 35 68 50 68 C 65 68 78 75 78 92 Z" fill="#10B981" />
+                          <rect x="44" y="52" width="12" height="18" fill="#8D5B4C" />
+                          <ellipse cx="50" cy="46" rx="16" ry="18" fill="#8D5B4C" />
+                          <path d="M 44 54 Q 50 60 56 54" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                          <path d="M 33 42 C 33 28 42 22 50 22 C 58 22 67 28 67 42 C 67 33 60 28 50 28 C 40 28 33 33 33 42 Z" fill="#1F2937" />
+                        </svg>
+                      )}
+                    </div>
                   </div>
+                  {/* Green Online Dot */}
+                  <span className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 border-3 border-[#111624] shadow-sm" />
+                </div>
+              </div>
+
+              {/* Display Name */}
+              <div className="space-y-1">
+                <h4 className="font-display font-black text-lg sm:text-xl text-white tracking-wide uppercase">
+                  {displayName || 'ALEXANDER MICHAEL TOLOSA'}
+                </h4>
+              </div>
+
+              {/* Detail Fields: Bio & Member Since */}
+              <div className="mt-4 pt-3 border-t border-slate-800/80 space-y-3 text-left">
+                {/* Bio */}
+                <div>
+                  <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider mb-0.5">Bio</span>
+                  <p className="text-xs text-slate-300 italic whitespace-pre-line">
+                    {bio || 'Tell us a bit about you'}
+                  </p>
                 </div>
 
-                <div className="mb-1">
-                  <h4 className="font-display font-black text-sm sm:text-base text-white tracking-wide uppercase truncate max-w-[220px] sm:max-w-[320px]">
-                    {displayName || 'ALEXANDER MICHAEL TOLOSA'}
-                  </h4>
-                  <p className="text-[10px] font-bold text-sky-400 truncate max-w-[240px]">
-                    {formData.department || 'CLASE Student'}
-                  </p>
+                {/* Member Since */}
+                <div>
+                  <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider mb-0.5">Member Since</span>
+                  <p className="text-xs font-bold text-slate-200">{personal.joinedDate || 'Jun 24, 2021'}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Scrollable Form Content — Single unified section */}
+        {/* Scrollable Form Content */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-xs no-scrollbar">
           {/* Section 1: Display Name */}
           <div className={`p-4 sm:p-5 rounded-2xl border space-y-2 ${
@@ -287,7 +290,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="e.g. ALEXANDER MICHAEL TOLOSA"
               required
-              className={`w-full px-4 py-2.5 rounded-xl border font-extrabold text-sm outline-none transition-all ${
+              className={`w-full px-4 py-2.5 rounded-xl border font-bold text-xs outline-none transition-all ${
                 isDarkMode ? 'bg-[#161f33] border-slate-700 text-white focus:border-[#F06543]' : 'bg-white border-slate-300 text-slate-900 focus:border-[#F06543]'
               }`}
             />

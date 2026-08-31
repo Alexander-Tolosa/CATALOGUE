@@ -67,18 +67,18 @@ export const ProfilePageView: React.FC = () => {
       relationship: 'Mother / Guardian',
       phone: '+63 918 765 4321'
     },
-    bio: 'There is currently no information about this member.',
-    joinedDate: 'Sep 4, 2020',
+    bio: 'Tell us a bit about you',
+    joinedDate: 'Jun 24, 2021',
     lastActivity: '3 hours ago'
   };
 
-  const displayName = (profile.name || googleUser?.name || 'ALEXANDER MICHAEL TOLOSA').toUpperCase();
+  const displayName = profile.name || personal.fullName || googleUser?.name || 'lexzunder';
   const userAvatar = profile.avatarUrl || personal.avatarUrl || googleUser?.picture;
-  const userBanner = profile.bannerUrl || personal.bannerUrl || 'linear-gradient(135deg, #1b6875 0%, #2ea2b0 35%, #1e7887 70%, #155561 100%)';
+  const userBanner = profile.bannerUrl || personal.bannerUrl || 'linear-gradient(135deg, #101c36 0%, #1a294d 50%, #0d1629 100%)';
   const isBannerGradient = userBanner.startsWith('linear-gradient') || !userBanner;
   const bannerBackground = userBanner
     ? (isBannerGradient ? userBanner : `url("${userBanner}") center/cover no-repeat`)
-    : 'linear-gradient(135deg, #1b6875 0%, #2ea2b0 35%, #1e7887 70%, #155561 100%)';
+    : 'linear-gradient(135deg, #101c36 0%, #1a294d 50%, #0d1629 100%)';
 
   const enrolledCourses = [
     {
@@ -139,8 +139,7 @@ export const ProfilePageView: React.FC = () => {
       {/* Main Responsive Grid Layout */}
       <div className="w-full max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* ========================================================
-            LEFT COLUMN: Sub-navigation Sidebar (2.5 / 12 cols)
-            Matching the exact list from the screenshot
+            LEFT COLUMN: Sub-navigation Sidebar (3 / 12 cols)
            ======================================================== */}
         <div className="lg:col-span-3 space-y-2">
           <div className={`p-3.5 rounded-3xl border shadow-xl space-y-1 transition-colors ${
@@ -229,117 +228,116 @@ export const ProfilePageView: React.FC = () => {
         </div>
 
         {/* ========================================================
-            CENTER COLUMN: Main Banner & Sub-Tabs Content (6 / 12 cols)
+            CENTER COLUMN: Main Discord-Style Profile Card & Sub-Tabs Content (6 / 12 cols)
            ======================================================== */}
         <div className={`${activeSubNav === 'profile' ? 'lg:col-span-6 xl:col-span-6' : 'lg:col-span-9 xl:col-span-9'} space-y-6`}>
           {activeSubNav === 'profile' && (
             <>
-              {/* Main Banner Header */}
+              {/* Main Discord-Inspired Profile Card */}
               <div className={`rounded-3xl border overflow-hidden shadow-2xl transition-colors ${
-                isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
+                isDarkMode ? 'bg-[#111624] border-[#1f293d]' : 'bg-white border-slate-200'
               }`}>
-                {/* Polygonal Cyan Geometric or Custom Banner Texture */}
+                {/* 1. Header Banner */}
                 <div
-                  className="h-36 sm:h-44 relative overflow-hidden transition-all duration-300 group"
+                  className="h-44 sm:h-52 relative overflow-hidden transition-all duration-300 group"
                   style={{
                     background: bannerBackground
                   }}
                 >
-                  {/* Geometric Polygonal Overlay Grid if gradient */}
-                  {isBannerGradient && (
-                    <svg
-                      className="absolute inset-0 w-full h-full opacity-35 mix-blend-overlay pointer-events-none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <defs>
-                        <pattern id="polyGrid" width="60" height="60" patternUnits="userSpaceOnUse">
-                          <path d="M 60 0 L 0 0 0 60 Z" fill="rgba(255,255,255,0.06)" />
-                          <path d="M 60 60 L 60 0 0 60 Z" fill="rgba(0,0,0,0.06)" />
-                          <path d="M 0 0 L 60 60" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-                        </pattern>
-                      </defs>
-                      <rect width="100%" height="100%" fill="url(#polyGrid)" />
-                    </svg>
-                  )}
+                  <div className="absolute inset-0 bg-black/15 pointer-events-none" />
                 </div>
 
-                {/* Overlapping Avatar & User Metadata */}
+                {/* 2. Overlapping Avatar & User Identification */}
                 <div className="px-6 pb-6 pt-0 relative">
-                  <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 mb-4">
-                    {/* Circle Avatar with Cyan Gradient Ring */}
-                    <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] shadow-2xl shrink-0 group">
-                      <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/40 flex items-center justify-center">
-                        {userAvatar ? (
-                          <img
-                            src={userAvatar}
-                            alt={displayName}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          /* Illustrated User Avatar */
-                          <svg
-                            viewBox="0 0 100 100"
-                            className="w-full h-full object-cover"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <circle cx="50" cy="50" r="50" fill="#38BDF8" />
-                            {/* Shirt */}
-                            <path
-                              d="M 22 92 C 22 75 35 68 50 68 C 65 68 78 75 78 92 Z"
-                              fill="#10B981"
+                  <div className="flex items-end justify-between gap-3 -mt-16 sm:-mt-20 mb-4">
+                    {/* Circle Avatar with Cyan Gradient Ring & Online Indicator Dot */}
+                    <div className="relative shrink-0">
+                      <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] via-[#22d3ee] to-[#0ea5e9] shadow-2xl group">
+                        <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/40 flex items-center justify-center">
+                          {userAvatar ? (
+                            <img
+                              src={userAvatar}
+                              alt={displayName}
+                              className="w-full h-full object-cover"
                             />
-                            {/* Neck */}
-                            <rect x="44" y="52" width="12" height="18" fill="#8D5B4C" />
-                            {/* Face */}
-                            <ellipse cx="50" cy="46" rx="16" ry="18" fill="#8D5B4C" />
-                            {/* Smile */}
-                            <path
-                              d="M 44 54 Q 50 60 56 54"
-                              stroke="#FFFFFF"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
+                          ) : (
+                            <svg
+                              viewBox="0 0 100 100"
+                              className="w-full h-full object-cover"
                               fill="none"
-                            />
-                            {/* Hair */}
-                            <path
-                              d="M 33 42 C 33 28 42 22 50 22 C 58 22 67 28 67 42 C 67 33 60 28 50 28 C 40 28 33 33 33 42 Z"
-                              fill="#1F2937"
-                            />
-                          </svg>
-                        )}
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <circle cx="50" cy="50" r="50" fill="#38BDF8" />
+                              <path d="M 22 92 C 22 75 35 68 50 68 C 65 68 78 75 78 92 Z" fill="#10B981" />
+                              <rect x="44" y="52" width="12" height="18" fill="#8D5B4C" />
+                              <ellipse cx="50" cy="46" rx="16" ry="18" fill="#8D5B4C" />
+                              <path d="M 44 54 Q 50 60 56 54" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                              <path d="M 33 42 C 33 28 42 22 50 22 C 58 22 67 28 67 42 C 67 33 60 28 50 28 C 40 28 33 33 33 42 Z" fill="#1F2937" />
+                            </svg>
+                          )}
+                        </div>
                       </div>
+                      {/* Green Online Status Dot */}
+                      <span className={`absolute bottom-1.5 right-1.5 w-7 h-7 rounded-full bg-emerald-500 border-4 shadow-md ${
+                        isDarkMode ? 'border-[#111624]' : 'border-white'
+                      }`} />
                     </div>
 
-                    {/* Red "Edit" Button */}
+                    {/* Edit Profile Button */}
                     <button
                       onClick={() => {
                         setEditModalInitialTab('visuals');
                         setIsEditModalOpen(true);
                       }}
-                      className="px-5 py-2 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer self-start sm:self-end"
+                      className="px-5 py-2.5 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white font-extrabold text-xs shadow-md flex items-center gap-1.5 transition-all cursor-pointer hover:scale-102 self-start sm:self-end"
                     >
-                      <Edit size={14} />
-                      <span>{t.profile.editProfile}</span>
+                      <Edit size={14} /> Edit Profile
                     </button>
                   </div>
 
-                  {/* Name */}
+                  {/* Display Name */}
                   <div className="space-y-1">
-                    <h2 className={`font-display font-black text-xl sm:text-2xl ${isDarkMode ? 'text-slate-100' : 'text-slate-900'} tracking-wide uppercase`}>
+                    <h2 className={`font-display font-black text-2xl sm:text-3xl ${isDarkMode ? 'text-white' : 'text-slate-900'} tracking-wide uppercase`}>
                       {displayName}
                     </h2>
+                  </div>
+
+                  {/* Details: Bio & Member Since */}
+                  <div className="mt-5 pt-4 border-t border-slate-800/80 space-y-4 text-left">
+                    {/* Bio */}
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                        Bio
+                      </span>
+                      <p className={`text-xs italic leading-relaxed whitespace-pre-line ${
+                        isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                      }`}>
+                        {personal.bio || 'Tell us a bit about you'}
+                      </p>
+                    </div>
+
+                    {/* Member Since */}
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                        Member Since
+                      </span>
+                      <p className={`text-xs font-bold ${
+                        isDarkMode ? 'text-slate-200' : 'text-slate-800'
+                      }`}>
+                        {personal.joinedDate || 'Jun 24, 2021'}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Sub-Tabs: [About] [Info] [Enrolled] [Completed] */}
+              {/* Sub-Tabs: [Awards & Badges] [Academic Info] [Enrolled Courses] [Completed Courses] */}
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
                 {(
                   [
-                    { id: 'about', label: 'About' },
-                    { id: 'info', label: 'Info' },
-                    { id: 'enrolled', label: 'Enrolled' },
+                    { id: 'about', label: 'Awards & Badges' },
+                    { id: 'info', label: 'Academic Info' },
+                    { id: 'enrolled', label: 'Enrolled Courses' },
                     { id: 'completed', label: 'Completed' }
                   ] as const
                 ).map((tab) => (
@@ -359,32 +357,9 @@ export const ProfilePageView: React.FC = () => {
                 ))}
               </div>
 
-              {/* TAB CONTENT: ABOUT */}
+              {/* TAB CONTENT: AWARDS & BADGES */}
               {activeContentTab === 'about' && (
                 <div className="space-y-6">
-                  {/* About Member Text */}
-                  <div className={`p-6 rounded-3xl border space-y-3 transition-colors ${
-                    isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200 shadow-xs'
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
-                        About
-                      </h3>
-                      <button
-                        onClick={() => {
-                          setEditModalInitialTab('visuals');
-                          setIsEditModalOpen(true);
-                        }}
-                        className="text-xs font-bold text-[#e11d48] hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <Edit size={13} /> Edit About
-                      </button>
-                    </div>
-                    <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'} leading-relaxed whitespace-pre-line`}>
-                      {personal.bio || 'There is currently no information about this member.'}
-                    </p>
-                  </div>
-
                   {/* Certifications Section */}
                   <CertificationsSection onViewAll={() => setActiveSubNav('certifications')} />
                 </div>
@@ -578,6 +553,7 @@ export const ProfilePageView: React.FC = () => {
         )}
       </div>
 
+      {/* Add Connection Modal */}
       {/* Edit Profile Modal */}
       <EditProfileModal
         isOpen={isEditModalOpen}

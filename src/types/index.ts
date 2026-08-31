@@ -209,8 +209,20 @@ export interface BadgeAward {
   description: string;
 }
 
+export interface UserConnection {
+  id: string;
+  platform: 'github' | 'discord' | 'steam' | 'spotify' | 'portal' | 'web';
+  username: string;
+}
+
 export interface UserPersonalInfo {
   fullName: string;
+  username?: string;
+  statusMessage?: string;
+  pronouns?: string;
+  roleBadge?: string;
+  privateNote?: string;
+  connections?: UserConnection[];
   studentId: string;
   department: string;
   program: string;

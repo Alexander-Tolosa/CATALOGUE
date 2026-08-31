@@ -63,6 +63,15 @@ const DEFAULT_PROFILE: UserProfile = {
   ],
   personalInfo: {
     fullName: 'ALEXANDER MICHAEL TOLOSA',
+    username: 'xxsenxx9438',
+    statusMessage: "Food you're craving now?",
+    pronouns: "Iced Latte'",
+    roleBadge: '⚡ GDev',
+    privateNote: '',
+    connections: [
+      { id: 'c1', platform: 'github', username: 'alexander-tolosa' },
+      { id: 'c2', platform: 'discord', username: 'lexzunder#9438' }
+    ],
     studentId: '2020-09482',
     department: 'College of Liberal Arts, Sciences and Education (CLASE)',
     program: 'Information Technology (CLASE)',
@@ -76,8 +85,8 @@ const DEFAULT_PROFILE: UserProfile = {
       relationship: 'Mother / Guardian',
       phone: '+63 918 765 4321'
     },
-    bio: 'There is currently no information about this member.',
-    joinedDate: 'Sep 4, 2020',
+    bio: 'Tell us a bit about you',
+    joinedDate: 'Jun 24, 2021',
     lastActivity: '3 hours ago'
   }
 };

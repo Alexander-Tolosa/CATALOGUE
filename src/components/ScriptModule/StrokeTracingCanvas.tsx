@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { RefreshCw, Award, CheckCircle2, XCircle, AlertCircle, Star, Crown, Volume2, Sparkles, Zap } from 'lucide-react';
+import { useAppStore } from '../../store/useAppStore';
 
 export type FeedbackLevel = 'BAD' | 'GOOD' | 'BETTER' | 'PERFECT';
 
@@ -34,6 +35,7 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
   onComplete,
   onClear
 }) => {
+  const { isDarkMode } = useAppStore();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [strokeCount, setStrokeCount] = useState(0);
@@ -47,51 +49,51 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
       level: 'BAD',
       title: 'BAD',
       subtitle: 'Stroke order is incorrect',
-      colorClass: 'text-rose-400',
-      bgClass: 'bg-rose-950/40',
-      borderClass: 'border-rose-500/50',
-      glowClass: 'shadow-[0_0_15px_rgba(244,63,94,0.3)]',
-      icon: <XCircle className="text-rose-400" size={20} />,
+      colorClass: isDarkMode ? 'text-rose-400' : 'text-rose-600',
+      bgClass: isDarkMode ? 'bg-rose-950/40' : 'bg-rose-50',
+      borderClass: isDarkMode ? 'border-rose-500/50' : 'border-rose-300',
+      glowClass: isDarkMode ? 'shadow-[0_0_15px_rgba(244,63,94,0.3)]' : 'shadow-sm',
+      icon: <XCircle className={isDarkMode ? 'text-rose-400' : 'text-rose-600'} size={20} />,
       examplePath: 'M 10,15 L 40,12 L 20,45 L 35,40'
     },
     GOOD: {
       level: 'GOOD',
       title: 'GOOD',
       subtitle: 'Right direction, improve alignment',
-      colorClass: 'text-amber-400',
-      bgClass: 'bg-amber-950/40',
-      borderClass: 'border-amber-500/50',
-      glowClass: 'shadow-[0_0_15px_rgba(245,158,11,0.3)]',
-      icon: <AlertCircle className="text-amber-400" size={20} />,
+      colorClass: isDarkMode ? 'text-amber-400' : 'text-amber-600',
+      bgClass: isDarkMode ? 'bg-amber-950/40' : 'bg-amber-50',
+      borderClass: isDarkMode ? 'border-amber-500/50' : 'border-amber-300',
+      glowClass: isDarkMode ? 'shadow-[0_0_15px_rgba(245,158,11,0.3)]' : 'shadow-sm',
+      icon: <AlertCircle className={isDarkMode ? 'text-amber-400' : 'text-amber-600'} size={20} />,
       examplePath: 'M 12,12 L 38,15 L 38,38 L 22,40'
     },
     BETTER: {
       level: 'BETTER',
       title: 'BETTER',
       subtitle: 'Great form! Practice again for speed',
-      colorClass: 'text-sky-400',
-      bgClass: 'bg-sky-950/40',
-      borderClass: 'border-sky-500/50',
-      glowClass: 'shadow-[0_0_15px_rgba(56,189,248,0.3)]',
-      icon: <CheckCircle2 className="text-sky-400" size={20} />,
+      colorClass: isDarkMode ? 'text-sky-400' : 'text-sky-600',
+      bgClass: isDarkMode ? 'bg-sky-950/40' : 'bg-sky-50',
+      borderClass: isDarkMode ? 'border-sky-500/50' : 'border-sky-300',
+      glowClass: isDarkMode ? 'shadow-[0_0_15px_rgba(56,189,248,0.3)]' : 'shadow-sm',
+      icon: <CheckCircle2 className={isDarkMode ? 'text-sky-400' : 'text-sky-600'} size={20} />,
       examplePath: 'M 10,12 L 40,12 L 40,40 M 15,26 L 35,26'
     },
     PERFECT: {
       level: 'PERFECT',
       title: 'PERFECT',
       subtitle: 'Flawless! Practice mastery',
-      colorClass: 'text-cyan-300',
-      bgClass: 'bg-cyan-950/60',
-      borderClass: 'border-cyan-400',
-      glowClass: 'shadow-[0_0_20px_rgba(34,211,238,0.5)]',
-      icon: <Crown className="text-cyan-300 animate-pulse" size={20} />,
+      colorClass: isDarkMode ? 'text-cyan-300' : 'text-emerald-700',
+      bgClass: isDarkMode ? 'bg-cyan-950/60' : 'bg-emerald-50',
+      borderClass: isDarkMode ? 'border-cyan-400' : 'border-emerald-300',
+      glowClass: isDarkMode ? 'shadow-[0_0_20px_rgba(34,211,238,0.5)]' : 'shadow-sm',
+      icon: <Crown className={`${isDarkMode ? 'text-cyan-300' : 'text-emerald-600'} animate-pulse`} size={20} />,
       examplePath: 'M 10,10 L 42,10 M 42,10 L 42,42 M 10,26 L 42,26'
     }
   };
 
   useEffect(() => {
     clearCanvas();
-  }, [character]);
+  }, [character, isDarkMode]);
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -102,7 +104,7 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Grid guidelines (faint crosshair grid)
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
+    ctx.strokeStyle = isDarkMode ? 'rgba(56, 189, 248, 0.12)' : 'rgba(14, 165, 233, 0.2)';
     ctx.lineWidth = 1.5;
     ctx.setLineDash([6, 6]);
 
@@ -114,7 +116,7 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
     ctx.stroke();
 
     // Diagonal guidelines
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
+    ctx.strokeStyle = isDarkMode ? 'rgba(56, 189, 248, 0.05)' : 'rgba(14, 165, 233, 0.1)';
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(canvas.width, canvas.height);
@@ -128,11 +130,11 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
     ctx.font = '700 160px "Noto Sans KR", "Noto Sans JP", "Inter", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.09)';
+    ctx.fillStyle = isDarkMode ? 'rgba(255, 255, 255, 0.09)' : 'rgba(15, 23, 42, 0.08)';
     ctx.fillText(character, canvas.width / 2, canvas.height / 2 + 10);
 
     // Ghosted outline stroke
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
+    ctx.strokeStyle = isDarkMode ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.25)';
     ctx.lineWidth = 2;
     ctx.strokeText(character, canvas.width / 2, canvas.height / 2 + 10);
 
@@ -174,8 +176,8 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
     ctx.lineWidth = 14;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#38bdf8';
-    ctx.shadowColor = 'rgba(56, 189, 248, 0.5)';
+    ctx.strokeStyle = isDarkMode ? '#38bdf8' : '#0284c7';
+    ctx.shadowColor = isDarkMode ? 'rgba(56, 189, 248, 0.5)' : 'rgba(2, 132, 199, 0.3)';
     ctx.shadowBlur = 6;
 
     setIsDrawing(true);
@@ -246,23 +248,37 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Prominent Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className={`flex items-center justify-between border-b pb-3 transition-colors ${
+        isDarkMode ? 'border-slate-800' : 'border-stone-200'
+      }`}>
         <div>
-          <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-            <Zap className="text-cyan-400" size={20} />
+          <h3 className={`text-lg font-bold flex items-center gap-2 ${
+            isDarkMode ? 'text-slate-100' : 'text-slate-900'
+          }`}>
+            <Zap className={isDarkMode ? 'text-cyan-400' : 'text-sky-600'} size={20} />
             Letter Practice & Feedback
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className={`text-xs ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-500'
+          }`}>
             Trace the character strokes to trigger real-time AI feedback evaluation.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800">
-          <span className="text-xs text-slate-400">Character:</span>
-          <span className="text-xl font-bold text-cyan-400 font-kr font-jp">{character}</span>
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors ${
+          isDarkMode
+            ? 'bg-slate-900/80 border-slate-800'
+            : 'bg-white border-stone-200 shadow-2xs'
+        }`}>
+          <span className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Character:</span>
+          <span className={`text-xl font-bold font-kr font-jp ${
+            isDarkMode ? 'text-cyan-400' : 'text-sky-600'
+          }`}>{character}</span>
           <button
             onClick={speakCharacter}
-            className="p-1 rounded hover:bg-slate-800 text-sky-400 transition-colors"
+            className={`p-1 rounded transition-colors ${
+              isDarkMode ? 'hover:bg-slate-800 text-sky-400' : 'hover:bg-stone-100 text-sky-600'
+            }`}
             title="Listen Audio"
           >
             <Volume2 size={16} />
@@ -273,14 +289,28 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
       {/* Main Practice Area: Canvas + Integrated Vertical Feedback Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
         {/* Dominant Canvas Box */}
-        <div className="lg:col-span-7 flex flex-col items-center bg-slate-950/90 rounded-2xl border border-sky-500/30 p-4 shadow-xl relative overflow-hidden">
-          <div className="w-full flex items-center justify-between text-xs text-slate-400 mb-3 px-1">
+        <div className={`lg:col-span-7 flex flex-col items-center rounded-2xl border p-4 shadow-xl relative overflow-hidden transition-colors ${
+          isDarkMode
+            ? 'bg-slate-950/90 border-sky-500/30'
+            : 'bg-white border-stone-200 shadow-md'
+        }`}>
+          <div className={`w-full flex items-center justify-between text-xs mb-3 px-1 ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-500'
+          }`}>
             <div className="flex items-center gap-2">
-              <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span className="font-semibold text-cyan-300">Interactive Stroke Canvas</span>
+              <span className={`inline-block w-2 h-2 rounded-full animate-ping ${
+                isDarkMode ? 'bg-cyan-400' : 'bg-sky-500'
+              }`} />
+              <span className={`font-semibold ${isDarkMode ? 'text-cyan-300' : 'text-sky-700'}`}>
+                Interactive Stroke Canvas
+              </span>
             </div>
             {romanization && (
-              <span className="bg-slate-900 text-slate-300 px-2 py-0.5 rounded border border-slate-800 font-mono">
+              <span className={`px-2 py-0.5 rounded border font-mono ${
+                isDarkMode
+                  ? 'bg-slate-900 text-slate-300 border-slate-800'
+                  : 'bg-stone-100 text-slate-700 border-stone-200'
+              }`}>
                 Sound: {romanization} {meaning ? `• (${meaning})` : ''}
               </span>
             )}
@@ -299,54 +329,72 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
               onTouchStart={startDrawing}
               onTouchMove={draw}
               onTouchEnd={stopDrawing}
-              className="cursor-crosshair rounded-xl touch-none bg-slate-900/80 border border-slate-800 shadow-inner hover:border-sky-500/50 transition-colors"
+              className={`cursor-crosshair rounded-xl touch-none border shadow-inner transition-colors ${
+                isDarkMode
+                  ? 'bg-slate-900/80 border-slate-800 hover:border-sky-500/50'
+                  : 'bg-stone-50 border-stone-200 hover:border-sky-400'
+              }`}
             />
 
-            <div className="absolute top-2 left-2 text-[10px] font-mono text-slate-600 select-none">1</div>
-            <div className="absolute top-2 right-2 text-[10px] font-mono text-slate-600 select-none">2</div>
-            <div className="absolute bottom-2 left-2 text-[10px] font-mono text-slate-600 select-none">3</div>
-            <div className="absolute bottom-2 right-2 text-[10px] font-mono text-slate-600 select-none">4</div>
+            <div className="absolute top-2 left-2 text-[10px] font-mono text-slate-400 select-none">1</div>
+            <div className="absolute top-2 right-2 text-[10px] font-mono text-slate-400 select-none">2</div>
+            <div className="absolute bottom-2 left-2 text-[10px] font-mono text-slate-400 select-none">3</div>
+            <div className="absolute bottom-2 right-2 text-[10px] font-mono text-slate-400 select-none">4</div>
           </div>
 
           {guideText && (
-            <div className="mt-3 text-center text-xs text-slate-400 bg-slate-900/60 py-1.5 px-3 rounded-lg border border-slate-800/60 max-w-xs">
-              💡 <span className="text-slate-300 font-medium">{guideText}</span>
+            <div className={`mt-3 text-center text-xs py-1.5 px-3 rounded-lg border max-w-xs transition-colors ${
+              isDarkMode
+                ? 'text-slate-400 bg-slate-900/60 border-slate-800/60'
+                : 'text-slate-600 bg-stone-50 border-stone-200 shadow-2xs'
+            }`}>
+              💡 <span className={isDarkMode ? 'text-slate-300 font-medium' : 'text-slate-800 font-medium'}>{guideText}</span>
             </div>
           )}
 
           {/* Accuracy & Stroke stats */}
-          <div className="w-full mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 px-1">
+          <div className={`w-full mt-4 pt-3 border-t flex items-center justify-between text-xs px-1 ${
+            isDarkMode ? 'border-slate-800/80 text-slate-400' : 'border-stone-200 text-slate-500'
+          }`}>
             <div className="flex items-center gap-1.5">
               <span>Strokes:</span>
-              <span className="font-bold text-slate-200">{strokeCount}</span>
+              <span className={`font-bold ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>{strokeCount}</span>
             </div>
 
             <div className="flex items-center gap-2">
               <span>Accuracy:</span>
-              <div className="w-24 bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div className={`w-24 h-2 rounded-full overflow-hidden ${
+                isDarkMode ? 'bg-slate-800' : 'bg-stone-200'
+              }`}>
                 <div
                   className={`h-full transition-all duration-300 ${
                     accuracyScore > 75
-                      ? 'bg-cyan-400'
+                      ? isDarkMode ? 'bg-cyan-400' : 'bg-emerald-500'
                       : accuracyScore > 45
-                      ? 'bg-sky-400'
+                      ? 'bg-sky-500'
                       : accuracyScore > 20
-                      ? 'bg-amber-400'
-                      : 'bg-rose-400'
+                      ? 'bg-amber-500'
+                      : 'bg-rose-500'
                   }`}
                   style={{ width: `${accuracyScore}%` }}
                 />
               </div>
-              <span className="font-bold font-mono text-cyan-300">{accuracyScore}%</span>
+              <span className={`font-bold font-mono ${
+                isDarkMode ? 'text-cyan-300' : 'text-sky-700'
+              }`}>{accuracyScore}%</span>
             </div>
           </div>
         </div>
 
         {/* Vertical Integrated Feedback Panel */}
         <div className="lg:col-span-5 flex flex-col gap-2.5">
-          <div className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between px-1">
+          <div className={`text-xs font-bold uppercase tracking-wider flex items-center justify-between px-1 ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-600'
+          }`}>
             <span>Real-time Feedback Panel</span>
-            <span className="text-[10px] text-cyan-400/80 font-normal">4 Evaluated States</span>
+            <span className={`text-[10px] font-normal ${
+              isDarkMode ? 'text-cyan-400/80' : 'text-sky-600'
+            }`}>4 Evaluated States</span>
           </div>
 
           {(['BAD', 'GOOD', 'BETTER', 'PERFECT'] as FeedbackLevel[]).map(lvl => {
@@ -360,14 +408,20 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
                 className={`p-3 rounded-xl border transition-all cursor-pointer relative overflow-hidden flex items-start gap-3 ${
                   isActive
                     ? `${config.bgClass} ${config.borderClass} ${config.glowClass} scale-[1.02]`
-                    : 'bg-slate-900/60 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:bg-slate-900/90'
+                    : isDarkMode
+                    ? 'bg-slate-900/60 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:bg-slate-900/90'
+                    : 'bg-white border-stone-200 text-slate-600 hover:border-stone-300 hover:bg-stone-50 shadow-2xs'
                 }`}
               >
                 {/* Illustrative Stroke Example Thumbnail */}
-                <div className="shrink-0 w-12 h-12 rounded-lg bg-slate-950/90 border border-slate-800 flex items-center justify-center p-1 relative">
+                <div className={`shrink-0 w-12 h-12 rounded-lg border flex items-center justify-center p-1 relative ${
+                  isDarkMode
+                    ? 'bg-slate-950/90 border-slate-800'
+                    : 'bg-stone-50 border-stone-200'
+                }`}>
                   <svg viewBox="0 0 50 50" className="w-full h-full">
-                    <line x1="25" y1="0" x2="25" y2="50" stroke="rgba(255,255,255,0.06)" strokeDasharray="2,2" />
-                    <line x1="0" y1="25" x2="50" y2="25" stroke="rgba(255,255,255,0.06)" strokeDasharray="2,2" />
+                    <line x1="25" y1="0" x2="25" y2="50" stroke={isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'} strokeDasharray="2,2" />
+                    <line x1="0" y1="25" x2="50" y2="25" stroke={isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'} strokeDasharray="2,2" />
                     <path
                       d={config.examplePath}
                       fill="none"
@@ -377,8 +431,8 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
                           : lvl === 'GOOD'
                           ? '#f59e0b'
                           : lvl === 'BETTER'
-                          ? '#38bdf8'
-                          : '#22d3ee'
+                          ? '#0284c7'
+                          : '#10b981'
                       }
                       strokeWidth="3.5"
                       strokeLinecap="round"
@@ -386,7 +440,9 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
                     />
                   </svg>
                   {isActive && (
-                    <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-cyan-400 border-2 border-slate-950" />
+                    <span className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 ${
+                      isDarkMode ? 'bg-cyan-400 border-slate-950' : 'bg-sky-500 border-white'
+                    }`} />
                   )}
                 </div>
 
@@ -398,7 +454,9 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
                     </span>
                     {config.icon}
                   </div>
-                  <p className="text-xs text-slate-300 mt-0.5 leading-snug font-medium">
+                  <p className={`text-xs mt-0.5 leading-snug font-medium ${
+                    isDarkMode ? 'text-slate-300' : 'text-slate-600'
+                  }`}>
                     {config.subtitle}
                   </p>
                 </div>
@@ -409,10 +467,16 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
       </div>
 
       {/* Dynamic CTA Button Area */}
-      <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
+      <div className={`flex items-center justify-between gap-3 pt-3 border-t ${
+        isDarkMode ? 'border-slate-800' : 'border-stone-200'
+      }`}>
         <button
           onClick={clearCanvas}
-          className="glass-button text-xs py-2.5 px-4 flex items-center gap-2 hover:bg-slate-800 text-slate-300"
+          className={`glass-button text-xs py-2.5 px-4 flex items-center gap-2 rounded-xl transition-colors ${
+            isDarkMode
+              ? 'hover:bg-slate-800 text-slate-300'
+              : 'hover:bg-stone-100 text-slate-700 border border-stone-200 shadow-2xs'
+          }`}
         >
           <RefreshCw size={15} />
           Clear and Redraw
@@ -421,14 +485,14 @@ export const StrokeTracingCanvas: React.FC<StrokeTracingCanvasProps> = ({
         <button
           onClick={handleSubmitMastery}
           disabled={!drawnPointsCount || isSubmitted}
-          className={`glass-button text-xs py-2.5 px-5 flex items-center gap-2 font-bold ${
+          className={`glass-button text-xs py-2.5 px-5 flex items-center gap-2 font-bold rounded-xl ${
             drawnPointsCount && !isSubmitted
               ? 'btn-primary bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-400 hover:to-cyan-400 text-white shadow-lg shadow-cyan-500/20'
               : 'opacity-50 cursor-not-allowed text-slate-500'
           }`}
         >
           {isSubmitted ? (
-            <span className="flex items-center gap-1.5 text-emerald-300">
+            <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
               <CheckCircle2 size={16} /> Mastered! (+15 XP)
             </span>
           ) : (

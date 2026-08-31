@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { LanguageTrack } from '../../types';
 import { useTranslation } from '../../lib/i18n/useTranslation';
+import { useAppStore } from '../../store/useAppStore';
 import { KOREAN_FOUNDATIONS } from '../../data/koreanData';
 import { JAPANESE_FOUNDATIONS } from '../../data/japaneseData';
 import { ENGLISH_FOUNDATIONS } from '../../data/englishData';
@@ -48,6 +49,8 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
   onFinishFoundations
 }) => {
   const { t } = useTranslation();
+  const { isDarkMode } = useAppStore();
+
   // Selected Hangul Consonant & Vowel
   const [selectedBlock, setSelectedBlock] = useState<{ consonant: string; vowel: string }>({
     consonant: 'ㄱ',
@@ -223,38 +226,66 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
       : ENGLISH_FOUNDATIONS.title;
 
   return (
-    <div className="glass-panel p-6 sm:p-8 max-w-6xl mx-auto space-y-8 bg-slate-950/85 border border-slate-800 shadow-2xl text-slate-100 rounded-3xl">
+    <div className={`p-6 sm:p-8 max-w-6xl mx-auto space-y-8 rounded-3xl transition-all duration-300 ${
+      isDarkMode
+        ? 'glass-panel bg-[#131b2e]/90 border border-slate-800 shadow-2xl text-slate-100'
+        : 'bg-white/95 border border-[#EDE5DA] shadow-xl shadow-stone-200/50 text-[#2B2725]'
+    }`}>
       {/* 1. Header Module */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-800/80 pb-6">
+      <div className={`flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 transition-colors border-b ${
+        isDarkMode ? 'border-slate-800/80' : 'border-stone-200'
+      }`}>
         <div>
-          <div className="flex items-center gap-2 text-xs font-extrabold text-cyan-400 uppercase tracking-widest">
+          <div className={`flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest ${
+            isDarkMode ? 'text-cyan-400' : 'text-sky-600'
+          }`}>
             <Globe size={15} /> {t.script.title}
           </div>
 
-          <h2 className="font-brand text-3xl font-extrabold text-white mt-1.5 tracking-tight flex items-center gap-3">
+          <h2 className={`font-brand text-3xl font-extrabold mt-1.5 tracking-tight flex items-center gap-3 ${
+            isDarkMode ? 'text-white' : 'text-slate-900'
+          }`}>
             {t.script.title}
-            <span className="text-xs font-mono font-normal px-3 py-1 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300">
+            <span className={`text-xs font-mono font-normal px-3 py-1 rounded-full border ${
+              isDarkMode
+                ? 'bg-cyan-950/80 border-cyan-500/40 text-cyan-300'
+                : 'bg-sky-50 border-sky-200 text-sky-700 font-semibold'
+            }`}>
               {language === 'ko' ? 'Korean (한글 40자)' : language === 'ja' ? 'Japanese (五十音 46자)' : 'English (Alphabet A-Z)'}
             </span>
           </h2>
 
-          <p className="text-xs text-slate-400 mt-1 flex items-center gap-2">
-            <span className="text-slate-300 font-semibold">{activeSubtitle}</span>
-            <span className="text-slate-600">•</span>
-            <span className="text-slate-400">{activeLanguageTitle}</span>
+          <p className={`text-xs mt-1 flex items-center gap-2 ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-500'
+          }`}>
+            <span className={isDarkMode ? 'text-slate-300 font-semibold' : 'text-slate-700 font-semibold'}>
+              {activeSubtitle}
+            </span>
+            <span className={isDarkMode ? 'text-slate-600' : 'text-slate-300'}>•</span>
+            <span className={isDarkMode ? 'text-slate-400' : 'text-slate-500'}>
+              {activeLanguageTitle}
+            </span>
           </p>
         </div>
 
         {/* Level Progression & Action Button */}
         <div className="flex flex-wrap items-center gap-4">
-          <div className="bg-slate-900/90 border border-slate-800 px-4 py-2.5 rounded-2xl flex items-center gap-4 shadow-inner">
+          <div className={`px-4 py-2.5 rounded-2xl flex items-center gap-4 border transition-colors ${
+            isDarkMode
+              ? 'bg-slate-900/90 border-slate-800 shadow-inner'
+              : 'bg-stone-50/90 border-stone-200 shadow-xs'
+          }`}>
             <div className="flex flex-col items-start">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-200">
-                <Award className="text-amber-400" size={16} />
+              <div className={`flex items-center gap-1.5 text-xs font-bold ${
+                isDarkMode ? 'text-slate-200' : 'text-slate-800'
+              }`}>
+                <Award className="text-amber-500 shrink-0" size={16} />
                 <span>Language Level: 1 - Foundational</span>
               </div>
-              <div className="text-[10px] text-slate-400 font-mono mt-0.5">
-                Total Script Letters: <span className="text-cyan-300 font-bold">{masterListItems.length}</span>
+              <div className={`text-[10px] font-mono mt-0.5 ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-500'
+              }`}>
+                Total Script Letters: <span className={`font-bold ${isDarkMode ? 'text-cyan-300' : 'text-sky-600'}`}>{masterListItems.length}</span>
               </div>
             </div>
 
@@ -279,21 +310,39 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
       </div>
 
       {/* 2. Full-Width Interactive Constructor Block */}
-      <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 space-y-6 shadow-xl relative overflow-hidden">
+      <div className={`p-6 rounded-2xl border space-y-6 shadow-xl relative overflow-hidden transition-colors ${
+        isDarkMode
+          ? 'bg-slate-900/60 border-slate-800'
+          : 'bg-[#FAF8F5] border-[#EDE5DA] shadow-xs'
+      }`}>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-extrabold text-slate-200 uppercase tracking-wider">
-            <Layers size={16} className="text-cyan-400" />
+          <div className={`flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider ${
+            isDarkMode ? 'text-slate-200' : 'text-slate-800'
+          }`}>
+            <Layers size={16} className={isDarkMode ? 'text-cyan-400' : 'text-sky-600'} />
             {language === 'ko' && 'Hangul Syllable Block Constructor'}
             {language === 'ja' && 'Japanese Syllabary & Radical Constructor'}
             {language === 'en' && 'English Alphabet & Phonics Constructor'}
           </div>
 
-          <div className="text-xs text-slate-400 flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-full border border-slate-800">
+          <div className={`text-xs flex items-center gap-2 px-3 py-1.5 rounded-full border transition-colors ${
+            isDarkMode
+              ? 'bg-slate-950 border-slate-800 text-slate-400'
+              : 'bg-white border-stone-200 text-slate-600 shadow-xs'
+          }`}>
             <span>Selected Character:</span>
-            <span className="font-bold text-cyan-400 text-lg font-kr font-jp">{selectedChar}</span>
+            <span className={`font-bold text-lg font-kr font-jp ${
+              isDarkMode ? 'text-cyan-400' : 'text-sky-600'
+            }`}>
+              {selectedChar}
+            </span>
             <button
               onClick={() => speakText(selectedChar)}
-              className="p-1 hover:bg-slate-800 text-sky-400 rounded transition-colors"
+              className={`p-1 rounded transition-colors ${
+                isDarkMode
+                  ? 'hover:bg-slate-800 text-sky-400'
+                  : 'hover:bg-stone-100 text-sky-600'
+              }`}
               title="Listen Audio"
             >
               <Volume2 size={16} />
@@ -305,28 +354,56 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
         {language === 'ko' && (
           <div className="space-y-6">
             {/* Visual Syllable Assembly Box */}
-            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 bg-slate-950/90 p-5 rounded-2xl border border-sky-500/30 shadow-inner">
+            <div className={`flex flex-wrap items-center justify-center gap-4 sm:gap-8 p-5 rounded-2xl border transition-colors ${
+              isDarkMode
+                ? 'bg-slate-950/90 border-sky-500/30 shadow-inner'
+                : 'bg-white border-sky-200 shadow-sm'
+            }`}>
               <div className="text-center">
-                <span className="text-xs text-slate-400 uppercase font-semibold block mb-1.5">Consonant (Choseong)</span>
-                <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-sky-500/40 flex items-center justify-center shadow-md">
-                  <span className="text-4xl font-extrabold text-sky-400 font-kr">{selectedBlock.consonant}</span>
+                <span className={`text-xs uppercase font-semibold block mb-1.5 ${
+                  isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                }`}>Consonant (Choseong)</span>
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border shadow-md transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-900 border-sky-500/40 text-sky-400'
+                    : 'bg-sky-50/80 border-sky-300 text-sky-600 shadow-xs'
+                }`}>
+                  <span className="text-4xl font-extrabold font-kr">{selectedBlock.consonant}</span>
                 </div>
               </div>
 
-              <span className="text-3xl font-black text-slate-600">+</span>
+              <span className={`text-3xl font-black ${
+                isDarkMode ? 'text-slate-600' : 'text-slate-400'
+              }`}>+</span>
 
               <div className="text-center">
-                <span className="text-xs text-slate-400 uppercase font-semibold block mb-1.5">Vowel (Jungseong)</span>
-                <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-amber-500/40 flex items-center justify-center shadow-md">
-                  <span className="text-4xl font-extrabold text-amber-400 font-kr">{selectedBlock.vowel}</span>
+                <span className={`text-xs uppercase font-semibold block mb-1.5 ${
+                  isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                }`}>Vowel (Jungseong)</span>
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border shadow-md transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-900 border-amber-500/40 text-amber-400'
+                    : 'bg-amber-50/80 border-amber-300 text-amber-600 shadow-xs'
+                }`}>
+                  <span className="text-4xl font-extrabold font-kr">{selectedBlock.vowel}</span>
                 </div>
               </div>
 
-              <span className="text-3xl font-black text-slate-600">=</span>
+              <span className={`text-3xl font-black ${
+                isDarkMode ? 'text-slate-600' : 'text-slate-400'
+              }`}>=</span>
 
-              <div className="text-center bg-gradient-to-br from-sky-950 via-cyan-950 to-slate-950 px-8 py-3 rounded-2xl border border-cyan-400/60 shadow-xl">
-                <span className="text-xs text-cyan-300 uppercase font-bold block mb-1">Syllable Block</span>
-                <span className="text-5xl font-black text-white font-kr tracking-wide">
+              <div className={`text-center px-8 py-3 rounded-2xl border shadow-xl transition-all ${
+                isDarkMode
+                  ? 'bg-gradient-to-br from-sky-950 via-cyan-950 to-slate-950 border-cyan-400/60 text-white'
+                  : 'bg-gradient-to-br from-sky-100 via-cyan-50 to-blue-50 border-sky-300 text-sky-950 shadow-md'
+              }`}>
+                <span className={`text-xs uppercase font-bold block mb-1 ${
+                  isDarkMode ? 'text-cyan-300' : 'text-sky-700'
+                }`}>Syllable Block</span>
+                <span className={`text-5xl font-black font-kr tracking-wide ${
+                  isDarkMode ? 'text-white' : 'text-slate-900'
+                }`}>
                   {activeSyllableBlock}
                 </span>
               </div>
@@ -334,12 +411,20 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
 
             {/* Consonant & Vowel Grids */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
-                <label className="text-xs font-bold text-slate-300 mb-2.5 block flex items-center justify-between">
+              <div className={`p-4 rounded-xl border transition-colors ${
+                isDarkMode ? 'bg-slate-950/60 border-slate-800' : 'bg-white border-stone-200 shadow-xs'
+              }`}>
+                <label className={`text-xs font-bold mb-2.5 flex items-center justify-between ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                }`}>
                   <span>Pick Consonant (19):</span>
-                  <span className="text-[10px] text-slate-500 font-normal">Basic & Double</span>
+                  <span className={`text-[10px] font-normal ${
+                    isDarkMode ? 'text-slate-500' : 'text-slate-400'
+                  }`}>Basic & Double</span>
                 </label>
-                <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-800">
+                <div className={`flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin ${
+                  isDarkMode ? 'scrollbar-thumb-slate-800' : 'scrollbar-thumb-stone-200'
+                }`}>
                   {KOREAN_FOUNDATIONS.consonants.map(c => (
                     <button
                       key={c.char}
@@ -352,7 +437,9 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                       className={`w-11 h-11 rounded-xl font-kr font-bold text-lg border transition-all flex items-center justify-center ${
                         selectedBlock.consonant === c.char
                           ? 'bg-sky-500 text-white border-sky-300 shadow-lg shadow-sky-500/30 scale-105'
-                          : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-600 hover:bg-slate-850'
+                          : isDarkMode
+                          ? 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-600 hover:bg-slate-850'
+                          : 'bg-stone-50 text-slate-700 border-stone-200 hover:border-stone-300 hover:bg-stone-100 shadow-2xs'
                       }`}
                     >
                       {c.char}
@@ -361,12 +448,20 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 </div>
               </div>
 
-              <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
-                <label className="text-xs font-bold text-slate-300 mb-2.5 block flex items-center justify-between">
+              <div className={`p-4 rounded-xl border transition-colors ${
+                isDarkMode ? 'bg-slate-950/60 border-slate-800' : 'bg-white border-stone-200 shadow-xs'
+              }`}>
+                <label className={`text-xs font-bold mb-2.5 flex items-center justify-between ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                }`}>
                   <span>Pick Vowel (21):</span>
-                  <span className="text-[10px] text-slate-500 font-normal">Basic & Compound</span>
+                  <span className={`text-[10px] font-normal ${
+                    isDarkMode ? 'text-slate-500' : 'text-slate-400'
+                  }`}>Basic & Compound</span>
                 </label>
-                <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-800">
+                <div className={`flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin ${
+                  isDarkMode ? 'scrollbar-thumb-slate-800' : 'scrollbar-thumb-stone-200'
+                }`}>
                   {KOREAN_FOUNDATIONS.vowels.map(v => (
                     <button
                       key={v.char}
@@ -379,7 +474,9 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                       className={`w-11 h-11 rounded-xl font-kr font-bold text-lg border transition-all flex items-center justify-center ${
                         selectedBlock.vowel === v.char
                           ? 'bg-amber-500 text-white border-amber-300 shadow-lg shadow-amber-500/30 scale-105'
-                          : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-600 hover:bg-slate-850'
+                          : isDarkMode
+                          ? 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-600 hover:bg-slate-850'
+                          : 'bg-stone-50 text-slate-700 border-stone-200 hover:border-stone-300 hover:bg-stone-100 shadow-2xs'
                       }`}
                     >
                       {v.char}
@@ -390,16 +487,22 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
             </div>
 
             {/* Dynamic Lesson Description Box */}
-            <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5">
-              <div className="font-bold text-cyan-300 flex items-center gap-2 text-sm">
+            <div className={`p-4 rounded-xl border text-xs space-y-1.5 transition-colors ${
+              isDarkMode
+                ? 'bg-slate-950/80 border-slate-800 text-slate-300'
+                : 'bg-sky-50/80 border-sky-100 text-slate-700 shadow-xs'
+            }`}>
+              <div className={`font-bold flex items-center gap-2 text-sm ${
+                isDarkMode ? 'text-cyan-300' : 'text-sky-800'
+              }`}>
                 <BookOpen size={16} />
                 <span>Lesson: Selected Letter & Block: [{activeSyllableBlock}]</span>
               </div>
-              <p className="text-slate-300 leading-relaxed">
+              <p className={`leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                 Korean characters are syllabic blocks created by pairing an initial consonant with a medial vowel.
-                The currently constructed block <span className="text-cyan-300 font-bold text-sm">[{activeSyllableBlock}]</span> combines initial consonant{' '}
-                <span className="text-sky-400 font-bold">{selectedBlock.consonant}</span> with vowel{' '}
-                <span className="text-amber-400 font-bold">{selectedBlock.vowel}</span>. Practice saying this syllable aloud and review its position in words!
+                The currently constructed block <span className={`font-bold text-sm ${isDarkMode ? 'text-cyan-300' : 'text-sky-700'}`}>[{activeSyllableBlock}]</span> combines initial consonant{' '}
+                <span className={`font-bold ${isDarkMode ? 'text-sky-400' : 'text-sky-600'}`}>{selectedBlock.consonant}</span> with vowel{' '}
+                <span className={`font-bold ${isDarkMode ? 'text-amber-400' : 'text-amber-600'}`}>{selectedBlock.vowel}</span>. Practice saying this syllable aloud and review its position in words!
               </p>
             </div>
           </div>
@@ -408,31 +511,47 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
         {/* Japanese Script Constructor */}
         {language === 'ja' && (
           <div className="space-y-6">
-            <div className="max-h-60 overflow-y-auto pr-1 grid grid-cols-5 sm:grid-cols-9 md:grid-cols-10 gap-2.5 scrollbar-thin scrollbar-thumb-slate-800">
+            <div className={`max-h-60 overflow-y-auto pr-1 grid grid-cols-5 sm:grid-cols-9 md:grid-cols-10 gap-2.5 scrollbar-thin ${
+              isDarkMode ? 'scrollbar-thumb-slate-800' : 'scrollbar-thumb-stone-200'
+            }`}>
               {JAPANESE_FOUNDATIONS.hiraganaVowels.map(h => (
                 <button
                   key={h.char}
                   onClick={() => handleSelectCharacter(h.char, h.romaji, 'Hiragana Syllabary')}
                   className={`p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all ${
                     selectedChar === h.char
-                      ? 'bg-sky-950 border-cyan-400 text-white shadow-lg ring-2 ring-cyan-400/40'
-                      : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                      ? isDarkMode
+                        ? 'bg-sky-950 border-cyan-400 text-white shadow-lg ring-2 ring-cyan-400/40'
+                        : 'bg-sky-50 border-sky-400 text-sky-950 shadow-md ring-2 ring-sky-300'
+                      : isDarkMode
+                      ? 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                      : 'bg-white text-slate-700 border-stone-200 hover:border-stone-300 hover:bg-stone-50 shadow-2xs'
                   }`}
                 >
-                  <span className="text-2xl font-bold font-jp text-amber-300">{h.char}</span>
-                  <span className="text-[10px] text-slate-400 mt-0.5 font-mono">{h.romaji}</span>
+                  <span className={`text-2xl font-bold font-jp ${
+                    isDarkMode ? 'text-amber-300' : 'text-amber-600'
+                  }`}>{h.char}</span>
+                  <span className={`text-[10px] mt-0.5 font-mono ${
+                    isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                  }`}>{h.romaji}</span>
                 </button>
               ))}
             </div>
 
-            <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5">
-              <div className="font-bold text-cyan-300 flex items-center gap-2 text-sm">
+            <div className={`p-4 rounded-xl border text-xs space-y-1.5 transition-colors ${
+              isDarkMode
+                ? 'bg-slate-950/80 border-slate-800 text-slate-300'
+                : 'bg-sky-50/80 border-sky-100 text-slate-700 shadow-xs'
+            }`}>
+              <div className={`font-bold flex items-center gap-2 text-sm ${
+                isDarkMode ? 'text-cyan-300' : 'text-sky-800'
+              }`}>
                 <BookOpen size={16} />
                 <span>Lesson: Selected Letter & Block: [{selectedChar}]</span>
               </div>
-              <p className="text-slate-300 leading-relaxed">
+              <p className={`leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                 Japanese uses Hiragana for primary phonetic writing, Katakana for foreign loanwords, and Kanji for core concepts.
-                Selected character <span className="text-amber-300 font-bold text-sm">[{selectedChar}]</span> represents the phonetic sound <span className="text-cyan-300 font-semibold font-mono">"{selectedRomanization}"</span>.
+                Selected character <span className={`font-bold text-sm ${isDarkMode ? 'text-amber-300' : 'text-amber-600'}`}>[{selectedChar}]</span> represents the phonetic sound <span className={`font-semibold font-mono ${isDarkMode ? 'text-cyan-300' : 'text-sky-700'}`}>"{selectedRomanization}"</span>.
               </p>
             </div>
           </div>
@@ -441,33 +560,51 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
         {/* English Script Constructor */}
         {language === 'en' && (
           <div className="space-y-6">
-            <div className="max-h-64 overflow-y-auto pr-1 grid grid-cols-4 sm:grid-cols-7 md:grid-cols-9 gap-2.5 scrollbar-thin scrollbar-thumb-slate-800">
+            <div className={`max-h-64 overflow-y-auto pr-1 grid grid-cols-4 sm:grid-cols-7 md:grid-cols-9 gap-2.5 scrollbar-thin ${
+              isDarkMode ? 'scrollbar-thumb-slate-800' : 'scrollbar-thumb-stone-200'
+            }`}>
               {ENGLISH_FOUNDATIONS.alphabet.map(item => (
                 <button
                   key={item.char}
                   onClick={() => handleSelectCharacter(`${item.char} ${item.lowerChar}`, item.ipa, item.example)}
                   className={`p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all ${
                     selectedChar.includes(item.char)
-                      ? 'bg-sky-950 border-cyan-400 text-white shadow-lg ring-2 ring-cyan-400/40'
-                      : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                      ? isDarkMode
+                        ? 'bg-sky-950 border-cyan-400 text-white shadow-lg ring-2 ring-cyan-400/40'
+                        : 'bg-sky-50 border-sky-400 text-sky-950 shadow-md ring-2 ring-sky-300'
+                      : isDarkMode
+                      ? 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                      : 'bg-white text-slate-700 border-stone-200 hover:border-stone-300 hover:bg-stone-50 shadow-2xs'
                   }`}
                 >
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-extrabold text-emerald-400">{item.char}</span>
-                    <span className="text-sm font-semibold text-slate-400">{item.lowerChar}</span>
+                    <span className={`text-2xl font-extrabold ${
+                      isDarkMode ? 'text-emerald-400' : 'text-emerald-600'
+                    }`}>{item.char}</span>
+                    <span className={`text-sm font-semibold ${
+                      isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                    }`}>{item.lowerChar}</span>
                   </div>
-                  <span className="text-[10px] text-cyan-300 mt-0.5 font-mono">{item.ipa}</span>
+                  <span className={`text-[10px] mt-0.5 font-mono ${
+                    isDarkMode ? 'text-cyan-300' : 'text-sky-600 font-medium'
+                  }`}>{item.ipa}</span>
                 </button>
               ))}
             </div>
 
-            <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5">
-              <div className="font-bold text-cyan-300 flex items-center gap-2 text-sm">
+            <div className={`p-4 rounded-xl border text-xs space-y-1.5 transition-colors ${
+              isDarkMode
+                ? 'bg-slate-950/80 border-slate-800 text-slate-300'
+                : 'bg-sky-50/80 border-sky-100 text-slate-700 shadow-xs'
+            }`}>
+              <div className={`font-bold flex items-center gap-2 text-sm ${
+                isDarkMode ? 'text-cyan-300' : 'text-sky-800'
+              }`}>
                 <BookOpen size={16} />
                 <span>Lesson: Selected Letter & Block: [{selectedChar}]</span>
               </div>
-              <p className="text-slate-300 leading-relaxed">
-                Official International Phonetic Alphabet (IPA) pronunciation for letter <span className="text-emerald-400 font-bold text-sm">[{selectedChar}]</span>: <span className="text-cyan-300 font-bold font-mono">{selectedRomanization}</span>. Example word: <span className="text-amber-300 font-semibold">{selectedMeaning}</span>.
+              <p className={`leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                Official International Phonetic Alphabet (IPA) pronunciation for letter <span className={`font-bold text-sm ${isDarkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>[{selectedChar}]</span>: <span className={`font-bold font-mono ${isDarkMode ? 'text-cyan-300' : 'text-sky-700'}`}>{selectedRomanization}</span>. Example word: <span className={`font-semibold ${isDarkMode ? 'text-amber-300' : 'text-amber-700'}`}>{selectedMeaning}</span>.
               </p>
             </div>
           </div>
@@ -475,28 +612,42 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
       </div>
 
       {/* 3. Full-Width Searchable Script Master List */}
-      <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 space-y-5 shadow-xl">
+      <div className={`p-6 rounded-2xl border space-y-5 shadow-xl transition-colors ${
+        isDarkMode
+          ? 'bg-slate-900/60 border-slate-800'
+          : 'bg-[#FAF8F5] border-[#EDE5DA] shadow-xs'
+      }`}>
         {/* Header + Search Bar + Category Filters */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h3 className="text-sm font-extrabold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-              <BookOpen size={16} className="text-cyan-400" />
+            <h3 className={`text-sm font-extrabold uppercase tracking-wider flex items-center gap-2 ${
+              isDarkMode ? 'text-slate-200' : 'text-slate-800'
+            }`}>
+              <BookOpen size={16} className={isDarkMode ? 'text-cyan-400' : 'text-sky-600'} />
               Script Master List ({filteredMasterList.length})
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className={`text-xs mt-0.5 ${
+              isDarkMode ? 'text-slate-400' : 'text-slate-500'
+            }`}>
               Accurate, comprehensive script list. Search and click cards to play audio pronunciation.
             </p>
           </div>
 
           {/* Search Input Box */}
           <div className="relative w-full sm:w-72">
-            <Search size={16} className="absolute left-3.5 top-2.5 text-slate-500" />
+            <Search size={16} className={`absolute left-3.5 top-2.5 ${
+              isDarkMode ? 'text-slate-500' : 'text-slate-400'
+            }`} />
             <input
               type="text"
               placeholder="Search by letter or sound..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+              className={`w-full border rounded-xl pl-9 pr-3 py-2 text-xs transition-colors focus:outline-none ${
+                isDarkMode
+                  ? 'bg-slate-950 border-slate-800 text-slate-200 placeholder-slate-500 focus:border-cyan-500'
+                  : 'bg-white border-stone-200 text-slate-800 placeholder-slate-400 focus:border-sky-500 shadow-2xs'
+              }`}
             />
           </div>
         </div>
@@ -507,8 +658,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
             onClick={() => setCategoryFilter('all')}
             className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
               categoryFilter === 'all'
-                ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                : isDarkMode
+                ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
             }`}
           >
             All Items
@@ -520,8 +673,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => setCategoryFilter('consonant')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
                   categoryFilter === 'consonant'
-                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : isDarkMode
+                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
                 }`}
               >
                 Consonants (19)
@@ -530,8 +685,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => setCategoryFilter('vowel')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
                   categoryFilter === 'vowel'
-                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : isDarkMode
+                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
                 }`}
               >
                 Vowels (21)
@@ -540,8 +697,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => setCategoryFilter('syllable block')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
                   categoryFilter === 'syllable block'
-                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : isDarkMode
+                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
                 }`}
               >
                 Syllable Blocks
@@ -555,8 +714,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => setCategoryFilter('hiragana')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
                   categoryFilter === 'hiragana'
-                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : isDarkMode
+                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
                 }`}
               >
                 Hiragana (46)
@@ -565,8 +726,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => setCategoryFilter('katakana')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
                   categoryFilter === 'katakana'
-                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : isDarkMode
+                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
                 }`}
               >
                 Katakana (46)
@@ -575,8 +738,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => setCategoryFilter('kanji radical')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
                   categoryFilter === 'kanji radical'
-                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : isDarkMode
+                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
                 }`}
               >
                 Kanji Radicals
@@ -590,8 +755,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => setCategoryFilter('alphabet')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
                   categoryFilter === 'alphabet'
-                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : isDarkMode
+                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
                 }`}
               >
                 Alphabet A-Z (26)
@@ -600,8 +767,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => setCategoryFilter('phonics')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
                   categoryFilter === 'phonics'
-                    ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : isDarkMode
+                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
                 }`}
               >
                 Phonics Pairings
@@ -611,7 +780,9 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
         </div>
 
         {/* Master Grid */}
-        <div className="max-h-96 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 scrollbar-thin scrollbar-thumb-slate-800">
+        <div className={`max-h-96 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 scrollbar-thin ${
+          isDarkMode ? 'scrollbar-thumb-slate-800' : 'scrollbar-thumb-stone-200'
+        }`}>
           {filteredMasterList.map(item => {
             const isSelected = selectedChar === item.char || selectedChar.startsWith(item.char.split(' ')[0]);
 
@@ -621,28 +792,44 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                 onClick={() => handleSelectCharacter(item.char, item.sound, item.name)}
                 className={`p-4 rounded-2xl border flex flex-col items-center justify-between text-left transition-all cursor-pointer relative overflow-hidden group ${
                   isSelected
-                    ? 'bg-sky-950 border-cyan-400 text-white ring-2 ring-cyan-400/40 shadow-xl scale-[1.02]'
-                    : 'bg-slate-950/70 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-300'
+                    ? isDarkMode
+                      ? 'bg-sky-950 border-cyan-400 text-white ring-2 ring-cyan-400/40 shadow-xl scale-[1.02]'
+                      : 'bg-sky-50 border-sky-400 text-sky-950 ring-2 ring-sky-300/80 shadow-md scale-[1.02]'
+                    : isDarkMode
+                    ? 'bg-slate-950/70 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-300'
+                    : 'bg-white border-stone-200/90 text-slate-600 hover:border-stone-300 hover:shadow-md hover:bg-stone-50/80 shadow-xs'
                 }`}
               >
                 {/* Category Label */}
-                <div className="w-full flex items-center justify-between text-[10px] font-medium text-slate-400 mb-1.5">
-                  <span className="truncate uppercase tracking-wider font-bold text-sky-400/80">
+                <div className={`w-full flex items-center justify-between text-[10px] font-medium mb-1.5 ${
+                  isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                }`}>
+                  <span className={`truncate uppercase tracking-wider font-bold ${
+                    isDarkMode ? 'text-sky-400/80' : 'text-sky-600'
+                  }`}>
                     {item.category}
                   </span>
                 </div>
 
                 {/* Character Symbol */}
-                <span className="text-3xl font-extrabold font-kr font-jp my-1 text-slate-100 group-hover:scale-110 transition-transform">
+                <span className={`text-3xl font-extrabold font-kr font-jp my-1 group-hover:scale-110 transition-transform ${
+                  isDarkMode ? 'text-slate-100' : 'text-slate-800'
+                }`}>
                   {item.char}
                 </span>
 
                 {/* Sound / IPA & Audio Icon */}
-                <div className="w-full flex items-center justify-between pt-1 border-t border-slate-800/60 mt-1">
-                  <span className="text-[11px] text-cyan-300/90 truncate font-mono font-medium">
+                <div className={`w-full flex items-center justify-between pt-1 mt-1 border-t ${
+                  isDarkMode ? 'border-slate-800/60' : 'border-stone-200'
+                }`}>
+                  <span className={`text-[11px] truncate font-mono font-medium ${
+                    isDarkMode ? 'text-cyan-300/90' : 'text-sky-700'
+                  }`}>
                     {item.sound}
                   </span>
-                  <Volume2 size={13} className="text-slate-500 hover:text-sky-400 shrink-0" />
+                  <Volume2 size={13} className={`shrink-0 transition-colors ${
+                    isDarkMode ? 'text-slate-500 hover:text-sky-400' : 'text-slate-400 hover:text-sky-600'
+                  }`} />
                 </div>
               </div>
             );

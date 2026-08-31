@@ -13,6 +13,7 @@ import {
   HelpCircle,
   Printer,
   Globe,
+  GraduationCap,
   Menu,
   X,
   Flame,
@@ -433,7 +434,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                       <FlagIcon country={profile.selectedLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
                       <span className="text-emerald-500">{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
                     </span>
-                    <span className="material-symbols-outlined text-sm text-emerald-500">school</span>
+                    <GraduationCap className="w-4 h-4 text-emerald-500" />
                   </button>
 
                   {/* Language Track Submenu */}

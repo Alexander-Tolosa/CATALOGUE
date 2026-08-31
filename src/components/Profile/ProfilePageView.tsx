@@ -5,8 +5,6 @@ import {
   Settings,
   Shield,
   Star,
-  Folder,
-  Image as ImageIcon,
   Users,
   UserCheck,
   Award,
@@ -19,19 +17,13 @@ import {
   HelpCircle,
   BookOpen,
   CheckCircle2,
-  GraduationCap,
-  Sparkles,
-  HeartHandshake,
   MessageSquare,
-  UserPlus,
-  Upload,
-  Palette
+  UserPlus
 } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useFriendsStore } from '../../store/useFriendsStore';
 import { useTranslation } from '../../lib/i18n/useTranslation';
-import { AVATAR_PRESETS, BANNER_PRESETS } from '../../lib/profilePresets';
 import { CertificationsSection } from './AwardsSection';
 import { FriendsHub } from './FriendsHub';
 import { SecuritySignInSection } from './SecuritySignInSection';
@@ -44,16 +36,12 @@ type SubNavTab =
   | 'settings'
   | 'privacy'
   | 'certifications'
-  | 'portfolio'
-  | 'photos'
-  | 'parents'
-  | 'mentors'
   | 'friends';
 
 type ContentSubTab = 'about' | 'info' | 'enrolled' | 'completed';
 
 export const ProfilePageView: React.FC = () => {
-  const { profile, isDarkMode, selectLanguageTrack, updatePersonalInfo } = useAppStore();
+  const { profile, isDarkMode, selectLanguageTrack } = useAppStore();
   const { googleUser, logout } = useAuthStore();
   const { friends, setActiveChatFriendId } = useFriendsStore();
   const { t } = useTranslation();
@@ -222,71 +210,7 @@ export const ProfilePageView: React.FC = () => {
               <span>Certifications</span>
             </button>
 
-            {/* 5. Portfolio */}
-            <button
-              onClick={() => setActiveSubNav('portfolio')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                activeSubNav === 'portfolio'
-                  ? 'bg-rose-500/15 text-[#e11d48] font-black border border-rose-500/30 shadow-xs'
-                  : isDarkMode
-                  ? 'text-slate-300 hover:bg-slate-800/50 hover:text-white'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-            >
-              <div className={`w-2 h-2 rounded-full ${activeSubNav === 'portfolio' ? 'bg-[#e11d48]' : 'bg-transparent'}`} />
-              <Folder size={16} className={activeSubNav === 'portfolio' ? 'text-[#e11d48]' : 'text-slate-400'} />
-              <span>Portfolio</span>
-            </button>
-
-            {/* 6. Photos */}
-            <button
-              onClick={() => setActiveSubNav('photos')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                activeSubNav === 'photos'
-                  ? 'bg-rose-500/15 text-[#e11d48] font-black border border-rose-500/30 shadow-xs'
-                  : isDarkMode
-                  ? 'text-slate-300 hover:bg-slate-800/50 hover:text-white'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-            >
-              <div className={`w-2 h-2 rounded-full ${activeSubNav === 'photos' ? 'bg-[#e11d48]' : 'bg-transparent'}`} />
-              <ImageIcon size={16} className={activeSubNav === 'photos' ? 'text-[#e11d48]' : 'text-slate-400'} />
-              <span>Photos</span>
-            </button>
-
-            {/* 7. Parents */}
-            <button
-              onClick={() => setActiveSubNav('parents')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                activeSubNav === 'parents'
-                  ? 'bg-rose-500/15 text-[#e11d48] font-black border border-rose-500/30 shadow-xs'
-                  : isDarkMode
-                  ? 'text-slate-300 hover:bg-slate-800/50 hover:text-white'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-            >
-              <div className={`w-2 h-2 rounded-full ${activeSubNav === 'parents' ? 'bg-[#e11d48]' : 'bg-transparent'}`} />
-              <HeartHandshake size={16} className={activeSubNav === 'parents' ? 'text-[#e11d48]' : 'text-slate-400'} />
-              <span>Parents</span>
-            </button>
-
-            {/* 8. Mentors */}
-            <button
-              onClick={() => setActiveSubNav('mentors')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                activeSubNav === 'mentors'
-                  ? 'bg-rose-500/15 text-[#e11d48] font-black border border-rose-500/30 shadow-xs'
-                  : isDarkMode
-                  ? 'text-slate-300 hover:bg-slate-800/50 hover:text-white'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-            >
-              <div className={`w-2 h-2 rounded-full ${activeSubNav === 'mentors' ? 'bg-[#e11d48]' : 'bg-transparent'}`} />
-              <GraduationCap size={16} className={activeSubNav === 'mentors' ? 'text-[#e11d48]' : 'text-slate-400'} />
-              <span>Mentors</span>
-            </button>
-
-            {/* 9. Friends (Direct Switch to Friends Hub) */}
+            {/* 5. Friends (Direct Switch to Friends Hub) */}
             <button
               onClick={() => setActiveSubNav('friends')}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
@@ -601,248 +525,6 @@ export const ProfilePageView: React.FC = () => {
 
           {activeSubNav === 'friends' && (
             <FriendsHub />
-          )}
-
-          {activeSubNav === 'portfolio' && (
-            <div className={`p-6 rounded-3xl border space-y-4 ${
-              isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
-            }`}>
-              <h3 className="font-display font-black text-lg text-slate-100 flex items-center gap-2">
-                <Folder size={20} className="text-[#F06543]" /> Student Portfolio
-              </h3>
-              <p className="text-xs text-slate-400">
-                Showcase of academic software projects, HCI wireframe prototypes, and language translation scripts.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
-                  <span className="text-[10px] font-black text-sky-400 uppercase">HCI Prototype</span>
-                  <h4 className="font-bold text-xs text-white">CATALOGUE Web UI System</h4>
-                  <p className="text-[11px] text-slate-400">React + Tailwind high fidelity learning platform prototype.</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
-                  <span className="text-[10px] font-black text-emerald-400 uppercase">Language Tool</span>
-                  <h4 className="font-bold text-xs text-white">Korean Banmal to Jondaetmal Parser</h4>
-                  <p className="text-[11px] text-slate-400">AI contextual politeness engine for natural language dialogues.</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeSubNav === 'photos' && (
-            <div className={`p-6 rounded-3xl border space-y-6 ${
-              isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200 shadow-xs'
-            }`}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className={`font-display font-black text-lg flex items-center gap-2 ${
-                    isDarkMode ? 'text-slate-100' : 'text-slate-900'
-                  }`}>
-                    <ImageIcon size={20} className="text-amber-500" /> Profile Media & Gallery
-                  </h3>
-                  <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                    Manage your profile pictures, custom cover banners, and preset visual themes.
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setEditModalInitialTab('visuals');
-                    setIsEditModalOpen(true);
-                  }}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#F06543] to-[#ea580c] hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
-                >
-                  <Upload size={14} /> Upload Custom Files
-                </button>
-              </div>
-
-              {/* Current Active Media Summary */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className={`p-4 rounded-2xl border space-y-3 ${
-                  isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
-                }`}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase text-sky-500">Active Profile Picture</span>
-                    <button
-                      onClick={() => {
-                        setEditModalInitialTab('visuals');
-                        setIsEditModalOpen(true);
-                      }}
-                      className={`text-[10px] font-bold underline cursor-pointer ${
-                        isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      Change
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-sky-400/50 shadow-md bg-slate-950 flex items-center justify-center shrink-0">
-                      {userAvatar ? (
-                        <img src={userAvatar} alt="Active Avatar" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-xs font-bold text-sky-300">Default</span>
-                      )}
-                    </div>
-                    <div>
-                      <h4 className={`font-bold text-xs truncate max-w-[180px] ${
-                        isDarkMode ? 'text-white' : 'text-slate-900'
-                      }`}>{displayName}</h4>
-                      <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Custom user picture
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={`p-4 rounded-2xl border space-y-3 ${
-                  isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
-                }`}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase text-emerald-500">Active Cover Banner</span>
-                    <button
-                      onClick={() => {
-                        setEditModalInitialTab('visuals');
-                        setIsEditModalOpen(true);
-                      }}
-                      className={`text-[10px] font-bold underline cursor-pointer ${
-                        isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      Change
-                    </button>
-                  </div>
-                  <div
-                    className="h-14 rounded-xl border border-white/10 overflow-hidden relative shadow-sm"
-                    style={{ background: bannerBackground }}
-                  >
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-between px-3">
-                      <span className="text-[10px] font-bold text-white drop-shadow-sm">Theme Active</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Avatar Presets Gallery Grid */}
-              <div className="space-y-3 pt-2">
-                <span className={`text-xs font-black uppercase flex items-center gap-1.5 ${
-                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
-                }`}>
-                  <Sparkles size={14} className="text-amber-500" /> Avatar Presets Gallery (Click to Apply)
-                </span>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {AVATAR_PRESETS.map((preset) => (
-                    <button
-                      key={preset.id}
-                      onClick={() => updatePersonalInfo({ avatarUrl: preset.url })}
-                      className={`p-3 rounded-2xl border flex items-center gap-3 transition-all cursor-pointer ${
-                        profile.avatarUrl === preset.url
-                          ? 'bg-[#F06543]/20 border-[#F06543] ring-1 ring-[#F06543]/50 shadow-sm'
-                          : isDarkMode
-                          ? 'bg-slate-900/60 border-slate-800 hover:border-slate-600 hover:scale-[1.02]'
-                          : 'bg-slate-50 border-slate-200 hover:border-slate-400 hover:scale-[1.02]'
-                      }`}
-                    >
-                      <div className="w-10 h-10 rounded-full overflow-hidden border border-white/20 shrink-0 bg-slate-950">
-                        <img src={preset.url} alt={preset.name} className="w-full h-full object-cover" />
-                      </div>
-                      <div className="text-left overflow-hidden">
-                        <h4 className={`font-bold text-xs truncate ${
-                          isDarkMode ? 'text-white' : 'text-slate-900'
-                        }`}>{preset.name}</h4>
-                        <span className={`text-[10px] ${
-                          isDarkMode ? 'text-slate-400' : 'text-slate-500'
-                        }`}>{preset.category}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Banner Presets Gallery Grid */}
-              <div className="space-y-3 pt-2">
-                <span className={`text-xs font-black uppercase flex items-center gap-1.5 ${
-                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
-                }`}>
-                  <Palette size={14} className="text-sky-500" /> Banner Theme Presets (Click to Apply)
-                </span>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {BANNER_PRESETS.map((preset) => (
-                    <button
-                      key={preset.id}
-                      onClick={() => updatePersonalInfo({ bannerUrl: preset.gradient })}
-                      className={`p-3 rounded-2xl border text-left flex flex-col justify-between h-20 transition-all cursor-pointer relative overflow-hidden ${
-                        profile.bannerUrl === preset.gradient
-                          ? 'border-sky-400 ring-2 ring-sky-400/50 shadow-md scale-[1.02]'
-                          : 'border-slate-800 hover:border-slate-600 hover:scale-[1.02]'
-                      }`}
-                      style={{ background: preset.gradient }}
-                    >
-                      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                      <div className="relative z-10 flex items-center justify-between w-full">
-                        <span className="text-[9px] font-black uppercase text-white/90 bg-black/40 px-2 py-0.5 rounded-full">
-                          {preset.category}
-                        </span>
-                        {profile.bannerUrl === preset.gradient && (
-                          <span className="w-4 h-4 rounded-full bg-white text-sky-600 flex items-center justify-center shadow-xs">
-                            <CheckCircle2 size={12} />
-                          </span>
-                        )}
-                      </div>
-                      <span className="relative z-10 text-[11px] font-black text-white drop-shadow-md truncate">
-                        {preset.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeSubNav === 'parents' && (
-            <div className={`p-6 rounded-3xl border space-y-4 ${
-              isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
-            }`}>
-              <h3 className="font-display font-black text-lg text-slate-100 flex items-center gap-2">
-                <HeartHandshake size={20} className="text-rose-400" /> Parent & Guardian Portal Access
-              </h3>
-              <p className="text-xs text-slate-400">
-                Authorized guardian linked: <strong>Maria Teresa Tolosa</strong> (Mother)
-              </p>
-              <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs space-y-2">
-                <span className="text-emerald-400 font-bold flex items-center gap-1.5">
-                  <CheckCircle2 size={15} /> Guardian Access Active
-                </span>
-                <p className="text-slate-300">Grade reports & milestone progress notifications are sent monthly.</p>
-              </div>
-            </div>
-          )}
-
-          {activeSubNav === 'mentors' && (
-            <div className={`p-6 rounded-3xl border space-y-4 ${
-              isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
-            }`}>
-              <h3 className="font-display font-black text-lg text-slate-100 flex items-center gap-2">
-                <GraduationCap size={20} className="text-sky-400" /> Academic Advisors & Language Mentors
-              </h3>
-              <div className="space-y-3 pt-2">
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
-                  <div>
-                    <h4 className="font-extrabold text-xs text-white">Prof. J. Dela Cruz, MIT</h4>
-                    <p className="text-[11px] text-slate-400">Academic Adviser • CLASE Information Technology</p>
-                  </div>
-                  <button className="px-3 py-1.5 rounded-xl bg-sky-500/20 text-sky-400 font-bold text-xs">
-                    Message
-                  </button>
-                </div>
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
-                  <div>
-                    <h4 className="font-extrabold text-xs text-white">Kleo AI Language Mentor</h4>
-                    <p className="text-[11px] text-slate-400">AI Polyglot Coach • Korean & Japanese</p>
-                  </div>
-                  <button className="px-3 py-1.5 rounded-xl bg-[#F06543]/20 text-[#F06543] font-bold text-xs">
-                    Consult
-                  </button>
-                </div>
-              </div>
-            </div>
           )}
         </div>
 

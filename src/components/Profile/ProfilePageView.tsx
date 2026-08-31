@@ -452,17 +452,11 @@ export const ProfilePageView: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Name & Academic Department Subtitles */}
+                  {/* Name */}
                   <div className="space-y-1">
                     <h2 className={`font-display font-black text-xl sm:text-2xl ${isDarkMode ? 'text-slate-100' : 'text-slate-900'} tracking-wide uppercase`}>
                       {displayName}
                     </h2>
-                    <p className="text-xs font-bold text-sky-400">
-                      {personal.department}
-                    </p>
-                    <p className={`text-xs font-semibold ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                      Program: {personal.program}
-                    </p>
                   </div>
                 </div>
               </div>

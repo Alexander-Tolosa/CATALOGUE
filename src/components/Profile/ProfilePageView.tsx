@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
@@ -18,7 +18,16 @@ import {
   BookOpen,
   CheckCircle2,
   MessageSquare,
-  UserPlus
+  UserPlus,
+  Pencil,
+  Trash2,
+  Image as ImageIcon,
+  PlusCircle,
+  Smile,
+  Check,
+  X,
+  Sparkles,
+  Camera
 } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -28,6 +37,8 @@ import { CertificationsSection } from './AwardsSection';
 import { FriendsHub } from './FriendsHub';
 import { SecuritySignInSection } from './SecuritySignInSection';
 import { EditProfileModal } from './EditProfileModal';
+import { AvatarSelectModal } from './AvatarSelectModal';
+import { BannerSelectModal } from './BannerSelectModal';
 import { SettingsView } from '../Settings/SettingsView';
 import { LogoutModal } from '../Navigation/LogoutModal';
 
@@ -41,7 +52,7 @@ type SubNavTab =
 type ContentSubTab = 'about' | 'info' | 'enrolled' | 'completed';
 
 export const ProfilePageView: React.FC = () => {
-  const { profile, isDarkMode, selectLanguageTrack } = useAppStore();
+  const { profile, isDarkMode, selectLanguageTrack, updatePersonalInfo } = useAppStore();
   const { googleUser, logout } = useAuthStore();
   const { friends, setActiveChatFriendId } = useFriendsStore();
   const { t } = useTranslation();
@@ -52,8 +63,39 @@ export const ProfilePageView: React.FC = () => {
   const [editModalInitialTab, setEditModalInitialTab] = useState<'visuals' | 'about' | 'info'>('visuals');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
+  // Avatar & Banner Interactive Editing State
+  const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
+  const [isAvatarSelectModalOpen, setIsAvatarSelectModalOpen] = useState(false);
+  const [isBannerModalOpen, setIsBannerModalOpen] = useState(false);
+  const avatarMenuRef = useRef<HTMLDivElement>(null);
+
+  // Note / Status Bubble Interactive State
+  const [isNoteEditorOpen, setIsNoteEditorOpen] = useState(false);
+  const [noteInput, setNoteInput] = useState(profile.personalInfo?.statusMessage || '');
+  const noteEditorRef = useRef<HTMLDivElement>(null);
+
+  // Inline Bio Editing State
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [bioDraft, setBioDraft] = useState(profile.personalInfo?.bio || 'Tell us a bit about you');
+
+  // Close menus on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target as Node)) {
+        setIsAvatarMenuOpen(false);
+      }
+      if (noteEditorRef.current && !noteEditorRef.current.contains(e.target as Node)) {
+        setIsNoteEditorOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const personal = profile.personalInfo || {
     fullName: profile.name || 'ALEXANDER MICHAEL TOLOSA',
+    statusMessage: "Favorite NPC companion?",
+    recentAvatars: [],
     studentId: '2020-09482',
     department: 'College of Liberal Arts, Sciences and Education (CLASE)',
     program: 'Information Technology (CLASE)',
@@ -71,6 +113,15 @@ export const ProfilePageView: React.FC = () => {
     joinedDate: 'Jun 24, 2021',
     lastActivity: '3 hours ago'
   };
+
+  // Accurate persistent registration date
+  const registrationDate = (() => {
+    const saved = localStorage.getItem('catalogue_registration_date');
+    if (saved) return saved;
+    const fallback = personal.joinedDate || 'Jun 24, 2021';
+    localStorage.setItem('catalogue_registration_date', fallback);
+    return fallback;
+  })();
 
   const displayName = profile.name || personal.fullName || googleUser?.name || 'lexzunder';
   const userAvatar = profile.avatarUrl || personal.avatarUrl || googleUser?.picture;
@@ -237,23 +288,49 @@ export const ProfilePageView: React.FC = () => {
               <div className={`rounded-3xl border overflow-hidden shadow-2xl transition-colors ${
                 isDarkMode ? 'bg-[#111624] border-[#1f293d]' : 'bg-white border-slate-200'
               }`}>
-                {/* 1. Header Banner */}
+                {/* 1. Header Banner with Direct Hover/Click Upload */}
                 <div
-                  className="h-44 sm:h-52 relative overflow-hidden transition-all duration-300 group"
+                  onClick={() => setIsBannerModalOpen(true)}
+                  className="h-44 sm:h-52 relative overflow-hidden transition-all duration-300 group cursor-pointer"
                   style={{
                     background: bannerBackground
                   }}
+                  title="Click or hover to change cover banner"
                 >
-                  <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+                  <div className="absolute inset-0 bg-black/15 group-hover:bg-black/35 transition-colors" />
+
+                  {/* Center Hover Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                    <div className="px-4 py-2 rounded-2xl bg-black/65 backdrop-blur-md border border-white/20 text-white text-xs font-bold flex items-center gap-2 shadow-2xl">
+                      <Camera size={16} className="text-sky-400" />
+                      <span>Click to Change Banner</span>
+                    </div>
+                  </div>
+
+                  {/* Top-Right Change Banner Button Pill */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsBannerModalOpen(true);
+                    }}
+                    className="absolute top-4 right-4 z-10 px-3.5 py-1.5 rounded-xl bg-black/60 hover:bg-black/85 backdrop-blur-md border border-white/20 text-white text-xs font-bold flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-lg hover:scale-105"
+                  >
+                    <Camera size={14} className="text-sky-400" />
+                    <span>Change Banner</span>
+                  </button>
                 </div>
 
-                {/* 2. Overlapping Avatar & User Identification */}
+                {/* 2. Overlapping Avatar & Direct Right Connected Note */}
                 <div className="px-6 pb-6 pt-0 relative">
-                  <div className="flex items-end justify-between gap-3 -mt-16 sm:-mt-20 mb-4">
-                    {/* Circle Avatar with Cyan Gradient Ring & Online Indicator Dot */}
+                  <div className="flex items-end justify-start gap-3 sm:gap-4 -mt-16 sm:-mt-20 mb-4 flex-wrap">
+                    {/* Circle Avatar with Hover Pencil & Direct Click Dropdown (Pic 1 & 2) */}
                     <div className="relative shrink-0">
-                      <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] via-[#22d3ee] to-[#0ea5e9] shadow-2xl group">
-                        <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/40 flex items-center justify-center">
+                      <div
+                        onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
+                        className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] via-[#22d3ee] to-[#0ea5e9] shadow-2xl group cursor-pointer"
+                        title="Click to change or remove avatar"
+                      >
+                        <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/40 flex items-center justify-center relative">
                           {userAvatar ? (
                             <img
                               src={userAvatar}
@@ -275,24 +352,172 @@ export const ProfilePageView: React.FC = () => {
                               <path d="M 33 42 C 33 28 42 22 50 22 C 58 22 67 28 67 42 C 67 33 60 28 50 28 C 40 28 33 33 33 42 Z" fill="#1F2937" />
                             </svg>
                           )}
+
+                          {/* Hover Edit Overlay with Pen Icon (Pic 1 Reference) */}
+                          <div className="absolute inset-0 bg-black/45 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <div className="w-9 h-9 rounded-2xl bg-black/60 backdrop-blur-md flex items-center justify-center text-white shadow-md">
+                              <Pencil size={18} className="text-white" />
+                            </div>
+                          </div>
                         </div>
                       </div>
+
                       {/* Green Online Status Dot */}
                       <span className={`absolute bottom-1.5 right-1.5 w-7 h-7 rounded-full bg-emerald-500 border-4 shadow-md ${
                         isDarkMode ? 'border-[#111624]' : 'border-white'
                       }`} />
+
+                      {/* Avatar Action Popover (Pic 2 Reference) */}
+                      <AnimatePresence>
+                        {isAvatarMenuOpen && (
+                          <motion.div
+                            ref={avatarMenuRef}
+                            initial={{ opacity: 0, scale: 0.95, y: -6 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: -6 }}
+                            className="absolute left-0 top-full mt-2 z-40 w-56 rounded-2xl bg-[#1e2538] border border-white/10 shadow-2xl p-1.5 space-y-1 backdrop-blur-xl text-left"
+                          >
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsAvatarMenuOpen(false);
+                                setIsAvatarSelectModalOpen(true);
+                              }}
+                              className="w-full px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-100 hover:bg-slate-700/60 transition-all flex items-center gap-2.5 text-left cursor-pointer"
+                            >
+                              <ImageIcon size={16} className="text-sky-400" />
+                              <span>Change Avatar</span>
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsAvatarMenuOpen(false);
+                                updatePersonalInfo({ avatarUrl: '' });
+                              }}
+                              className="w-full px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/15 transition-all flex items-center gap-2.5 text-left cursor-pointer"
+                            >
+                              <Trash2 size={16} className="text-rose-400" />
+                              <span>Remove Avatar</span>
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
 
-                    {/* Edit Profile Button */}
-                    <button
-                      onClick={() => {
-                        setEditModalInitialTab('visuals');
-                        setIsEditModalOpen(true);
-                      }}
-                      className="px-5 py-2.5 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white font-extrabold text-xs shadow-md flex items-center gap-1.5 transition-all cursor-pointer hover:scale-102 self-start sm:self-end"
-                    >
-                      <Edit size={14} /> Edit Profile
-                    </button>
+                    {/* Connected Status / Notes Speech Bubble DIRECTLY on the Right of Avatar (User Diagram) */}
+                    <div className="relative mb-3 sm:mb-4 shrink-0">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-slate-700/90 shadow-xs" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-700/70 shadow-xs" />
+                        <button
+                          onClick={() => {
+                            setNoteInput(personal.statusMessage || '');
+                            setIsNoteEditorOpen(true);
+                          }}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-2xl border text-xs shadow-lg backdrop-blur-md transition-all cursor-pointer group ${
+                            isDarkMode
+                              ? 'bg-[#1e2538]/95 hover:bg-[#28324a] border-white/10 text-slate-200 hover:border-emerald-500/40'
+                              : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                          }`}
+                          title="Click to share your thoughts with friends"
+                        >
+                          <PlusCircle size={14} className="text-slate-400 group-hover:text-emerald-400 transition-colors shrink-0" />
+                          <span className="italic font-medium truncate max-w-[150px] sm:max-w-[230px]">
+                            {personal.statusMessage || "Share your thoughts..."}
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Note / Status Popover Editor */}
+                      <AnimatePresence>
+                        {isNoteEditorOpen && (
+                          <motion.div
+                            ref={noteEditorRef}
+                            initial={{ opacity: 0, scale: 0.95, y: -6 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: -6 }}
+                            className="absolute left-0 top-full mt-2 z-40 w-72 sm:w-80 rounded-2xl bg-[#1e2538] border border-white/10 shadow-2xl p-4 space-y-3 backdrop-blur-xl text-left"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-black uppercase text-slate-300 tracking-wider flex items-center gap-1.5">
+                                <Smile size={13} className="text-amber-400" /> Share a Note with Friends
+                              </span>
+                              <button onClick={() => setIsNoteEditorOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">
+                                <X size={14} />
+                              </button>
+                            </div>
+
+                            <input
+                              type="text"
+                              value={noteInput}
+                              onChange={(e) => setNoteInput(e.target.value)}
+                              placeholder="Share your thoughts..."
+                              maxLength={60}
+                              autoFocus
+                              className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 outline-none focus:border-emerald-500"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  updatePersonalInfo({ statusMessage: noteInput.trim() || undefined });
+                                  setIsNoteEditorOpen(false);
+                                }
+                              }}
+                            />
+
+                            {/* Quick suggestion pills */}
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-bold text-slate-400">Quick ideas:</span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {[
+                                  'Share your thoughts...',
+                                  'Favorite NPC companion?',
+                                  'Studying Korean Grammar 📚',
+                                  'Preparing for JLPT N3 🇯🇵',
+                                  'Practicing Dialogue with Kleo 🐱'
+                                ].map((prompt) => (
+                                  <button
+                                    key={prompt}
+                                    type="button"
+                                    onClick={() => {
+                                      const text = prompt === 'Share your thoughts...' ? '' : prompt;
+                                      setNoteInput(text);
+                                      updatePersonalInfo({ statusMessage: text });
+                                      setIsNoteEditorOpen(false);
+                                    }}
+                                    className="text-[10px] px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                                  >
+                                    {prompt}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2 pt-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  updatePersonalInfo({ statusMessage: '' });
+                                  setNoteInput('');
+                                  setIsNoteEditorOpen(false);
+                                }}
+                                className="px-3 py-1.5 rounded-lg text-rose-400 hover:bg-rose-500/10 text-xs font-bold cursor-pointer"
+                              >
+                                Clear
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  updatePersonalInfo({ statusMessage: noteInput.trim() || undefined });
+                                  setIsNoteEditorOpen(false);
+                                }}
+                                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md cursor-pointer"
+                              >
+                                Save Note
+                              </button>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
 
                   {/* Display Name */}
@@ -304,19 +529,76 @@ export const ProfilePageView: React.FC = () => {
 
                   {/* Details: Bio & Member Since */}
                   <div className="mt-5 pt-4 border-t border-slate-800/80 space-y-4 text-left">
-                    {/* Bio */}
-                    <div className="space-y-1">
-                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
-                        Bio
-                      </span>
-                      <p className={`text-xs italic leading-relaxed whitespace-pre-line ${
-                        isDarkMode ? 'text-slate-300' : 'text-slate-700'
-                      }`}>
-                        {personal.bio || 'Tell us a bit about you'}
-                      </p>
+                    {/* Direct Interactive Inline Bio */}
+                    <div className="space-y-1 group relative">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                          Bio
+                        </span>
+                        {!isEditingBio && (
+                          <button
+                            onClick={() => {
+                              setBioDraft(personal.bio || '');
+                              setIsEditingBio(true);
+                            }}
+                            className="text-[11px] font-bold text-slate-400 hover:text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                          >
+                            <Pencil size={11} /> Edit
+                          </button>
+                        )}
+                      </div>
+
+                      {isEditingBio ? (
+                        <div className="space-y-2 pt-1">
+                          <textarea
+                            rows={3}
+                            value={bioDraft}
+                            onChange={(e) => setBioDraft(e.target.value)}
+                            placeholder="Tell us a bit about you..."
+                            autoFocus
+                            className={`w-full px-3 py-2 rounded-xl border text-xs outline-none transition-all ${
+                              isDarkMode
+                                ? 'bg-[#181f33] border-emerald-500/60 text-slate-100 focus:border-emerald-500'
+                                : 'bg-white border-emerald-500 text-slate-900'
+                            }`}
+                          />
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setIsEditingBio(false)}
+                              className="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:text-white text-xs font-bold cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                updatePersonalInfo({ bio: bioDraft.trim() || 'Tell us a bit about you' });
+                                setIsEditingBio(false);
+                              }}
+                              className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md cursor-pointer"
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p
+                          onClick={() => {
+                            setBioDraft(personal.bio || '');
+                            setIsEditingBio(true);
+                          }}
+                          className={`text-xs italic leading-relaxed whitespace-pre-line cursor-pointer hover:bg-white/5 p-1.5 -m-1.5 rounded-xl transition-colors ${
+                            isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                          }`}
+                          title="Click to edit bio directly"
+                        >
+                          {personal.bio || 'Tell us a bit about you'}
+                        </p>
+                      )}
                     </div>
 
-                    {/* Member Since */}
+                    {/* Member Since (Accurate User Registration Date) */}
                     <div className="space-y-1">
                       <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
                         Member Since
@@ -324,7 +606,7 @@ export const ProfilePageView: React.FC = () => {
                       <p className={`text-xs font-bold ${
                         isDarkMode ? 'text-slate-200' : 'text-slate-800'
                       }`}>
-                        {personal.joinedDate || 'Jun 24, 2021'}
+                        {registrationDate}
                       </p>
                     </div>
                   </div>
@@ -553,7 +835,29 @@ export const ProfilePageView: React.FC = () => {
         )}
       </div>
 
-      {/* Add Connection Modal */}
+      {/* Avatar Selection & Upload Modal */}
+      <AvatarSelectModal
+        isOpen={isAvatarSelectModalOpen}
+        onClose={() => setIsAvatarSelectModalOpen(false)}
+        currentAvatar={userAvatar}
+        recentAvatars={personal.recentAvatars || []}
+        onSelectAvatar={(newAvatar) => {
+          updatePersonalInfo({ avatarUrl: newAvatar });
+        }}
+        isDarkMode={isDarkMode}
+      />
+
+      {/* Banner Selection & Upload Modal */}
+      <BannerSelectModal
+        isOpen={isBannerModalOpen}
+        onClose={() => setIsBannerModalOpen(false)}
+        currentBanner={userBanner}
+        onSelectBanner={(newBanner) => {
+          updatePersonalInfo({ bannerUrl: newBanner });
+        }}
+        isDarkMode={isDarkMode}
+      />
+
       {/* Edit Profile Modal */}
       <EditProfileModal
         isOpen={isEditModalOpen}

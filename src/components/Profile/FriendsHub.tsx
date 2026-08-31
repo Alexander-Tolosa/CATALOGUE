@@ -263,6 +263,40 @@ export const FriendsHub: React.FC<FriendsHubProps> = ({ initialTab = 'my_friends
       {/* TAB 1: MY FRIENDS */}
       {activeTab === 'my_friends' && (
         <div className="space-y-4">
+          {/* User's Own Shared Note Widget */}
+          <div className={`p-4 rounded-2xl border flex items-center justify-between gap-3 ${
+            isDarkMode ? 'bg-slate-900/70 border-slate-800' : 'bg-slate-50 border-slate-200'
+          }`}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full p-0.5 bg-gradient-to-tr from-sky-400 to-emerald-400 shrink-0">
+                <div className="w-full h-full rounded-full overflow-hidden bg-slate-800 flex items-center justify-center">
+                  {profile.avatarUrl ? (
+                    <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs font-bold text-white">{profile.name.substring(0, 2).toUpperCase()}</span>
+                  )}
+                </div>
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Your Note (Visible to Friends)</span>
+                <p className="text-xs text-slate-200 font-semibold italic">
+                  "{profile.personalInfo?.statusMessage || 'Favorite NPC companion?'}"
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                const newNote = prompt('Update your note for friends:', profile.personalInfo?.statusMessage || '');
+                if (newNote !== null) {
+                  useAppStore.getState().updatePersonalInfo({ statusMessage: newNote.trim() });
+                }
+              }}
+              className="text-xs font-bold text-sky-400 hover:text-sky-300 px-3 py-1.5 rounded-xl border border-sky-500/30 hover:bg-sky-500/10 transition-colors cursor-pointer shrink-0"
+            >
+              Update Note
+            </button>
+          </div>
+
           {filteredFriends.length === 0 ? (
             <div className={`p-10 rounded-3xl border text-center space-y-3 ${
               isDarkMode ? 'bg-[#101625] border-[#1d273d] text-slate-400' : 'bg-white border-slate-200 text-slate-500'

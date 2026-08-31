@@ -233,6 +233,7 @@ export interface UserPersonalInfo {
   address: string;
   avatarUrl?: string;
   bannerUrl?: string;
+  recentAvatars?: string[];
   emergencyContact: {
     name: string;
     relationship: string;

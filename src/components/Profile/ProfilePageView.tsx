@@ -24,7 +24,6 @@ import {
   HeartHandshake,
   MessageSquare,
   UserPlus,
-  Camera,
   Upload,
   Palette
 } from 'lucide-react';
@@ -51,7 +50,7 @@ type SubNavTab =
   | 'mentors'
   | 'friends';
 
-type ContentSubTab = 'about' | 'info' | 'enrolled' | 'completed' | 'groups';
+type ContentSubTab = 'about' | 'info' | 'enrolled' | 'completed';
 
 export const ProfilePageView: React.FC = () => {
   const { profile, isDarkMode, selectLanguageTrack, updatePersonalInfo } = useAppStore();
@@ -142,27 +141,6 @@ export const ProfilePageView: React.FC = () => {
       name: 'Introduction to Computing & Logic',
       date: 'Dec 18, 2023',
       grade: 'GWA 1.20'
-    }
-  ];
-
-  const groupsList = [
-    {
-      name: 'CLASE IT Student Guild',
-      role: 'Active Member (Section 2C)',
-      members: 142,
-      category: 'Department Society'
-    },
-    {
-      name: 'CATALOGUE Polyglot Study Circle',
-      role: 'Korean & Japanese Study Lead',
-      members: 89,
-      category: 'Language Exchange'
-    },
-    {
-      name: 'Google Developer Student Clubs (GDSC)',
-      role: 'UI/UX Track Member',
-      members: 210,
-      category: 'Tech Student Organization'
     }
   ];
 
@@ -332,13 +310,13 @@ export const ProfilePageView: React.FC = () => {
         <div className={`${activeSubNav === 'profile' ? 'lg:col-span-6 xl:col-span-6' : 'lg:col-span-9 xl:col-span-9'} space-y-6`}>
           {activeSubNav === 'profile' && (
             <>
-              {/* Main Banner Header (Matching Screenshot Exactly) */}
+              {/* Main Banner Header */}
               <div className={`rounded-3xl border overflow-hidden shadow-2xl transition-colors ${
                 isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
               }`}>
                 {/* Polygonal Cyan Geometric or Custom Banner Texture */}
                 <div
-                  className="h-36 sm:h-44 relative overflow-hidden flex items-start justify-between p-4 transition-all duration-300 group"
+                  className="h-36 sm:h-44 relative overflow-hidden transition-all duration-300 group"
                   style={{
                     background: bannerBackground
                   }}
@@ -359,30 +337,12 @@ export const ProfilePageView: React.FC = () => {
                       <rect width="100%" height="100%" fill="url(#polyGrid)" />
                     </svg>
                   )}
-
-                  {/* Change Banner Action Button */}
-                  <button
-                    onClick={() => {
-                      setEditModalInitialTab('visuals');
-                      setIsEditModalOpen(true);
-                    }}
-                    className="relative z-10 px-3 py-1.5 rounded-full bg-slate-900/70 hover:bg-slate-900/90 backdrop-blur-md border border-white/20 text-slate-200 text-xs font-bold tracking-wide shadow-sm flex items-center gap-1.5 cursor-pointer hover:scale-105 transition-all"
-                    title="Change Profile Banner"
-                  >
-                    <Camera size={13} />
-                    <span>Edit Banner</span>
-                  </button>
-
-                  {/* Student Pill Badge (Upper Right) */}
-                  <div className="relative z-10 px-3.5 py-1 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/20 text-slate-200 text-xs font-bold tracking-wide shadow-sm">
-                    Student
-                  </div>
                 </div>
 
                 {/* Overlapping Avatar & User Metadata */}
                 <div className="px-6 pb-6 pt-0 relative">
                   <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 mb-4">
-                    {/* Circle Avatar with Cyan Gradient Ring & Camera Edit Badge */}
+                    {/* Circle Avatar with Cyan Gradient Ring */}
                     <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] shadow-2xl shrink-0 group">
                       <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/40 flex items-center justify-center">
                         {userAvatar ? (
@@ -392,7 +352,7 @@ export const ProfilePageView: React.FC = () => {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          /* Illustrated User Avatar (Matching Screenshot Vector) */
+                          /* Illustrated User Avatar */
                           <svg
                             viewBox="0 0 100 100"
                             className="w-full h-full object-cover"
@@ -425,21 +385,9 @@ export const ProfilePageView: React.FC = () => {
                           </svg>
                         )}
                       </div>
-
-                      {/* Direct Edit Avatar Badge Button */}
-                      <button
-                        onClick={() => {
-                          setEditModalInitialTab('visuals');
-                          setIsEditModalOpen(true);
-                        }}
-                        className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#F06543] hover:bg-[#e05432] text-white border-2 border-white shadow-lg flex items-center justify-center cursor-pointer transition-transform hover:scale-110"
-                        title="Change Profile Picture"
-                      >
-                        <Camera size={14} />
-                      </button>
                     </div>
 
-                    {/* Red "Edit" Button (Matching Screenshot) */}
+                    {/* Red "Edit" Button */}
                     <button
                       onClick={() => {
                         setEditModalInitialTab('visuals');
@@ -461,15 +409,14 @@ export const ProfilePageView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Sub-Tabs: [About] [Info] [Enrolled] [Completed] [Groups] (Matching Screenshot) */}
+              {/* Sub-Tabs: [About] [Info] [Enrolled] [Completed] */}
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
                 {(
                   [
                     { id: 'about', label: 'About' },
                     { id: 'info', label: 'Info' },
                     { id: 'enrolled', label: 'Enrolled' },
-                    { id: 'completed', label: 'Completed' },
-                    { id: 'groups', label: 'Groups' }
+                    { id: 'completed', label: 'Completed' }
                   ] as const
                 ).map((tab) => (
                   <button
@@ -514,7 +461,7 @@ export const ProfilePageView: React.FC = () => {
                     </p>
                   </div>
 
-                  {/* Certifications Section (Matching Screenshot) */}
+                  {/* Certifications Section */}
                   <CertificationsSection onViewAll={() => setActiveSubNav('certifications')} />
                 </div>
               )}
@@ -624,34 +571,9 @@ export const ProfilePageView: React.FC = () => {
                         <div>
                           <span className="text-[10px] font-black text-emerald-500 uppercase">{course.code}</span>
                           <h4 className={`font-extrabold text-xs ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{course.name}</h4>
-                          <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Completed on: {course.date}</span>
+                          <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{course.date}</span>
                         </div>
                         <span className="text-xs font-black text-amber-500">{course.grade}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* TAB CONTENT: GROUPS */}
-              {activeContentTab === 'groups' && (
-                <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
-                  isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
-                }`}>
-                  <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'} flex items-center gap-2`}>
-                    <Users size={18} className="text-purple-400" /> Student Organizations & Groups
-                  </h3>
-                  <div className="space-y-3">
-                    {groupsList.map((group, idx) => (
-                      <div key={idx} className={`p-4 rounded-2xl border flex items-center justify-between ${isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                        <div>
-                          <span className="text-[10px] font-black text-purple-400 uppercase">{group.category}</span>
-                          <h4 className={`font-extrabold text-xs ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{group.name}</h4>
-                          <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{group.role} • {group.members} active members</span>
-                        </div>
-                        <span className="px-3 py-1 rounded-xl bg-purple-500/15 text-purple-400 text-[10px] font-black">
-                          Joined
-                        </span>
                       </div>
                     ))}
                   </div>

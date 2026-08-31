@@ -114,6 +114,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
       if (profileMenuRef.current && !profileMenuRef.current.contains(target)) {
         setIsProfileMenuOpen(false);
         setIsLangSubmenuOpen(false);
+        setIsInterfaceLangSubmenuOpen(false);
       }
       if (mailRef.current && !mailRef.current.contains(target)) {
         setIsMailOpen(false);
@@ -156,7 +157,6 @@ export const TopAppBar: React.FC<HeaderProps> = ({
       >
         {/* Left Section: Mobile Menu + Day Streak Flame Badge */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          {/* Mobile Drawer Hamburger */}
           <button
             onClick={() =>
               window.dispatchEvent(new CustomEvent('catalogue:toggle-mobile-drawer'))
@@ -315,7 +315,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   )}
                 </button>
 
-                {/* 2. Interface Language Switcher */}
+                {/* 2. Interface Language Switcher (Displays only active language) */}
                 <div className="relative">
                   <button
                     onClick={() => {
@@ -330,7 +330,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <FlagIcon country={interfaceLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
-                      <span>{t.header.interfaceLanguageLabel}: <span className="text-[#F06543]">{getLanguageName(interfaceLanguage)}</span></span>
+                      <span className="text-[#F06543]">{getLanguageName(interfaceLanguage)}</span>
                     </span>
                     <Globe className="w-4 h-4 text-[#F06543]" />
                   </button>
@@ -416,7 +416,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   )}
                 </div>
 
-                {/* 3. Study Track Switcher */}
+                {/* 3. Study Track Switcher (Displays only active learning language) */}
                 <div className="relative">
                   <button
                     onClick={() => {
@@ -431,7 +431,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <FlagIcon country={profile.selectedLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
-                      <span>{t.header.studyTrackLabel}: <span className="text-emerald-500">{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span></span>
+                      <span className="text-emerald-500">{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
                     </span>
                     <span className="material-symbols-outlined text-sm text-emerald-500">school</span>
                   </button>

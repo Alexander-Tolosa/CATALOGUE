@@ -16,9 +16,6 @@ import {
   LogOut,
   ChevronRight,
   Edit,
-  Search,
-  Mail,
-  Bell,
   HelpCircle,
   BookOpen,
   CheckCircle2,
@@ -62,7 +59,6 @@ export const ProfilePageView: React.FC = () => {
   const [activeContentTab, setActiveContentTab] = useState<ContentSubTab>('about');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const personal = profile.personalInfo || {
     fullName: profile.name || 'ALEXANDER MICHAEL TOLOSA',
@@ -160,69 +156,9 @@ export const ProfilePageView: React.FC = () => {
   ];
 
   return (
-    <div className={`min-h-screen pt-16 pb-20 px-3 sm:px-6 md:px-8 transition-colors ${
+    <div className={`min-h-screen pt-20 sm:pt-24 pb-20 px-3 sm:px-6 md:px-8 transition-colors ${
       isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#FAF6F0] text-[#2B2725]'
     }`}>
-      {/* Top Breadcrumb Bar */}
-      <div className="max-w-7xl mx-auto mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          {/* Institutional Crest Icon */}
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-600 to-amber-400 p-0.5 shadow-lg flex items-center justify-center shrink-0">
-            <div className="w-full h-full bg-[#111827] rounded-[14px] flex items-center justify-center text-amber-400 font-black text-xs">
-              <GraduationCap size={20} />
-            </div>
-          </div>
-          <div>
-            <h1 className="font-display font-black text-base sm:text-lg tracking-wider text-slate-100 uppercase">
-              {displayName}
-            </h1>
-            <p className="text-[11px] text-slate-400">
-              CLASE Student Portal • Academic & Language Profile
-            </p>
-          </div>
-        </div>
-
-        {/* Search & Actions */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search portal..."
-              className={`pl-10 pr-8 py-1.5 rounded-full text-xs font-medium border outline-none ${
-                isDarkMode ? 'bg-[#151c2e] border-slate-700/60 text-white' : 'bg-white border-slate-300 text-slate-900'
-              }`}
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setActiveSubNav('friends')}
-              className="relative p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-300 transition-colors"
-              title="25 Messages"
-            >
-              <Mail size={16} />
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-[#e11d48] text-white text-[9px] font-black rounded-full flex items-center justify-center">
-                25
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveSubNav('awards')}
-              className="relative p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-300 transition-colors"
-              title="38 Notifications"
-            >
-              <Bell size={16} />
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-[#e11d48] text-white text-[9px] font-black rounded-full flex items-center justify-center">
-                38
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Main 3-Column Profile Layout Matching Screenshot */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* ========================================================

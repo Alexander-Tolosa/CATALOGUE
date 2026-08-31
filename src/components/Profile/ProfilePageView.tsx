@@ -156,11 +156,11 @@ export const ProfilePageView: React.FC = () => {
   ];
 
   return (
-    <div className={`min-h-screen pt-20 sm:pt-24 pb-20 px-3 sm:px-6 md:px-8 transition-colors ${
+    <div className={`min-h-screen pt-20 sm:pt-24 pb-20 px-4 sm:px-6 md:px-10 lg:px-12 xl:px-16 transition-colors ${
       isDarkMode ? 'bg-[#0b0f19] text-white' : 'bg-[#FAF6F0] text-[#2B2725]'
     }`}>
-      {/* Main 3-Column Profile Layout Matching Screenshot */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      {/* Main Responsive Grid Layout */}
+      <div className="w-full max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* ========================================================
             LEFT COLUMN: Sub-navigation Sidebar (2.5 / 12 cols)
             Matching the exact list from the screenshot
@@ -316,9 +316,9 @@ export const ProfilePageView: React.FC = () => {
         </div>
 
         {/* ========================================================
-            CENTER COLUMN: Main Banner & Sub-Tabs Content (6.5 / 12 cols)
+            CENTER COLUMN: Main Banner & Sub-Tabs Content (6 / 12 cols)
            ======================================================== */}
-        <div className="lg:col-span-6 space-y-6">
+        <div className={`${activeSubNav === 'profile' ? 'lg:col-span-6 xl:col-span-6' : 'lg:col-span-9 xl:col-span-9'} space-y-6`}>
           {activeSubNav === 'profile' && (
             <>
               {/* Main Banner Header (Matching Screenshot Exactly) */}
@@ -413,13 +413,13 @@ export const ProfilePageView: React.FC = () => {
 
                   {/* Name & Academic Department Subtitles */}
                   <div className="space-y-1">
-                    <h2 className="font-display font-black text-xl sm:text-2xl text-slate-100 tracking-wide uppercase">
+                    <h2 className={`font-display font-black text-xl sm:text-2xl ${isDarkMode ? 'text-slate-100' : 'text-slate-900'} tracking-wide uppercase`}>
                       {displayName}
                     </h2>
                     <p className="text-xs font-bold text-sky-400">
                       {personal.department}
                     </p>
-                    <p className="text-xs font-semibold text-slate-400">
+                    <p className={`text-xs font-semibold ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                       Program: {personal.program}
                     </p>
                   </div>
@@ -460,10 +460,10 @@ export const ProfilePageView: React.FC = () => {
                   <div className={`p-6 rounded-3xl border space-y-3 transition-colors ${
                     isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
                   }`}>
-                    <h3 className="font-display font-black text-base text-slate-100">
+                    <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
                       About
                     </h3>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'} leading-relaxed`}>
                       {personal.bio || 'There is currently no information about this member.'}
                     </p>
                   </div>
@@ -479,55 +479,55 @@ export const ProfilePageView: React.FC = () => {
                   isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
                 }`}>
                   <div className="flex items-center justify-between">
-                    <h3 className="font-display font-black text-base text-slate-100 flex items-center gap-2">
+                    <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'} flex items-center gap-2`}>
                       <User size={18} className="text-[#e11d48]" /> Personal & Student Information
                     </h3>
                     <button
                       onClick={() => setIsEditModalOpen(true)}
-                      className="text-xs font-bold text-[#e11d48] hover:underline flex items-center gap-1"
+                      className="text-xs font-bold text-[#e11d48] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <Edit size={13} /> Edit Info
                     </button>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                    <div className="p-3 rounded-2xl bg-slate-900/50 border border-slate-800">
-                      <span className="text-[10px] text-slate-400 font-bold block">Student ID</span>
-                      <span className="font-extrabold text-slate-200">{personal.studentId}</span>
+                    <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-slate-900/50 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'}`}>
+                      <span className={`text-[10px] font-bold block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Student ID</span>
+                      <span className="font-extrabold">{personal.studentId}</span>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-slate-900/50 border border-slate-800">
-                      <span className="text-[10px] text-slate-400 font-bold block">Year Level & Section</span>
-                      <span className="font-extrabold text-slate-200">{personal.yearLevel}</span>
+                    <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-slate-900/50 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'}`}>
+                      <span className={`text-[10px] font-bold block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Year Level & Section</span>
+                      <span className="font-extrabold">{personal.yearLevel}</span>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-slate-900/50 border border-slate-800">
-                      <span className="text-[10px] text-slate-400 font-bold block">Institutional Email</span>
+                    <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-slate-900/50 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'}`}>
+                      <span className={`text-[10px] font-bold block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Institutional Email</span>
                       <span className="font-extrabold text-sky-400">{personal.email}</span>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-slate-900/50 border border-slate-800">
-                      <span className="text-[10px] text-slate-400 font-bold block">Mobile Phone</span>
-                      <span className="font-extrabold text-slate-200">{personal.phone}</span>
+                    <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-slate-900/50 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'}`}>
+                      <span className={`text-[10px] font-bold block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Mobile Phone</span>
+                      <span className="font-extrabold">{personal.phone}</span>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-slate-900/50 border border-slate-800">
-                      <span className="text-[10px] text-slate-400 font-bold block">Date of Birth</span>
-                      <span className="font-extrabold text-slate-200">{personal.dateOfBirth}</span>
+                    <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-slate-900/50 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'}`}>
+                      <span className={`text-[10px] font-bold block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Date of Birth</span>
+                      <span className="font-extrabold">{personal.dateOfBirth}</span>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-slate-900/50 border border-slate-800">
-                      <span className="text-[10px] text-slate-400 font-bold block">Permanent Address</span>
-                      <span className="font-extrabold text-slate-200">{personal.address}</span>
+                    <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-slate-900/50 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'}`}>
+                      <span className={`text-[10px] font-bold block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Permanent Address</span>
+                      <span className="font-extrabold">{personal.address}</span>
                     </div>
                   </div>
 
                   {personal.emergencyContact && (
-                    <div className="pt-2 border-t border-slate-800">
+                    <div className={`pt-2 border-t ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}`}>
                       <h4 className="font-extrabold text-xs text-sky-400 mb-2">Emergency Contact</h4>
-                      <p className="text-xs text-slate-300 font-medium">
+                      <p className={`text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-700'} font-medium`}>
                         {personal.emergencyContact.name} ({personal.emergencyContact.relationship}) —{' '}
-                        <strong className="text-white">{personal.emergencyContact.phone}</strong>
+                        <strong className={isDarkMode ? 'text-white' : 'text-slate-900'}>{personal.emergencyContact.phone}</strong>
                       </p>
                     </div>
                   )}
@@ -539,23 +539,23 @@ export const ProfilePageView: React.FC = () => {
                 <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
                   isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
                 }`}>
-                  <h3 className="font-display font-black text-base text-slate-100 flex items-center gap-2">
+                  <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'} flex items-center gap-2`}>
                     <BookOpen size={18} className="text-sky-400" /> Active Enrolled Courses
                   </h3>
                   <div className="space-y-3">
                     {enrolledCourses.map((course, idx) => (
-                      <div key={idx} className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+                      <div key={idx} className={`p-4 rounded-2xl border space-y-2 ${isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="text-[10px] font-black text-[#F06543] uppercase tracking-wider">{course.code}</span>
-                            <h4 className="font-extrabold text-xs text-slate-100">{course.name}</h4>
-                            <span className="text-[11px] text-slate-400">{course.instructor}</span>
+                            <h4 className={`font-extrabold text-xs ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{course.name}</h4>
+                            <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{course.instructor}</span>
                           </div>
-                          <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">
+                          <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-500 text-[10px] font-bold">
                             {course.status}
                           </span>
                         </div>
-                        <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                        <div className={`w-full rounded-full h-2 overflow-hidden ${isDarkMode ? 'bg-slate-800' : 'bg-slate-200'}`}>
                           <div className="bg-[#F06543] h-full rounded-full" style={{ width: `${course.progress}%` }} />
                         </div>
                       </div>
@@ -569,18 +569,18 @@ export const ProfilePageView: React.FC = () => {
                 <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
                   isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
                 }`}>
-                  <h3 className="font-display font-black text-base text-slate-100 flex items-center gap-2">
-                    <CheckCircle2 size={18} className="text-emerald-400" /> Completed Courses & Milestones
+                  <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'} flex items-center gap-2`}>
+                    <CheckCircle2 size={18} className="text-emerald-500" /> Completed Courses & Milestones
                   </h3>
                   <div className="space-y-3">
                     {completedCourses.map((course, idx) => (
-                      <div key={idx} className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+                      <div key={idx} className={`p-4 rounded-2xl border flex items-center justify-between ${isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
                         <div>
-                          <span className="text-[10px] font-black text-emerald-400 uppercase">{course.code}</span>
-                          <h4 className="font-extrabold text-xs text-slate-100">{course.name}</h4>
-                          <span className="text-[11px] text-slate-400">Completed on: {course.date}</span>
+                          <span className="text-[10px] font-black text-emerald-500 uppercase">{course.code}</span>
+                          <h4 className={`font-extrabold text-xs ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{course.name}</h4>
+                          <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Completed on: {course.date}</span>
                         </div>
-                        <span className="text-xs font-black text-amber-400">{course.grade}</span>
+                        <span className="text-xs font-black text-amber-500">{course.grade}</span>
                       </div>
                     ))}
                   </div>
@@ -592,18 +592,18 @@ export const ProfilePageView: React.FC = () => {
                 <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
                   isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
                 }`}>
-                  <h3 className="font-display font-black text-base text-slate-100 flex items-center gap-2">
+                  <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'} flex items-center gap-2`}>
                     <Users size={18} className="text-purple-400" /> Student Organizations & Groups
                   </h3>
                   <div className="space-y-3">
                     {groupsList.map((group, idx) => (
-                      <div key={idx} className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+                      <div key={idx} className={`p-4 rounded-2xl border flex items-center justify-between ${isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
                         <div>
                           <span className="text-[10px] font-black text-purple-400 uppercase">{group.category}</span>
-                          <h4 className="font-extrabold text-xs text-slate-100">{group.name}</h4>
-                          <span className="text-[11px] text-slate-400">{group.role} • {group.members} active members</span>
+                          <h4 className={`font-extrabold text-xs ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{group.name}</h4>
+                          <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{group.role} • {group.members} active members</span>
                         </div>
-                        <span className="px-3 py-1 rounded-xl bg-purple-500/15 text-purple-300 text-[10px] font-black">
+                        <span className="px-3 py-1 rounded-xl bg-purple-500/15 text-purple-400 text-[10px] font-black">
                           Joined
                         </span>
                       </div>
@@ -728,120 +728,53 @@ export const ProfilePageView: React.FC = () => {
         </div>
 
         {/* ========================================================
-            RIGHT COLUMN: Account & Friends Widgets (3.5 / 12 cols)
-            Matching the exact cards from the screenshot
+            RIGHT COLUMN: Account Widget (3 / 12 cols)
            ======================================================== */}
-        <div className="lg:col-span-3 space-y-6">
-          {/* 1. Account Card (Matching Screenshot) */}
-          <div className={`p-5 rounded-3xl border shadow-xl space-y-4 transition-colors ${
-            isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
-          }`}>
-            <div className="flex items-center gap-2 text-[#e11d48] font-black text-xs">
-              <User size={16} />
-              <span>Account</span>
-            </div>
-
-            <div className="space-y-2.5 text-xs">
-              {/* Joined */}
-              <div className="flex items-center gap-2 text-slate-400">
-                <Calendar size={14} className="text-slate-500" />
-                <span className="text-[11px]">Joined <strong className="text-slate-200 ml-1">{personal.joinedDate}</strong></span>
+        {activeSubNav === 'profile' && (
+          <div className="lg:col-span-3 xl:col-span-3 space-y-6">
+            {/* Account Card */}
+            <div className={`p-5 rounded-3xl border shadow-xl space-y-4 transition-colors ${
+              isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
+            }`}>
+              <div className="flex items-center gap-2 text-[#e11d48] font-black text-xs">
+                <User size={16} />
+                <span>Account</span>
               </div>
 
-              {/* Last Activity */}
-              <div className="flex items-center gap-2 text-slate-400">
-                <Clock size={14} className="text-slate-500" />
-                <span className="text-[11px]">Last activity <strong className="text-slate-200 ml-1">{personal.lastActivity}</strong></span>
-              </div>
-
-              {/* Login Credentials Link */}
-              <button
-                onClick={() => setActiveSubNav('privacy')}
-                className="w-full pt-2 flex items-center gap-2 text-sky-400 hover:underline font-semibold text-xs cursor-pointer text-left"
-              >
-                <Key size={14} />
-                <span>Login credentials</span>
-              </button>
-
-              {/* Force Logout Action */}
-              <button
-                onClick={() => setIsLogoutModalOpen(true)}
-                className="w-full flex items-center gap-2 text-slate-400 hover:text-rose-400 font-semibold text-xs transition-colors cursor-pointer text-left"
-              >
-                <LogOut size={14} />
-                <span>Force logout</span>
-              </button>
-            </div>
-          </div>
-
-          {/* 2. Friends 14 > Card (Matching Screenshot) */}
-          <div className={`p-5 rounded-3xl border shadow-xl space-y-4 transition-colors ${
-            isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
-          }`}>
-            {/* Friends Header with Count and Arrow */}
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setActiveSubNav('friends')}
-                className="flex items-center gap-2 text-[#e11d48] font-black text-xs hover:underline cursor-pointer"
-              >
-                <Users size={16} />
-                <span>Friends</span>
-                <span className="px-2 py-0.5 rounded-full bg-rose-500/15 text-[#e11d48] font-black text-[10px]">
-                  {friends.length}
-                </span>
-                <ChevronRight size={14} />
-              </button>
-
-              <button
-                onClick={() => setActiveSubNav('friends')}
-                className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                title="Add Friend"
-              >
-                <UserPlus size={15} />
-              </button>
-            </div>
-
-            {/* Quick Friend List (Paulo Miguel Tolosa, Ashjan Quimpo, Adrian Justin Salinas, Matthew Tabat, Deghne Gabriel Agana) */}
-            <div className="space-y-3">
-              {friends.slice(0, 5).map((friend) => (
-                <div
-                  key={friend.id}
-                  onClick={() => setActiveChatFriendId(friend.id)}
-                  className="flex items-center justify-between gap-3 p-1.5 rounded-xl hover:bg-slate-800/40 cursor-pointer transition-colors group"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="relative shrink-0">
-                      <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${friend.avatarColor || 'from-sky-400 to-indigo-600'} flex items-center justify-center text-white font-black text-[10px] border border-white/20`}>
-                        {friend.avatarInitials || friend.name.substring(0, 2).toUpperCase()}
-                      </div>
-                      <span
-                        className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border border-[#0f1422] ${
-                          friend.isOnline ? 'bg-emerald-500' : 'bg-slate-500'
-                        }`}
-                      />
-                    </div>
-                    <span className="text-xs font-bold text-slate-300 group-hover:text-white truncate">
-                      {friend.name}
-                    </span>
-                  </div>
-
-                  <MessageSquare
-                    size={14}
-                    className="text-slate-500 group-hover:text-[#F06543] shrink-0 transition-colors"
-                  />
+              <div className="space-y-2.5 text-xs">
+                {/* Joined */}
+                <div className={`flex items-center gap-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <Calendar size={14} className="text-slate-500" />
+                  <span className="text-[11px]">Joined <strong className={`ml-1 ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>{personal.joinedDate}</strong></span>
                 </div>
-              ))}
-            </div>
 
-            {/* View All Friends / Meet Online CTA */}
-            <button
-              onClick={() => setActiveSubNav('friends')}
-              className="w-full py-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 font-bold text-xs text-center block transition-colors cursor-pointer"
-            >
-              View All & Meet Friends Online →
-            </button>
+                {/* Last Activity */}
+                <div className={`flex items-center gap-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <Clock size={14} className="text-slate-500" />
+                  <span className="text-[11px]">Last activity <strong className={`ml-1 ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>{personal.lastActivity}</strong></span>
+                </div>
+
+                {/* Login Credentials Link */}
+                <button
+                  onClick={() => setActiveSubNav('privacy')}
+                  className="w-full pt-2 flex items-center gap-2 text-sky-400 hover:underline font-semibold text-xs cursor-pointer text-left"
+                >
+                  <Key size={14} />
+                  <span>Login credentials</span>
+                </button>
+
+                {/* Force Logout Action */}
+                <button
+                  onClick={() => setIsLogoutModalOpen(true)}
+                  className={`w-full flex items-center gap-2 ${isDarkMode ? 'text-slate-400 hover:text-rose-400' : 'text-slate-600 hover:text-rose-600'} font-semibold text-xs transition-colors cursor-pointer text-left`}
+                >
+                  <LogOut size={14} />
+                  <span>Force logout</span>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Edit Profile Modal */}

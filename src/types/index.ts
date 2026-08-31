@@ -219,6 +219,8 @@ export interface UserPersonalInfo {
   phone: string;
   dateOfBirth: string;
   address: string;
+  avatarUrl?: string;
+  bannerUrl?: string;
   emergencyContact: {
     name: string;
     relationship: string;
@@ -241,6 +243,8 @@ export interface ActiveSession {
 
 export type UserProfile = {
   name: string;
+  avatarUrl?: string;
+  bannerUrl?: string;
   lifecycleState: UserLifecycleState;
   selectedLanguage: LanguageTrack;
   interfaceLanguage?: LanguageTrack;

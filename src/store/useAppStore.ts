@@ -318,9 +318,27 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
       const updatedProfile: UserProfile = {
         ...state.profile,
         name: info.name || info.fullName || state.profile.name,
+        avatarUrl: info.avatarUrl !== undefined ? info.avatarUrl : (updatedPersonalInfo.avatarUrl || state.profile.avatarUrl),
+        bannerUrl: info.bannerUrl !== undefined ? info.bannerUrl : (updatedPersonalInfo.bannerUrl || state.profile.bannerUrl),
         personalInfo: updatedPersonalInfo
       };
       localStorage.setItem('catalogue_user_profile', JSON.stringify(updatedProfile));
+
+      // Also sync with googleUser if stored
+      try {
+        const savedGoogle = localStorage.getItem('catalogue_google_user');
+        if (savedGoogle) {
+          const parsedGoogle = JSON.parse(savedGoogle);
+          parsedGoogle.name = updatedProfile.name;
+          if (updatedProfile.avatarUrl) {
+            parsedGoogle.picture = updatedProfile.avatarUrl;
+          }
+          localStorage.setItem('catalogue_google_user', JSON.stringify(parsedGoogle));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
       return { profile: updatedProfile };
     });
   }

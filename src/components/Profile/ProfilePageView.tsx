@@ -23,12 +23,16 @@ import {
   Sparkles,
   HeartHandshake,
   MessageSquare,
-  UserPlus
+  UserPlus,
+  Camera,
+  Upload,
+  Palette
 } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useFriendsStore } from '../../store/useFriendsStore';
 import { useTranslation } from '../../lib/i18n/useTranslation';
+import { AVATAR_PRESETS, BANNER_PRESETS } from '../../lib/profilePresets';
 import { CertificationsSection } from './AwardsSection';
 import { FriendsHub } from './FriendsHub';
 import { SecuritySignInSection } from './SecuritySignInSection';
@@ -50,7 +54,7 @@ type SubNavTab =
 type ContentSubTab = 'about' | 'info' | 'enrolled' | 'completed' | 'groups';
 
 export const ProfilePageView: React.FC = () => {
-  const { profile, isDarkMode, selectLanguageTrack } = useAppStore();
+  const { profile, isDarkMode, selectLanguageTrack, updatePersonalInfo } = useAppStore();
   const { googleUser, logout } = useAuthStore();
   const { friends, setActiveChatFriendId } = useFriendsStore();
   const { t } = useTranslation();
@@ -58,6 +62,7 @@ export const ProfilePageView: React.FC = () => {
   const [activeSubNav, setActiveSubNav] = useState<SubNavTab>('profile');
   const [activeContentTab, setActiveContentTab] = useState<ContentSubTab>('about');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editModalInitialTab, setEditModalInitialTab] = useState<'visuals' | 'about' | 'info'>('visuals');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const personal = profile.personalInfo || {
@@ -81,6 +86,12 @@ export const ProfilePageView: React.FC = () => {
   };
 
   const displayName = (profile.name || googleUser?.name || 'ALEXANDER MICHAEL TOLOSA').toUpperCase();
+  const userAvatar = profile.avatarUrl || personal.avatarUrl || googleUser?.picture;
+  const userBanner = profile.bannerUrl || personal.bannerUrl || 'linear-gradient(135deg, #1b6875 0%, #2ea2b0 35%, #1e7887 70%, #155561 100%)';
+  const isBannerGradient = userBanner.startsWith('linear-gradient') || !userBanner;
+  const bannerBackground = userBanner
+    ? (isBannerGradient ? userBanner : `url("${userBanner}") center/cover no-repeat`)
+    : 'linear-gradient(135deg, #1b6875 0%, #2ea2b0 35%, #1e7887 70%, #155561 100%)';
 
   const enrolledCourses = [
     {
@@ -325,27 +336,42 @@ export const ProfilePageView: React.FC = () => {
               <div className={`rounded-3xl border overflow-hidden shadow-2xl transition-colors ${
                 isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
               }`}>
-                {/* Polygonal Cyan Geometric Banner Texture */}
+                {/* Polygonal Cyan Geometric or Custom Banner Texture */}
                 <div
-                  className="h-36 sm:h-44 relative overflow-hidden flex items-start justify-end p-4"
+                  className="h-36 sm:h-44 relative overflow-hidden flex items-start justify-between p-4 transition-all duration-300 group"
                   style={{
-                    background: 'linear-gradient(135deg, #1b6875 0%, #2ea2b0 35%, #1e7887 70%, #155561 100%)'
+                    background: bannerBackground
                   }}
                 >
-                  {/* Geometric Polygonal Overlay Grid */}
-                  <svg
-                    className="absolute inset-0 w-full h-full opacity-35 mix-blend-overlay"
-                    xmlns="http://www.w3.org/2000/svg"
+                  {/* Geometric Polygonal Overlay Grid if gradient */}
+                  {isBannerGradient && (
+                    <svg
+                      className="absolute inset-0 w-full h-full opacity-35 mix-blend-overlay pointer-events-none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <defs>
+                        <pattern id="polyGrid" width="60" height="60" patternUnits="userSpaceOnUse">
+                          <path d="M 60 0 L 0 0 0 60 Z" fill="rgba(255,255,255,0.06)" />
+                          <path d="M 60 60 L 60 0 0 60 Z" fill="rgba(0,0,0,0.06)" />
+                          <path d="M 0 0 L 60 60" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+                        </pattern>
+                      </defs>
+                      <rect width="100%" height="100%" fill="url(#polyGrid)" />
+                    </svg>
+                  )}
+
+                  {/* Change Banner Action Button */}
+                  <button
+                    onClick={() => {
+                      setEditModalInitialTab('visuals');
+                      setIsEditModalOpen(true);
+                    }}
+                    className="relative z-10 px-3 py-1.5 rounded-full bg-slate-900/70 hover:bg-slate-900/90 backdrop-blur-md border border-white/20 text-slate-200 text-xs font-bold tracking-wide shadow-sm flex items-center gap-1.5 cursor-pointer hover:scale-105 transition-all"
+                    title="Change Profile Banner"
                   >
-                    <defs>
-                      <pattern id="polyGrid" width="60" height="60" patternUnits="userSpaceOnUse">
-                        <path d="M 60 0 L 0 0 0 60 Z" fill="rgba(255,255,255,0.06)" />
-                        <path d="M 60 60 L 60 0 0 60 Z" fill="rgba(0,0,0,0.06)" />
-                        <path d="M 0 0 L 60 60" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#polyGrid)" />
-                  </svg>
+                    <Camera size={13} />
+                    <span>Edit Banner</span>
+                  </button>
 
                   {/* Student Pill Badge (Upper Right) */}
                   <div className="relative z-10 px-3.5 py-1 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/20 text-slate-200 text-xs font-bold tracking-wide shadow-sm">
@@ -356,12 +382,12 @@ export const ProfilePageView: React.FC = () => {
                 {/* Overlapping Avatar & User Metadata */}
                 <div className="px-6 pb-6 pt-0 relative">
                   <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 mb-4">
-                    {/* Circle Avatar with Cyan Gradient Ring */}
-                    <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] shadow-2xl shrink-0">
+                    {/* Circle Avatar with Cyan Gradient Ring & Camera Edit Badge */}
+                    <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] shadow-2xl shrink-0 group">
                       <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/40 flex items-center justify-center">
-                        {googleUser?.picture ? (
+                        {userAvatar ? (
                           <img
-                            src={googleUser.picture}
+                            src={userAvatar}
                             alt={displayName}
                             className="w-full h-full object-cover"
                           />
@@ -399,11 +425,26 @@ export const ProfilePageView: React.FC = () => {
                           </svg>
                         )}
                       </div>
+
+                      {/* Direct Edit Avatar Badge Button */}
+                      <button
+                        onClick={() => {
+                          setEditModalInitialTab('visuals');
+                          setIsEditModalOpen(true);
+                        }}
+                        className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#F06543] hover:bg-[#e05432] text-white border-2 border-white shadow-lg flex items-center justify-center cursor-pointer transition-transform hover:scale-110"
+                        title="Change Profile Picture"
+                      >
+                        <Camera size={14} />
+                      </button>
                     </div>
 
                     {/* Red "Edit" Button (Matching Screenshot) */}
                     <button
-                      onClick={() => setIsEditModalOpen(true)}
+                      onClick={() => {
+                        setEditModalInitialTab('visuals');
+                        setIsEditModalOpen(true);
+                      }}
                       className="px-5 py-2 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer self-start sm:self-end"
                     >
                       <Edit size={14} />
@@ -458,12 +499,23 @@ export const ProfilePageView: React.FC = () => {
                 <div className="space-y-6">
                   {/* About Member Text */}
                   <div className={`p-6 rounded-3xl border space-y-3 transition-colors ${
-                    isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
+                    isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200 shadow-xs'
                   }`}>
-                    <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
-                      About
-                    </h3>
-                    <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'} leading-relaxed`}>
+                    <div className="flex items-center justify-between">
+                      <h3 className={`font-display font-black text-base ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                        About
+                      </h3>
+                      <button
+                        onClick={() => {
+                          setEditModalInitialTab('visuals');
+                          setIsEditModalOpen(true);
+                        }}
+                        className="text-xs font-bold text-[#e11d48] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <Edit size={13} /> Edit About
+                      </button>
+                    </div>
+                    <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'} leading-relaxed whitespace-pre-line`}>
                       {personal.bio || 'There is currently no information about this member.'}
                     </p>
                   </div>
@@ -661,18 +713,169 @@ export const ProfilePageView: React.FC = () => {
           )}
 
           {activeSubNav === 'photos' && (
-            <div className={`p-6 rounded-3xl border space-y-4 ${
-              isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200'
+            <div className={`p-6 rounded-3xl border space-y-6 ${
+              isDarkMode ? 'bg-[#0f1422] border-[#1d273d]' : 'bg-white border-slate-200 shadow-xs'
             }`}>
-              <h3 className="font-display font-black text-lg text-slate-100 flex items-center gap-2">
-                <ImageIcon size={20} className="text-amber-400" /> Academic & Campus Photos
-              </h3>
-              <div className="grid grid-cols-3 gap-3 pt-2">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="aspect-video rounded-2xl bg-gradient-to-tr from-slate-800 to-slate-700 flex items-center justify-center text-slate-400 text-xs font-bold border border-slate-700">
-                    CLASE Event #{item}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className={`font-display font-black text-lg flex items-center gap-2 ${
+                    isDarkMode ? 'text-slate-100' : 'text-slate-900'
+                  }`}>
+                    <ImageIcon size={20} className="text-amber-500" /> Profile Media & Gallery
+                  </h3>
+                  <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                    Manage your profile pictures, custom cover banners, and preset visual themes.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setEditModalInitialTab('visuals');
+                    setIsEditModalOpen(true);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#F06543] to-[#ea580c] hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+                >
+                  <Upload size={14} /> Upload Custom Files
+                </button>
+              </div>
+
+              {/* Current Active Media Summary */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className={`p-4 rounded-2xl border space-y-3 ${
+                  isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase text-sky-500">Active Profile Picture</span>
+                    <button
+                      onClick={() => {
+                        setEditModalInitialTab('visuals');
+                        setIsEditModalOpen(true);
+                      }}
+                      className={`text-[10px] font-bold underline cursor-pointer ${
+                        isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Change
+                    </button>
                   </div>
-                ))}
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-sky-400/50 shadow-md bg-slate-950 flex items-center justify-center shrink-0">
+                      {userAvatar ? (
+                        <img src={userAvatar} alt="Active Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs font-bold text-sky-300">Default</span>
+                      )}
+                    </div>
+                    <div>
+                      <h4 className={`font-bold text-xs truncate max-w-[180px] ${
+                        isDarkMode ? 'text-white' : 'text-slate-900'
+                      }`}>{displayName}</h4>
+                      <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Custom user picture
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`p-4 rounded-2xl border space-y-3 ${
+                  isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase text-emerald-500">Active Cover Banner</span>
+                    <button
+                      onClick={() => {
+                        setEditModalInitialTab('visuals');
+                        setIsEditModalOpen(true);
+                      }}
+                      className={`text-[10px] font-bold underline cursor-pointer ${
+                        isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Change
+                    </button>
+                  </div>
+                  <div
+                    className="h-14 rounded-xl border border-white/10 overflow-hidden relative shadow-sm"
+                    style={{ background: bannerBackground }}
+                  >
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-between px-3">
+                      <span className="text-[10px] font-bold text-white drop-shadow-sm">Theme Active</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Avatar Presets Gallery Grid */}
+              <div className="space-y-3 pt-2">
+                <span className={`text-xs font-black uppercase flex items-center gap-1.5 ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                }`}>
+                  <Sparkles size={14} className="text-amber-500" /> Avatar Presets Gallery (Click to Apply)
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {AVATAR_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      onClick={() => updatePersonalInfo({ avatarUrl: preset.url })}
+                      className={`p-3 rounded-2xl border flex items-center gap-3 transition-all cursor-pointer ${
+                        profile.avatarUrl === preset.url
+                          ? 'bg-[#F06543]/20 border-[#F06543] ring-1 ring-[#F06543]/50 shadow-sm'
+                          : isDarkMode
+                          ? 'bg-slate-900/60 border-slate-800 hover:border-slate-600 hover:scale-[1.02]'
+                          : 'bg-slate-50 border-slate-200 hover:border-slate-400 hover:scale-[1.02]'
+                      }`}
+                    >
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-white/20 shrink-0 bg-slate-950">
+                        <img src={preset.url} alt={preset.name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="text-left overflow-hidden">
+                        <h4 className={`font-bold text-xs truncate ${
+                          isDarkMode ? 'text-white' : 'text-slate-900'
+                        }`}>{preset.name}</h4>
+                        <span className={`text-[10px] ${
+                          isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                        }`}>{preset.category}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Banner Presets Gallery Grid */}
+              <div className="space-y-3 pt-2">
+                <span className={`text-xs font-black uppercase flex items-center gap-1.5 ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                }`}>
+                  <Palette size={14} className="text-sky-500" /> Banner Theme Presets (Click to Apply)
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {BANNER_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      onClick={() => updatePersonalInfo({ bannerUrl: preset.gradient })}
+                      className={`p-3 rounded-2xl border text-left flex flex-col justify-between h-20 transition-all cursor-pointer relative overflow-hidden ${
+                        profile.bannerUrl === preset.gradient
+                          ? 'border-sky-400 ring-2 ring-sky-400/50 shadow-md scale-[1.02]'
+                          : 'border-slate-800 hover:border-slate-600 hover:scale-[1.02]'
+                      }`}
+                      style={{ background: preset.gradient }}
+                    >
+                      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                      <div className="relative z-10 flex items-center justify-between w-full">
+                        <span className="text-[9px] font-black uppercase text-white/90 bg-black/40 px-2 py-0.5 rounded-full">
+                          {preset.category}
+                        </span>
+                        {profile.bannerUrl === preset.gradient && (
+                          <span className="w-4 h-4 rounded-full bg-white text-sky-600 flex items-center justify-center shadow-xs">
+                            <CheckCircle2 size={12} />
+                          </span>
+                        )}
+                      </div>
+                      <span className="relative z-10 text-[11px] font-black text-white drop-shadow-md truncate">
+                        {preset.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -781,6 +984,7 @@ export const ProfilePageView: React.FC = () => {
       <EditProfileModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
+        initialTab={editModalInitialTab}
       />
 
       {/* Log Out Confirmation Modal */}

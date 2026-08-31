@@ -1,15 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check, User, Mail, Phone, BookOpen, GraduationCap, MapPin, Calendar, HeartHandshake } from 'lucide-react';
+import {
+  X,
+  Check,
+  User,
+  Mail,
+  Phone,
+  BookOpen,
+  GraduationCap,
+  MapPin,
+  Calendar,
+  HeartHandshake,
+  Image as ImageIcon,
+  Upload,
+  Sparkles,
+  Camera,
+  RotateCcw,
+  Palette,
+  Eye,
+  FileText,
+  Quote
+} from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { AVATAR_PRESETS, BANNER_PRESETS } from '../../lib/profilePresets';
 
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialTab?: 'visuals' | 'about' | 'info';
 }
 
-export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose }) => {
+const BIO_TEMPLATES = [
+  "Polyglot in training mastering Korean Hangul & Japanese Kana. Passionate about cross-cultural communication and linguistics! 🌏✨",
+  "BSIT student at CLASE building language learning tools with AI assistance. Exploring Asian writing scripts daily! 💻📚",
+  "Lifelong learner dedicated to expanding vocabulary and fluency. Aiming for daily study streaks with Kleo! 🐾🔥"
+];
+
+export const EditProfileModal: React.FC<EditProfileModalProps> = ({
+  isOpen,
+  onClose,
+  initialTab = 'visuals'
+}) => {
   const { profile, isDarkMode, updatePersonalInfo } = useAppStore();
+
+  const [activeTab, setActiveTab] = useState<'visuals' | 'about' | 'info'>(initialTab);
 
   const personal = profile.personalInfo || {
     fullName: profile.name || 'ALEXANDER MICHAEL TOLOSA',
@@ -31,8 +65,23 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onCl
     lastActivity: '3 hours ago'
   };
 
+  const [displayName, setDisplayName] = useState(profile.name || personal.fullName || 'ALEXANDER MICHAEL TOLOSA');
+  const [avatarUrl, setAvatarUrl] = useState<string>(profile.avatarUrl || personal.avatarUrl || '');
+  const [bannerUrl, setBannerUrl] = useState<string>(profile.bannerUrl || personal.bannerUrl || '');
+  const [bio, setBio] = useState<string>(personal.bio || '');
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+      setDisplayName(profile.name || personal.fullName || 'ALEXANDER MICHAEL TOLOSA');
+      setAvatarUrl(profile.avatarUrl || personal.avatarUrl || '');
+      setBannerUrl(profile.bannerUrl || personal.bannerUrl || '');
+      setBio(personal.bio || '');
+    }
+  }, [isOpen, initialTab, profile.name, profile.avatarUrl, profile.bannerUrl, personal.bio]);
+
   const [formData, setFormData] = useState({
-    fullName: personal.fullName,
+    fullName: personal.fullName || profile.name,
     studentId: personal.studentId,
     department: personal.department,
     program: personal.program,
@@ -41,21 +90,67 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onCl
     phone: personal.phone,
     dateOfBirth: personal.dateOfBirth,
     address: personal.address,
-    bio: personal.bio,
     emergencyName: personal.emergencyContact?.name || '',
     emergencyRelationship: personal.emergencyContact?.relationship || '',
     emergencyPhone: personal.emergencyContact?.phone || ''
   });
 
   const [savedToast, setSavedToast] = useState(false);
+  const avatarFileInputRef = useRef<HTMLInputElement>(null);
+  const bannerFileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
 
+  // Handle avatar file upload from disk
+  const handleAvatarFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size exceeds 5MB. Please choose a smaller image.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      if (result) {
+        setAvatarUrl(result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Handle banner file upload from disk
+  const handleBannerFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert('File size exceeds 8MB. Please choose a smaller image.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      if (result) {
+        setBannerUrl(result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const finalName = displayName.trim() || formData.fullName.trim() || 'Learner';
+
     updatePersonalInfo({
-      name: formData.fullName,
-      fullName: formData.fullName,
+      name: finalName,
+      fullName: formData.fullName.trim() || finalName,
+      avatarUrl: avatarUrl || undefined,
+      bannerUrl: bannerUrl || undefined,
+      bio: bio.trim() || 'There is currently no information about this member.',
       studentId: formData.studentId,
       department: formData.department,
       program: formData.program,
@@ -64,7 +159,6 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onCl
       phone: formData.phone,
       dateOfBirth: formData.dateOfBirth,
       address: formData.address,
-      bio: formData.bio,
       emergencyContact: {
         name: formData.emergencyName,
         relationship: formData.emergencyRelationship,
@@ -76,194 +170,347 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onCl
     setTimeout(() => {
       setSavedToast(false);
       onClose();
-    }, 800);
+    }, 700);
   };
 
+  // Compute banner style for live preview
+  const isBannerGradient = bannerUrl.startsWith('linear-gradient') || !bannerUrl;
+  const bannerBackground = bannerUrl
+    ? (isBannerGradient ? bannerUrl : `url("${bannerUrl}") center/cover no-repeat`)
+    : 'linear-gradient(135deg, #1b6875 0%, #2ea2b0 35%, #1e7887 70%, #155561 100%)';
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4 animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-5 animate-fadeIn select-none">
       <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.95, opacity: 0 }}
-        className={`w-full max-w-2xl max-h-[90vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden ${
-          isDarkMode ? 'bg-[#0f1422] border-[#222d46] text-white' : 'bg-white border-slate-200 text-slate-900'
+        initial={{ scale: 0.94, opacity: 0, y: 15 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.94, opacity: 0, y: 15 }}
+        className={`w-full max-w-3xl max-h-[92vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden transition-colors ${
+          isDarkMode ? 'bg-[#0e1322] border-[#222d46] text-white' : 'bg-white border-slate-200 text-slate-900'
         }`}
       >
-        {/* Header */}
-        <div className="p-5 border-b border-slate-700/40 flex items-center justify-between bg-slate-900/40">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#F06543]/20 text-[#F06543] flex items-center justify-center">
-              <User size={18} />
+        {/* Modal Top Header */}
+        <div className="p-4 sm:p-5 border-b border-slate-700/40 flex items-center justify-between bg-slate-900/50">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#F06543] to-[#ff845e] text-white flex items-center justify-center shadow-md">
+              <Camera size={18} />
             </div>
             <div>
-              <h3 className="font-extrabold text-sm text-slate-100">Edit Member Profile & Personal Info</h3>
-              <p className="text-[11px] text-slate-400">Update your student information and profile bio</p>
+              <h3 className="font-extrabold text-sm sm:text-base text-slate-100 flex items-center gap-2">
+                <span>Edit Profile</span>
+              </h3>
+              <p className="text-[11px] text-slate-400">Customize your profile picture, banner, display name, and about bio</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Scrollable Form */}
-        <form onSubmit={handleSubmit} className="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs">
-          {/* Full Name & Student ID */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label className="font-bold text-slate-300 block mb-1">Full Student Name</label>
-              <input
-                type="text"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                required
-                className={`w-full px-3.5 py-2.5 rounded-xl border outline-none ${
-                  isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                }`}
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-300 block mb-1">Student ID Number</label>
-              <input
-                type="text"
-                value={formData.studentId}
-                onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
-                required
-                className={`w-full px-3.5 py-2.5 rounded-xl border outline-none ${
-                  isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                }`}
-              />
-            </div>
+        {/* Single "Profile" Tab Label */}
+        <div className="px-5 pt-3 border-b border-slate-700/30 flex items-center gap-2 bg-slate-950/20">
+          <div className="pb-2.5 px-3.5 text-xs font-black tracking-wide border-b-2 border-[#F06543] text-[#F06543] flex items-center gap-1.5">
+            <User size={15} />
+            <span>Profile</span>
+          </div>
+        </div>
+
+        {/* Real-time Interactive Profile Header Preview */}
+        <div className="p-4 sm:p-5 bg-slate-950/40 border-b border-slate-800/60">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
+              <Eye size={12} className="text-sky-400" /> Live Preview
+            </span>
+            <span className="text-[10px] font-bold text-emerald-400">Updates in real-time</span>
           </div>
 
-          {/* Department & Program */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label className="font-bold text-slate-300 block mb-1">College / Department</label>
-              <input
-                type="text"
-                value={formData.department}
-                onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                required
-                className={`w-full px-3.5 py-2.5 rounded-xl border outline-none ${
-                  isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                }`}
-              />
+          <div className="rounded-2xl border border-white/10 overflow-hidden shadow-lg bg-[#111728] relative">
+            {/* Banner Preview Area */}
+            <div
+              className="h-24 sm:h-28 relative overflow-hidden flex items-start justify-end p-3 transition-all duration-300"
+              style={{ background: bannerBackground }}
+            >
+              <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+              <div className="relative z-10 px-2.5 py-0.5 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/20 text-slate-200 text-[10px] font-bold">
+                Student
+              </div>
             </div>
-            <div>
-              <label className="font-bold text-slate-300 block mb-1">Degree Program</label>
-              <input
-                type="text"
-                value={formData.program}
-                onChange={(e) => setFormData({ ...formData, program: e.target.value })}
-                required
-                className={`w-full px-3.5 py-2.5 rounded-xl border outline-none ${
-                  isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                }`}
-              />
+
+            {/* Avatar & Display Name Overlap */}
+            <div className="px-4 pb-3 pt-0 relative flex items-end justify-between">
+              <div className="flex items-end gap-3 -mt-10 sm:-mt-12">
+                <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full p-1 bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] shadow-xl shrink-0">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border-2 border-white/50 flex items-center justify-center">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="Preview Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <svg viewBox="0 0 100 100" className="w-full h-full object-cover" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="50" fill="#38BDF8" />
+                        <path d="M 22 92 C 22 75 35 68 50 68 C 65 68 78 75 78 92 Z" fill="#10B981" />
+                        <rect x="44" y="52" width="12" height="18" fill="#8D5B4C" />
+                        <ellipse cx="50" cy="46" rx="16" ry="18" fill="#8D5B4C" />
+                        <path d="M 44 54 Q 50 60 56 54" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                        <path d="M 33 42 C 33 28 42 22 50 22 C 58 22 67 28 67 42 C 67 33 60 28 50 28 C 40 28 33 33 33 42 Z" fill="#1F2937" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mb-1">
+                  <h4 className="font-display font-black text-sm sm:text-base text-white tracking-wide uppercase truncate max-w-[220px] sm:max-w-[320px]">
+                    {displayName || 'ALEXANDER MICHAEL TOLOSA'}
+                  </h4>
+                  <p className="text-[10px] font-bold text-sky-400 truncate max-w-[240px]">
+                    {formData.department || 'CLASE Student'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Email & Phone */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label className="font-bold text-slate-300 block mb-1">Institutional Email</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                className={`w-full px-3.5 py-2.5 rounded-xl border outline-none ${
-                  isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                }`}
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-300 block mb-1">Mobile Contact Phone</label>
-              <input
-                type="text"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                required
-                className={`w-full px-3.5 py-2.5 rounded-xl border outline-none ${
-                  isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                }`}
-              />
-            </div>
-          </div>
-
-          {/* Bio / About */}
-          <div>
-            <label className="font-bold text-slate-300 block mb-1">About / Member Biography</label>
-            <textarea
-              value={formData.bio}
-              onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-              rows={3}
-              className={`w-full px-3.5 py-2.5 rounded-xl border outline-none resize-none ${
-                isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
+        {/* Scrollable Form Content — Single unified section */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-xs no-scrollbar">
+          {/* Section 1: Display Name */}
+          <div className={`p-4 sm:p-5 rounded-2xl border space-y-2 ${
+            isDarkMode ? 'bg-[#121829] border-slate-800' : 'bg-slate-50 border-slate-200'
+          }`}>
+            <label className={`font-black text-xs uppercase tracking-wider block ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+              Display Name
+            </label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="e.g. ALEXANDER MICHAEL TOLOSA"
+              required
+              className={`w-full px-4 py-2.5 rounded-xl border font-extrabold text-sm outline-none transition-all ${
+                isDarkMode ? 'bg-[#161f33] border-slate-700 text-white focus:border-[#F06543]' : 'bg-white border-slate-300 text-slate-900 focus:border-[#F06543]'
               }`}
             />
           </div>
 
-          {/* Emergency Contact */}
-          <div className="pt-2 border-t border-slate-800/60">
-            <h4 className="font-extrabold text-xs text-sky-400 mb-2 flex items-center gap-1.5">
-              <HeartHandshake size={14} /> Emergency Guardian Information
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label className="text-[10px] font-bold text-slate-400 block mb-1">Contact Person</label>
-                <input
-                  type="text"
-                  value={formData.emergencyName}
-                  onChange={(e) => setFormData({ ...formData, emergencyName: e.target.value })}
-                  className={`w-full px-3 py-2 rounded-xl border outline-none ${
-                    isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                  }`}
-                />
+          {/* Section 2: About Me / Bio */}
+          <div className={`p-4 sm:p-5 rounded-2xl border space-y-3 ${
+            isDarkMode ? 'bg-[#121829] border-slate-800' : 'bg-slate-50 border-slate-200'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileText size={16} className="text-[#e11d48]" />
+                <label className={`font-black text-xs uppercase tracking-wider block ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                  About Me / Bio
+                </label>
               </div>
-              <div>
-                <label className="text-[10px] font-bold text-slate-400 block mb-1">Relationship</label>
-                <input
-                  type="text"
-                  value={formData.emergencyRelationship}
-                  onChange={(e) => setFormData({ ...formData, emergencyRelationship: e.target.value })}
-                  className={`w-full px-3 py-2 rounded-xl border outline-none ${
-                    isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                  }`}
-                />
+              <span className="text-[11px] text-slate-400 font-mono">
+                {bio.length} characters
+              </span>
+            </div>
+
+            <textarea
+              rows={3}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Share a short bio, your language goals, or background story..."
+              className={`w-full p-4 rounded-xl border font-sans text-xs leading-relaxed outline-none transition-all resize-none ${
+                isDarkMode ? 'bg-[#161f33] border-slate-700 text-white focus:border-[#e11d48]' : 'bg-white border-slate-300 text-slate-900 focus:border-[#e11d48]'
+              }`}
+            />
+          </div>
+
+          {/* Section 3: Profile Picture (Avatar) */}
+          <div className={`p-4 sm:p-5 rounded-2xl border space-y-4 ${
+            isDarkMode ? 'bg-[#121829] border-slate-800' : 'bg-slate-50 border-slate-200'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Camera size={16} className="text-[#F06543]" />
+                <h4 className={`font-black text-xs uppercase tracking-wider ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>Profile Picture</h4>
               </div>
-              <div>
-                <label className="text-[10px] font-bold text-slate-400 block mb-1">Emergency Phone</label>
+              {avatarUrl && (
+                <button
+                  type="button"
+                  onClick={() => setAvatarUrl('')}
+                  className="text-[11px] font-bold text-rose-400 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <RotateCcw size={12} /> Reset to Default
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              {/* Avatar Preview Thumbnail */}
+              <div className="relative w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] shrink-0 shadow-md">
+                <div className="w-full h-full rounded-full overflow-hidden bg-[#161a26] border border-white/40 flex items-center justify-center">
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="Current" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[10px] font-bold text-sky-300">Default</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Actions: Upload File */}
+              <div className="flex-1 space-y-2 w-full">
                 <input
-                  type="text"
-                  value={formData.emergencyPhone}
-                  onChange={(e) => setFormData({ ...formData, emergencyPhone: e.target.value })}
-                  className={`w-full px-3 py-2 rounded-xl border outline-none ${
-                    isDarkMode ? 'bg-[#161f33] border-slate-700 text-white' : 'bg-slate-50 border-slate-300'
-                  }`}
+                  type="file"
+                  ref={avatarFileInputRef}
+                  onChange={handleAvatarFileUpload}
+                  accept="image/*"
+                  className="hidden"
                 />
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => avatarFileInputRef.current?.click()}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#F06543] to-[#ea580c] hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                  >
+                    <Upload size={14} /> Upload from Files
+                  </button>
+                  <span className="text-[11px] text-slate-400">Supports JPG, PNG, WEBP, SVG (Max 5MB)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Avatar Gallery Presets */}
+            <div className="space-y-2 pt-2 border-t border-slate-700/30">
+              <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1">
+                <Sparkles size={13} className="text-amber-400" /> Or Choose from Avatar Gallery Presets:
+              </span>
+              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2.5">
+                {AVATAR_PRESETS.map((preset) => {
+                  const isSelected = avatarUrl === preset.url;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => setAvatarUrl(preset.url)}
+                      className={`p-1.5 rounded-2xl border flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#F06543]/20 border-[#F06543] ring-2 ring-[#F06543]/40 shadow-sm scale-105'
+                          : isDarkMode
+                          ? 'bg-[#0f1422] border-slate-800 hover:border-slate-600 hover:scale-102'
+                          : 'bg-white border-slate-200 hover:border-slate-400 hover:scale-102'
+                      }`}
+                      title={preset.name}
+                    >
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-white/20 shadow-xs bg-slate-900">
+                        <img src={preset.url} alt={preset.name} className="w-full h-full object-cover" />
+                      </div>
+                      <span className="text-[9px] font-bold truncate max-w-full text-center">
+                        {preset.name.split(' ')[0]}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
 
-          {/* Footer Actions */}
-          <div className="pt-4 border-t border-slate-700/40 flex items-center justify-end gap-2">
+          {/* Section 4: Profile Cover Banner */}
+          <div className={`p-4 sm:p-5 rounded-2xl border space-y-4 ${
+            isDarkMode ? 'bg-[#121829] border-slate-800' : 'bg-slate-50 border-slate-200'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ImageIcon size={16} className="text-sky-400" />
+                <h4 className={`font-black text-xs uppercase tracking-wider ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>Profile Cover Banner</h4>
+              </div>
+              {bannerUrl && (
+                <button
+                  type="button"
+                  onClick={() => setBannerUrl('')}
+                  className="text-[11px] font-bold text-rose-400 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <RotateCcw size={12} /> Reset to Default
+                </button>
+              )}
+            </div>
+
+            {/* Upload Button */}
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                type="file"
+                ref={bannerFileInputRef}
+                onChange={handleBannerFileUpload}
+                accept="image/*"
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => bannerFileInputRef.current?.click()}
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0369a1] hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              >
+                <Upload size={14} /> Upload Banner Image / Photo
+              </button>
+              <span className="text-[11px] text-slate-400">Supports high-res widescreen photos & wallpapers (Max 8MB)</span>
+            </div>
+
+            {/* Banner Gallery Presets */}
+            <div className="space-y-2 pt-2 border-t border-slate-700/30">
+              <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1">
+                <Sparkles size={13} className="text-amber-400" /> Or Choose from Theme Banner Presets:
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {BANNER_PRESETS.map((preset) => {
+                  const isSelected = bannerUrl === preset.gradient;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => setBannerUrl(preset.gradient)}
+                      className={`p-2 rounded-2xl border text-left flex flex-col justify-between h-20 transition-all cursor-pointer overflow-hidden relative ${
+                        isSelected
+                          ? 'border-sky-400 ring-2 ring-sky-400/50 shadow-md scale-[1.02]'
+                          : isDarkMode
+                          ? 'border-slate-800 hover:border-slate-600 hover:scale-[1.01]'
+                          : 'border-slate-200 hover:border-slate-400 hover:scale-[1.01]'
+                      }`}
+                      style={{ background: preset.gradient }}
+                    >
+                      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                      <div className="relative z-10 flex items-center justify-between w-full">
+                        <span className="text-[9px] font-black uppercase text-white/90 bg-black/40 px-2 py-0.5 rounded-full backdrop-blur-xs">
+                          {preset.category}
+                        </span>
+                        {isSelected && (
+                          <span className="w-4 h-4 rounded-full bg-white text-sky-600 flex items-center justify-center shadow-xs">
+                            <Check size={10} strokeWidth={3} />
+                          </span>
+                        )}
+                      </div>
+                      <span className="relative z-10 text-[11px] font-black text-white drop-shadow-md truncate">
+                        {preset.name}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Save & Cancel Buttons */}
+          <div className="pt-4 border-t border-slate-700/40 flex items-center justify-between gap-3 sticky bottom-0 bg-[#0e1322]/95 backdrop-blur-md">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer transition-colors"
+              className="px-5 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#e11d48] to-[#be123c] hover:brightness-110 text-white text-xs font-extrabold shadow-lg transition-all flex items-center gap-2 cursor-pointer"
             >
-              <Check size={16} />
-              <span>Save Changes</span>
+              {savedToast ? (
+                <>
+                  <Check size={16} /> Saved!
+                </>
+              ) : (
+                'Save Changes'
+              )}
             </button>
           </div>
         </form>

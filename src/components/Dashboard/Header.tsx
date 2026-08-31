@@ -126,7 +126,7 @@ export const TopAppBar: React.FC<HeaderProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const userName = googleUser?.name || profile.name || 'Learner';
+  const userName = profile.name || profile.personalInfo?.fullName || googleUser?.name || 'Learner';
 
   const handlePrint = () => {
     setIsProfileMenuOpen(false);
@@ -207,9 +207,9 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-[#38bdf8] to-[#22d3ee] p-0.5 shadow-md flex items-center justify-center overflow-hidden border border-white/40 cursor-pointer hover:scale-105 transition-transform"
                   title="View Profile"
                 >
-                  {googleUser?.picture ? (
+                  {(profile.avatarUrl || profile.personalInfo?.avatarUrl || googleUser?.picture) ? (
                     <img
-                      src={googleUser.picture}
+                      src={profile.avatarUrl || profile.personalInfo?.avatarUrl || googleUser?.picture}
                       alt={userName}
                       className="w-full h-full object-cover rounded-full"
                     />

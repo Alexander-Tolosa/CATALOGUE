@@ -10,8 +10,6 @@ import {
   ArrowRight,
   Search,
   BookOpen,
-  Star,
-  Award,
   Layers,
   Volume2
 } from 'lucide-react';
@@ -246,13 +244,6 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
             isDarkMode ? 'text-white' : 'text-slate-900'
           }`}>
             {t.script.title}
-            <span className={`text-xs font-mono font-normal px-3 py-1 rounded-full border ${
-              isDarkMode
-                ? 'bg-cyan-950/80 border-cyan-500/40 text-cyan-300'
-                : 'bg-sky-50 border-sky-200 text-sky-700 font-semibold'
-            }`}>
-              {language === 'ko' ? 'Korean (한글 40자)' : language === 'ja' ? 'Japanese (五十音 46자)' : 'English (Alphabet A-Z)'}
-            </span>
           </h2>
 
           <p className={`text-xs mt-1 flex items-center gap-2 ${
@@ -268,38 +259,8 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
           </p>
         </div>
 
-        {/* Level Progression & Action Button */}
+        {/* Action Button */}
         <div className="flex flex-wrap items-center gap-4">
-          <div className={`px-4 py-2.5 rounded-2xl flex items-center gap-4 border transition-colors ${
-            isDarkMode
-              ? 'bg-slate-900/90 border-slate-800 shadow-inner'
-              : 'bg-stone-50/90 border-stone-200 shadow-xs'
-          }`}>
-            <div className="flex flex-col items-start">
-              <div className={`flex items-center gap-1.5 text-xs font-bold ${
-                isDarkMode ? 'text-slate-200' : 'text-slate-800'
-              }`}>
-                <Award className="text-amber-500 shrink-0" size={16} />
-                <span>Language Level: 1 - Foundational</span>
-              </div>
-              <div className={`text-[10px] font-mono mt-0.5 ${
-                isDarkMode ? 'text-slate-400' : 'text-slate-500'
-              }`}>
-                Total Script Letters: <span className={`font-bold ${isDarkMode ? 'text-cyan-300' : 'text-sky-600'}`}>{masterListItems.length}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map(star => (
-                <Star
-                  key={star}
-                  size={14}
-                  className="fill-amber-400 text-amber-400"
-                />
-              ))}
-            </div>
-          </div>
-
           <button
             onClick={onFinishFoundations}
             className="glass-button btn-primary text-xs font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white shadow-lg shadow-sky-500/20 transition-transform active:scale-95 cursor-pointer"

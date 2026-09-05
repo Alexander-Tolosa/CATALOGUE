@@ -6,11 +6,8 @@ import { KOREAN_FOUNDATIONS } from '../../data/koreanData';
 import { JAPANESE_FOUNDATIONS } from '../../data/japaneseData';
 import { ENGLISH_FOUNDATIONS } from '../../data/englishData';
 import {
-  Globe,
   ArrowRight,
-  Search,
   BookOpen,
-  Layers,
   Volume2
 } from 'lucide-react';
 
@@ -66,10 +63,6 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
     language === 'ko' ? 'Go / Sentence start' : language === 'ja' ? 'Hiragana vowel A' : 'Letter A (Apple)'
   );
 
-  // Search & Category Filter for Master List
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-
   // Sync initial selection when language prop changes
   useEffect(() => {
     if (language === 'ko') {
@@ -85,8 +78,6 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
       setSelectedRomanization('[eɪ]');
       setSelectedMeaning('Letter A (Apple)');
     }
-    setCategoryFilter('all');
-    setSearchQuery('');
   }, [language]);
 
   // Compute active composed Hangul block
@@ -265,43 +256,6 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
     return masterSections.flatMap(section => section.items);
   }, [masterSections]);
 
-  // Filtered sections based on search and category
-  const filteredSections = useMemo(() => {
-    return masterSections
-      .map(section => {
-        if (categoryFilter !== 'all') {
-          const filter = categoryFilter.toLowerCase();
-          const matches =
-            section.id.toLowerCase().includes(filter) ||
-            section.title.toLowerCase().includes(filter) ||
-            section.items.some(item => item.category.toLowerCase().includes(filter));
-          if (!matches) return null;
-        }
-
-        const query = searchQuery.trim().toLowerCase();
-        const items = query
-          ? section.items.filter(
-              item =>
-                item.char.toLowerCase().includes(query) ||
-                item.name.toLowerCase().includes(query) ||
-                item.sound.toLowerCase().includes(query)
-            )
-          : section.items;
-
-        if (items.length === 0) return null;
-
-        return {
-          ...section,
-          items
-        };
-      })
-      .filter((s): s is NonNullable<typeof s> => s !== null);
-  }, [masterSections, categoryFilter, searchQuery]);
-
-  const filteredMasterList = useMemo(() => {
-    return filteredSections.flatMap(s => s.items);
-  }, [filteredSections]);
-
   // Subtitle based purely on current active language
   const activeSubtitle =
     language === 'ko'
@@ -328,10 +282,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
         isDarkMode ? 'border-slate-800/80' : 'border-stone-200'
       }`}>
         <div>
-          <div className={`flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest ${
+          <div className={`text-xs font-extrabold uppercase tracking-widest ${
             isDarkMode ? 'text-cyan-400' : 'text-sky-600'
           }`}>
-            <Globe size={15} /> {t.script.title}
+            {t.script.title}
           </div>
 
           <h2 className={`font-brand text-3xl font-extrabold mt-1.5 tracking-tight flex items-center gap-3 ${
@@ -371,10 +325,9 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
           : 'bg-[#FAF8F5] border-[#EDE5DA] shadow-xs'
       }`}>
         <div className="flex items-center justify-between">
-          <div className={`flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider ${
+          <div className={`text-xs font-extrabold uppercase tracking-wider ${
             isDarkMode ? 'text-slate-200' : 'text-slate-800'
           }`}>
-            <Layers size={16} className={isDarkMode ? 'text-cyan-400' : 'text-sky-600'} />
             {language === 'ko' && 'Hangul Syllable Block Constructor'}
             {language === 'ja' && 'Japanese Syllabary & Radical Constructor'}
             {language === 'en' && 'English Alphabet & Phonics Constructor'}
@@ -666,176 +619,29 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
         )}
       </div>
 
-      {/* 3. Full-Width Searchable Script Master List */}
-      <div className={`p-6 rounded-2xl border space-y-5 shadow-xl transition-colors ${
+      {/* 3. Full-Width Script Master List */}
+      <div className={`p-6 sm:p-8 rounded-2xl border space-y-6 shadow-xl transition-colors ${
         isDarkMode
           ? 'bg-slate-900/60 border-slate-800'
           : 'bg-[#FAF8F5] border-[#EDE5DA] shadow-xs'
       }`}>
-        {/* Header + Search Bar + Category Filters */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h3 className={`text-sm font-extrabold uppercase tracking-wider flex items-center gap-2 ${
-              isDarkMode ? 'text-slate-200' : 'text-slate-800'
-            }`}>
-              <BookOpen size={16} className={isDarkMode ? 'text-cyan-400' : 'text-sky-600'} />
-              Script Master List ({filteredMasterList.length})
-            </h3>
-            <p className={`text-xs mt-0.5 ${
-              isDarkMode ? 'text-slate-400' : 'text-slate-500'
-            }`}>
-              Accurate, comprehensive script list. Search and click cards to play audio pronunciation.
-            </p>
-          </div>
-
-          {/* Search Input Box */}
-          <div className="relative w-full sm:w-72">
-            <Search size={16} className={`absolute left-3.5 top-2.5 ${
-              isDarkMode ? 'text-slate-500' : 'text-slate-400'
-            }`} />
-            <input
-              type="text"
-              placeholder="Search by letter or sound..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className={`w-full border rounded-xl pl-9 pr-3 py-2 text-xs transition-colors focus:outline-none ${
-                isDarkMode
-                  ? 'bg-slate-950 border-slate-800 text-slate-200 placeholder-slate-500 focus:border-cyan-500'
-                  : 'bg-white border-stone-200 text-slate-800 placeholder-slate-400 focus:border-sky-500 shadow-2xs'
-              }`}
-            />
-          </div>
+        {/* Header */}
+        <div>
+          <h3 className={`text-sm font-extrabold uppercase tracking-wider flex items-center gap-2 ${
+            isDarkMode ? 'text-slate-200' : 'text-slate-800'
+          }`}>
+            <BookOpen size={16} className={isDarkMode ? 'text-cyan-400' : 'text-sky-600'} />
+            Script Master List ({masterListItems.length})
+          </h3>
+          <p className={`text-xs mt-0.5 ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-500'
+          }`}>
+            Accurate, comprehensive script list. Click cards to play audio pronunciation.
+          </p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-none">
-          <button
-            onClick={() => setCategoryFilter('all')}
-            className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-              categoryFilter === 'all'
-                ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                : isDarkMode
-                ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-            }`}
-          >
-            All Items
-          </button>
-
-          {language === 'ko' && (
-            <>
-              <button
-                onClick={() => setCategoryFilter('consonant')}
-                className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-                  categoryFilter === 'consonant'
-                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                    : isDarkMode
-                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-                }`}
-              >
-                Consonants (19)
-              </button>
-              <button
-                onClick={() => setCategoryFilter('vowel')}
-                className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-                  categoryFilter === 'vowel'
-                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                    : isDarkMode
-                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-                }`}
-              >
-                Vowels (21)
-              </button>
-              <button
-                onClick={() => setCategoryFilter('syllable block')}
-                className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-                  categoryFilter === 'syllable block'
-                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                    : isDarkMode
-                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-                }`}
-              >
-                Syllable Blocks
-              </button>
-            </>
-          )}
-
-          {language === 'ja' && (
-            <>
-              <button
-                onClick={() => setCategoryFilter('hiragana')}
-                className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-                  categoryFilter === 'hiragana'
-                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                    : isDarkMode
-                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-                }`}
-              >
-                Hiragana (46)
-              </button>
-              <button
-                onClick={() => setCategoryFilter('katakana')}
-                className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-                  categoryFilter === 'katakana'
-                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                    : isDarkMode
-                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-                }`}
-              >
-                Katakana (46)
-              </button>
-              <button
-                onClick={() => setCategoryFilter('kanji radical')}
-                className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-                  categoryFilter === 'kanji radical'
-                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                    : isDarkMode
-                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-                }`}
-              >
-                Kanji Radicals
-              </button>
-            </>
-          )}
-
-          {language === 'en' && (
-            <>
-              <button
-                onClick={() => setCategoryFilter('alphabet')}
-                className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-                  categoryFilter === 'alphabet'
-                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                    : isDarkMode
-                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-                }`}
-              >
-                Alphabet A-Z (26)
-              </button>
-              <button
-                onClick={() => setCategoryFilter('phonics')}
-                className={`px-3.5 py-1.5 rounded-xl font-bold shrink-0 transition-colors ${
-                  categoryFilter === 'phonics'
-                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                    : isDarkMode
-                    ? 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    : 'bg-white text-slate-600 hover:text-slate-900 border border-stone-200 shadow-2xs hover:bg-stone-50'
-                }`}
-              >
-                Phonics Pairings
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* Hangul Header (when active language is Korean and no search) */}
-        {language === 'ko' && !searchQuery && categoryFilter === 'all' && (
+        {/* Hangul Header (when active language is Korean) */}
+        {language === 'ko' && (
           <div className="text-center pt-2 pb-1">
             <h3 className={`font-brand text-2xl sm:text-3xl font-extrabold tracking-tight ${
               isDarkMode ? 'text-slate-100' : 'text-slate-800'
@@ -854,7 +660,7 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
         <div className={`space-y-8 max-h-[640px] overflow-y-auto pr-1 scrollbar-thin ${
           isDarkMode ? 'scrollbar-thumb-slate-800' : 'scrollbar-thumb-stone-200'
         }`}>
-          {filteredSections.map(section => (
+          {masterSections.map(section => (
             <div key={section.id} className="space-y-3">
               {/* Section Title */}
               <div className="flex items-center gap-2">

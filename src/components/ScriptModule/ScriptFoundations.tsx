@@ -7,7 +7,6 @@ import { JAPANESE_FOUNDATIONS } from '../../data/japaneseData';
 import { ENGLISH_FOUNDATIONS } from '../../data/englishData';
 import {
   ArrowRight,
-  BookOpen,
   Volume2
 } from 'lucide-react';
 
@@ -494,25 +493,6 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
               </div>
             </div>
 
-            {/* Dynamic Lesson Description Box */}
-            <div className={`p-4 rounded-xl border text-xs space-y-1.5 transition-colors ${
-              isDarkMode
-                ? 'bg-slate-950/80 border-slate-800 text-slate-300'
-                : 'bg-sky-50/80 border-sky-100 text-slate-700 shadow-xs'
-            }`}>
-              <div className={`font-bold flex items-center gap-2 text-sm ${
-                isDarkMode ? 'text-cyan-300' : 'text-sky-800'
-              }`}>
-                <BookOpen size={16} />
-                <span>Lesson: Selected Letter & Block: [{activeSyllableBlock}]</span>
-              </div>
-              <p className={`leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                Korean characters are syllabic blocks created by pairing an initial consonant with a medial vowel.
-                The currently constructed block <span className={`font-bold text-sm ${isDarkMode ? 'text-cyan-300' : 'text-sky-700'}`}>[{activeSyllableBlock}]</span> combines initial consonant{' '}
-                <span className={`font-bold ${isDarkMode ? 'text-sky-400' : 'text-sky-600'}`}>{selectedBlock.consonant}</span> with vowel{' '}
-                <span className={`font-bold ${isDarkMode ? 'text-amber-400' : 'text-amber-600'}`}>{selectedBlock.vowel}</span>. Practice saying this syllable aloud and review its position in words!
-              </p>
-            </div>
           </div>
         )}
 
@@ -546,22 +526,6 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
               ))}
             </div>
 
-            <div className={`p-4 rounded-xl border text-xs space-y-1.5 transition-colors ${
-              isDarkMode
-                ? 'bg-slate-950/80 border-slate-800 text-slate-300'
-                : 'bg-sky-50/80 border-sky-100 text-slate-700 shadow-xs'
-            }`}>
-              <div className={`font-bold flex items-center gap-2 text-sm ${
-                isDarkMode ? 'text-cyan-300' : 'text-sky-800'
-              }`}>
-                <BookOpen size={16} />
-                <span>Lesson: Selected Letter & Block: [{selectedChar}]</span>
-              </div>
-              <p className={`leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                Japanese uses Hiragana for primary phonetic writing, Katakana for foreign loanwords, and Kanji for core concepts.
-                Selected character <span className={`font-bold text-sm ${isDarkMode ? 'text-amber-300' : 'text-amber-600'}`}>[{selectedChar}]</span> represents the phonetic sound <span className={`font-semibold font-mono ${isDarkMode ? 'text-cyan-300' : 'text-sky-700'}`}>"{selectedRomanization}"</span>.
-              </p>
-            </div>
           </div>
         )}
 
@@ -600,21 +564,6 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
               ))}
             </div>
 
-            <div className={`p-4 rounded-xl border text-xs space-y-1.5 transition-colors ${
-              isDarkMode
-                ? 'bg-slate-950/80 border-slate-800 text-slate-300'
-                : 'bg-sky-50/80 border-sky-100 text-slate-700 shadow-xs'
-            }`}>
-              <div className={`font-bold flex items-center gap-2 text-sm ${
-                isDarkMode ? 'text-cyan-300' : 'text-sky-800'
-              }`}>
-                <BookOpen size={16} />
-                <span>Lesson: Selected Letter & Block: [{selectedChar}]</span>
-              </div>
-              <p className={`leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                Official International Phonetic Alphabet (IPA) pronunciation for letter <span className={`font-bold text-sm ${isDarkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>[{selectedChar}]</span>: <span className={`font-bold font-mono ${isDarkMode ? 'text-cyan-300' : 'text-sky-700'}`}>{selectedRomanization}</span>. Example word: <span className={`font-semibold ${isDarkMode ? 'text-amber-300' : 'text-amber-700'}`}>{selectedMeaning}</span>.
-              </p>
-            </div>
           </div>
         )}
       </div>
@@ -627,11 +576,10 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
       }`}>
         {/* Header */}
         <div>
-          <h3 className={`text-sm font-extrabold uppercase tracking-wider flex items-center gap-2 ${
+          <h3 className={`text-sm font-extrabold uppercase tracking-wider ${
             isDarkMode ? 'text-slate-200' : 'text-slate-800'
           }`}>
-            <BookOpen size={16} className={isDarkMode ? 'text-cyan-400' : 'text-sky-600'} />
-            Script Master List ({masterListItems.length})
+            Script Master List
           </h3>
           <p className={`text-xs mt-0.5 ${
             isDarkMode ? 'text-slate-400' : 'text-slate-500'

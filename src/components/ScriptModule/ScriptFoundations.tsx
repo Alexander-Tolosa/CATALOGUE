@@ -605,13 +605,13 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
         )}
 
         {/* Master Sections List */}
-        <div className={`space-y-8 max-h-[640px] overflow-y-auto pr-1 scrollbar-thin ${
+        <div className={`space-y-8 max-h-[640px] overflow-y-auto p-2 scrollbar-thin ${
           isDarkMode ? 'scrollbar-thumb-slate-800' : 'scrollbar-thumb-stone-200'
         }`}>
           {masterSections.map(section => (
             <div key={section.id} className="space-y-3">
               {/* Section Title */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-1">
                 <h4 className={`text-sm sm:text-base font-bold lowercase tracking-wide ${
                   isDarkMode ? 'text-slate-300' : 'text-slate-700'
                 }`}>
@@ -627,8 +627,8 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
               </div>
 
               {/* Grid of Cards */}
-              <div className="overflow-x-auto pb-2 scrollbar-none">
-                <div className={`min-w-[520px] sm:min-w-0 grid ${section.gridColsClass} gap-2 sm:gap-2.5`}>
+              <div className="overflow-x-auto p-2 -m-1 scrollbar-none">
+                <div className={`min-w-[520px] sm:min-w-0 grid ${section.gridColsClass} gap-2.5 sm:gap-3 p-1`}>
                   {section.items.map(item => {
                     const isSelected = selectedChar === item.char || selectedChar.startsWith(item.char.split(' ')[0]);
 
@@ -636,14 +636,14 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                       <div
                         key={item.char}
                         onClick={() => handleSelectCharacter(item.char, item.sound, item.name)}
-                        className={`py-3 sm:py-4 px-2 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer relative overflow-hidden group ${
+                        className={`py-3 sm:py-4 px-2 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer relative group ${
                           isSelected
                             ? isDarkMode
-                              ? 'bg-sky-950 border-cyan-400 text-white ring-2 ring-cyan-400/50 shadow-xl scale-[1.03]'
-                              : 'bg-sky-50 border-sky-400 text-sky-950 ring-2 ring-sky-300/80 shadow-md scale-[1.03]'
+                              ? 'bg-sky-950 border-cyan-400 text-white ring-2 ring-cyan-400/50 shadow-xl scale-[1.03] z-10'
+                              : 'bg-sky-50 border-sky-400 text-sky-950 ring-2 ring-sky-300/80 shadow-md scale-[1.03] z-10'
                             : isDarkMode
-                            ? 'bg-slate-950/70 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-300 hover:scale-[1.03] hover:shadow-lg'
-                            : 'bg-white border-stone-200/90 text-slate-600 hover:border-stone-300 hover:shadow-md hover:bg-stone-50/80 shadow-xs hover:scale-[1.03]'
+                            ? 'bg-slate-950/70 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-300 hover:scale-[1.03] hover:shadow-lg hover:z-10'
+                            : 'bg-white border-stone-200/90 text-slate-600 hover:border-stone-300 hover:shadow-md hover:bg-stone-50/80 shadow-xs hover:scale-[1.03] hover:z-10'
                         }`}
                       >
                         {/* Character Symbol */}

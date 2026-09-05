@@ -138,75 +138,169 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
     speakText(char);
   };
 
-  // Master list data items for active language
-  const masterListItems = useMemo(() => {
+  // Master sections for active language
+  const masterSections = useMemo(() => {
     if (language === 'ko') {
-      const list: Array<{ char: string; name: string; sound: string; category: string; guide?: string }> = [];
-      KOREAN_FOUNDATIONS.consonants.forEach(c =>
-        list.push({
-          char: c.char,
-          name: c.name,
-          sound: c.sound,
-          category: c.name.startsWith('Ssang') ? 'Double Consonant' : 'Consonant',
-          guide: c.strokeGuide
-        })
-      );
-      KOREAN_FOUNDATIONS.vowels.forEach(v =>
-        list.push({
-          char: v.char,
-          name: v.name,
-          sound: v.sound,
-          category: v.direction === 'compound' ? 'Compound Vowel' : 'Vowel'
-        })
-      );
-      KOREAN_FOUNDATIONS.sampleBlocks.forEach(b =>
-        list.push({ char: b.block, name: b.meaning, sound: b.roman, category: 'Syllable Block' })
-      );
-      return list;
+      const consonants = KOREAN_FOUNDATIONS.consonants.map(c => ({
+        char: c.char,
+        name: c.name,
+        sound: c.sound,
+        category: 'consonant',
+        guide: c.strokeGuide
+      }));
+      const vowels = KOREAN_FOUNDATIONS.vowels.map(v => ({
+        char: v.char,
+        name: v.name,
+        sound: v.sound,
+        category: 'vowel'
+      }));
+      const sampleBlocks = KOREAN_FOUNDATIONS.sampleBlocks.map(b => ({
+        char: b.block,
+        name: b.meaning,
+        sound: b.roman,
+        category: 'syllable block'
+      }));
+
+      return [
+        {
+          id: 'consonants',
+          title: 'consonants',
+          subtitle: '/ 19 consonants /',
+          gridColsClass: 'grid-cols-7',
+          items: consonants
+        },
+        {
+          id: 'vowels',
+          title: 'vowels',
+          subtitle: '/ 21 vowels /',
+          gridColsClass: 'grid-cols-7',
+          items: vowels
+        },
+        {
+          id: 'syllable-blocks',
+          title: 'syllable blocks',
+          subtitle: '/ 14 sample blocks /',
+          gridColsClass: 'grid-cols-7',
+          items: sampleBlocks
+        }
+      ];
     } else if (language === 'ja') {
-      const list: Array<{ char: string; name: string; sound: string; category: string; guide?: string }> = [];
-      JAPANESE_FOUNDATIONS.hiraganaVowels.forEach(h =>
-        list.push({ char: h.char, name: h.romaji, sound: h.romaji, category: 'Hiragana' })
-      );
-      JAPANESE_FOUNDATIONS.katakanaVowels.forEach(k =>
-        list.push({ char: k.char, name: k.romaji, sound: k.romaji, category: 'Katakana' })
-      );
-      JAPANESE_FOUNDATIONS.kanjiRadicals.forEach(kr =>
-        list.push({ char: kr.char, name: kr.meaning, sound: `${kr.onyomi} / ${kr.kunyomi}`, category: 'Kanji Radical' })
-      );
-      return list;
+      const hiragana = JAPANESE_FOUNDATIONS.hiraganaVowels.map(h => ({
+        char: h.char,
+        name: h.romaji,
+        sound: h.romaji,
+        category: 'hiragana'
+      }));
+      const katakana = JAPANESE_FOUNDATIONS.katakanaVowels.map(k => ({
+        char: k.char,
+        name: k.romaji,
+        sound: k.romaji,
+        category: 'katakana'
+      }));
+      const kanjiRadicals = JAPANESE_FOUNDATIONS.kanjiRadicals.map(kr => ({
+        char: kr.char,
+        name: kr.meaning,
+        sound: `${kr.onyomi} / ${kr.kunyomi}`,
+        category: 'kanji radical'
+      }));
+
+      return [
+        {
+          id: 'hiragana',
+          title: 'hiragana (平仮名)',
+          subtitle: '/ 46 syllabary letters /',
+          gridColsClass: 'grid-cols-5 sm:grid-cols-10',
+          items: hiragana
+        },
+        {
+          id: 'katakana',
+          title: 'katakana (片仮名)',
+          subtitle: '/ 46 syllabary letters /',
+          gridColsClass: 'grid-cols-5 sm:grid-cols-10',
+          items: katakana
+        },
+        {
+          id: 'kanji-radicals',
+          title: 'kanji radicals (部首)',
+          subtitle: '/ essential radicals /',
+          gridColsClass: 'grid-cols-4 sm:grid-cols-6 md:grid-cols-8',
+          items: kanjiRadicals
+        }
+      ];
     } else {
-      const list: Array<{ char: string; name: string; sound: string; category: string; guide?: string }> = [];
-      ENGLISH_FOUNDATIONS.alphabet.forEach(item =>
-        list.push({
-          char: `${item.char} ${item.lowerChar}`,
-          name: item.example,
-          sound: `${item.ipa} (${item.sound})`,
-          category: ['A', 'E', 'I', 'O', 'U'].includes(item.char) ? 'Alphabet Vowel' : 'Alphabet Consonant'
-        })
-      );
-      ENGLISH_FOUNDATIONS.phonics.forEach(p =>
-        list.push({ char: p.combo, name: p.example, sound: p.sound, category: 'Phonics Pairings' })
-      );
-      return list;
+      const alphabet = ENGLISH_FOUNDATIONS.alphabet.map(item => ({
+        char: `${item.char} ${item.lowerChar}`,
+        name: item.example,
+        sound: `${item.ipa} (${item.sound})`,
+        category: 'alphabet'
+      }));
+      const phonics = ENGLISH_FOUNDATIONS.phonics.map(p => ({
+        char: p.combo,
+        name: p.example,
+        sound: p.sound,
+        category: 'phonics'
+      }));
+
+      return [
+        {
+          id: 'alphabet',
+          title: 'alphabet a-z',
+          subtitle: '/ 26 letters /',
+          gridColsClass: 'grid-cols-4 sm:grid-cols-6 md:grid-cols-7',
+          items: alphabet
+        },
+        {
+          id: 'phonics',
+          title: 'phonics pairings',
+          subtitle: '/ essential blends /',
+          gridColsClass: 'grid-cols-2 sm:grid-cols-3 md:grid-cols-5',
+          items: phonics
+        }
+      ];
     }
   }, [language]);
 
-  // Filtered master list based on search and category
+  // Flattened master list for active language
+  const masterListItems = useMemo(() => {
+    return masterSections.flatMap(section => section.items);
+  }, [masterSections]);
+
+  // Filtered sections based on search and category
+  const filteredSections = useMemo(() => {
+    return masterSections
+      .map(section => {
+        if (categoryFilter !== 'all') {
+          const filter = categoryFilter.toLowerCase();
+          const matches =
+            section.id.toLowerCase().includes(filter) ||
+            section.title.toLowerCase().includes(filter) ||
+            section.items.some(item => item.category.toLowerCase().includes(filter));
+          if (!matches) return null;
+        }
+
+        const query = searchQuery.trim().toLowerCase();
+        const items = query
+          ? section.items.filter(
+              item =>
+                item.char.toLowerCase().includes(query) ||
+                item.name.toLowerCase().includes(query) ||
+                item.sound.toLowerCase().includes(query)
+            )
+          : section.items;
+
+        if (items.length === 0) return null;
+
+        return {
+          ...section,
+          items
+        };
+      })
+      .filter((s): s is NonNullable<typeof s> => s !== null);
+  }, [masterSections, categoryFilter, searchQuery]);
+
   const filteredMasterList = useMemo(() => {
-    return masterListItems.filter(item => {
-      const matchesSearch =
-        item.char.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.sound.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesCategory =
-        categoryFilter === 'all' ||
-        item.category.toLowerCase().includes(categoryFilter.toLowerCase());
-
-      return matchesSearch && matchesCategory;
-    });
-  }, [masterListItems, searchQuery, categoryFilter]);
+    return filteredSections.flatMap(s => s.items);
+  }, [filteredSections]);
 
   // Subtitle based purely on current active language
   const activeSubtitle =
@@ -740,61 +834,95 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
           )}
         </div>
 
-        {/* Master Grid */}
-        <div className={`max-h-96 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 scrollbar-thin ${
+        {/* Hangul Header (when active language is Korean and no search) */}
+        {language === 'ko' && !searchQuery && categoryFilter === 'all' && (
+          <div className="text-center pt-2 pb-1">
+            <h3 className={`font-brand text-2xl sm:text-3xl font-extrabold tracking-tight ${
+              isDarkMode ? 'text-slate-100' : 'text-slate-800'
+            }`}>
+              Hangul
+            </h3>
+            <p className={`text-xs font-mono tracking-widest mt-0.5 ${
+              isDarkMode ? 'text-slate-400' : 'text-slate-500'
+            }`}>
+              /korean alphabet/
+            </p>
+          </div>
+        )}
+
+        {/* Master Sections List */}
+        <div className={`space-y-8 max-h-[640px] overflow-y-auto pr-1 scrollbar-thin ${
           isDarkMode ? 'scrollbar-thumb-slate-800' : 'scrollbar-thumb-stone-200'
         }`}>
-          {filteredMasterList.map(item => {
-            const isSelected = selectedChar === item.char || selectedChar.startsWith(item.char.split(' ')[0]);
-
-            return (
-              <div
-                key={item.char}
-                onClick={() => handleSelectCharacter(item.char, item.sound, item.name)}
-                className={`p-4 rounded-2xl border flex flex-col items-center justify-between text-left transition-all cursor-pointer relative overflow-hidden group ${
-                  isSelected
-                    ? isDarkMode
-                      ? 'bg-sky-950 border-cyan-400 text-white ring-2 ring-cyan-400/40 shadow-xl scale-[1.02]'
-                      : 'bg-sky-50 border-sky-400 text-sky-950 ring-2 ring-sky-300/80 shadow-md scale-[1.02]'
-                    : isDarkMode
-                    ? 'bg-slate-950/70 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-300'
-                    : 'bg-white border-stone-200/90 text-slate-600 hover:border-stone-300 hover:shadow-md hover:bg-stone-50/80 shadow-xs'
-                }`}
-              >
-                {/* Category Label */}
-                <div className={`w-full flex items-center justify-between text-[10px] font-medium mb-1.5 ${
-                  isDarkMode ? 'text-slate-400' : 'text-slate-500'
+          {filteredSections.map(section => (
+            <div key={section.id} className="space-y-3">
+              {/* Section Title */}
+              <div className="flex items-center gap-2">
+                <h4 className={`text-sm sm:text-base font-bold lowercase tracking-wide ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
                 }`}>
-                  <span className={`truncate uppercase tracking-wider font-bold ${
-                    isDarkMode ? 'text-sky-400/80' : 'text-sky-600'
+                  {section.title}
+                </h4>
+                {section.subtitle && (
+                  <span className={`text-[11px] font-mono ${
+                    isDarkMode ? 'text-slate-500' : 'text-slate-400'
                   }`}>
-                    {item.category}
+                    {section.subtitle}
                   </span>
-                </div>
+                )}
+              </div>
 
-                {/* Character Symbol */}
-                <span className={`text-3xl font-extrabold font-kr font-jp my-1 group-hover:scale-110 transition-transform ${
-                  isDarkMode ? 'text-slate-100' : 'text-slate-800'
-                }`}>
-                  {item.char}
-                </span>
+              {/* Grid of Cards */}
+              <div className="overflow-x-auto pb-2 scrollbar-none">
+                <div className={`min-w-[520px] sm:min-w-0 grid ${section.gridColsClass} gap-2 sm:gap-2.5`}>
+                  {section.items.map(item => {
+                    const isSelected = selectedChar === item.char || selectedChar.startsWith(item.char.split(' ')[0]);
 
-                {/* Sound / IPA & Audio Icon */}
-                <div className={`w-full flex items-center justify-between pt-1 mt-1 border-t ${
-                  isDarkMode ? 'border-slate-800/60' : 'border-stone-200'
-                }`}>
-                  <span className={`text-[11px] truncate font-mono font-medium ${
-                    isDarkMode ? 'text-cyan-300/90' : 'text-sky-700'
-                  }`}>
-                    {item.sound}
-                  </span>
-                  <Volume2 size={13} className={`shrink-0 transition-colors ${
-                    isDarkMode ? 'text-slate-500 hover:text-sky-400' : 'text-slate-400 hover:text-sky-600'
-                  }`} />
+                    return (
+                      <div
+                        key={item.char}
+                        onClick={() => handleSelectCharacter(item.char, item.sound, item.name)}
+                        className={`py-3 sm:py-4 px-2 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer relative overflow-hidden group ${
+                          isSelected
+                            ? isDarkMode
+                              ? 'bg-sky-950 border-cyan-400 text-white ring-2 ring-cyan-400/50 shadow-xl scale-[1.03]'
+                              : 'bg-sky-50 border-sky-400 text-sky-950 ring-2 ring-sky-300/80 shadow-md scale-[1.03]'
+                            : isDarkMode
+                            ? 'bg-slate-950/70 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-300 hover:scale-[1.03] hover:shadow-lg'
+                            : 'bg-white border-stone-200/90 text-slate-600 hover:border-stone-300 hover:shadow-md hover:bg-stone-50/80 shadow-xs hover:scale-[1.03]'
+                        }`}
+                      >
+                        {/* Character Symbol */}
+                        <span className={`text-2xl sm:text-3xl lg:text-4xl font-extrabold font-kr font-jp my-0.5 group-hover:scale-110 transition-transform ${
+                          isSelected
+                            ? isDarkMode ? 'text-white' : 'text-sky-900'
+                            : isDarkMode ? 'text-slate-100' : 'text-slate-800'
+                        }`}>
+                          {item.char}
+                        </span>
+
+                        {/* Sound & Audio Icon */}
+                        <div className="flex items-center justify-center gap-1 mt-1">
+                          <span className={`text-[11px] sm:text-xs font-mono font-medium truncate ${
+                            isSelected
+                              ? isDarkMode ? 'text-cyan-300' : 'text-sky-700 font-bold'
+                              : isDarkMode ? 'text-cyan-400/80 group-hover:text-cyan-300' : 'text-sky-700 group-hover:text-sky-800'
+                          }`}>
+                            {item.sound}
+                          </span>
+                          <Volume2 size={12} className={`shrink-0 opacity-40 group-hover:opacity-100 transition-opacity ${
+                            isSelected
+                              ? isDarkMode ? 'text-cyan-300 opacity-100' : 'text-sky-600 opacity-100'
+                              : isDarkMode ? 'text-slate-400 group-hover:text-cyan-300' : 'text-slate-400 group-hover:text-sky-600'
+                          }`} />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </div>

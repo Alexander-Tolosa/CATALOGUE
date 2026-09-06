@@ -69,10 +69,21 @@ export const ProfilePageView: React.FC = () => {
   const [isBannerModalOpen, setIsBannerModalOpen] = useState(false);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
 
-  // Note / Status Bubble Interactive State
-  const [isNoteEditorOpen, setIsNoteEditorOpen] = useState(false);
+  // Note / Status Bubble Interactive State (Inline Bubbly Chat Editor)
+  const [isEditingNote, setIsEditingNote] = useState(false);
   const [noteInput, setNoteInput] = useState(profile.personalInfo?.statusMessage || '');
   const noteEditorRef = useRef<HTMLDivElement>(null);
+  const noteInputValRef = useRef(noteInput);
+
+  useEffect(() => {
+    noteInputValRef.current = noteInput;
+  }, [noteInput]);
+
+  useEffect(() => {
+    if (!isEditingNote) {
+      setNoteInput(profile.personalInfo?.statusMessage || '');
+    }
+  }, [profile.personalInfo?.statusMessage, isEditingNote]);
 
   // Inline Bio Editing State
   const [isEditingBio, setIsEditingBio] = useState(false);
@@ -85,12 +96,16 @@ export const ProfilePageView: React.FC = () => {
         setIsAvatarMenuOpen(false);
       }
       if (noteEditorRef.current && !noteEditorRef.current.contains(e.target as Node)) {
-        setIsNoteEditorOpen(false);
+        if (isEditingNote) {
+          const trimmed = noteInputValRef.current.trim();
+          updatePersonalInfo({ statusMessage: trimmed });
+          setIsEditingNote(false);
+        }
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [isEditingNote, updatePersonalInfo]);
 
   const personal = profile.personalInfo || {
     fullName: profile.name || 'ALEXANDER MICHAEL TOLOSA',
@@ -404,119 +419,89 @@ export const ProfilePageView: React.FC = () => {
                       </AnimatePresence>
                     </div>
 
-                    {/* Connected Status / Notes Speech Bubble DIRECTLY on the Right of Avatar (User Diagram) */}
+                    {/* Connected Status / Notes Speech Bubble DIRECTLY on the Right of Avatar (Inline Bubbly Editor) */}
                     <div className="relative mb-3 sm:mb-4 shrink-0">
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-slate-700/90 shadow-xs" />
                         <div className="w-1.5 h-1.5 rounded-full bg-slate-700/70 shadow-xs" />
-                        <button
-                          onClick={() => {
-                            setNoteInput(personal.statusMessage || '');
-                            setIsNoteEditorOpen(true);
-                          }}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-2xl border text-xs shadow-lg backdrop-blur-md transition-all cursor-pointer group ${
-                            isDarkMode
-                              ? 'bg-[#1e2538]/95 hover:bg-[#28324a] border-white/10 text-slate-200 hover:border-emerald-500/40'
-                              : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
-                          }`}
-                          title="Click to share your thoughts with friends"
-                        >
-                          <PlusCircle size={14} className="text-slate-400 group-hover:text-emerald-400 transition-colors shrink-0" />
-                          <span className="italic font-medium truncate max-w-[150px] sm:max-w-[230px]">
-                            {personal.statusMessage || "Share your thoughts..."}
-                          </span>
-                        </button>
-                      </div>
 
-                      {/* Note / Status Popover Editor */}
-                      <AnimatePresence>
-                        {isNoteEditorOpen && (
-                          <motion.div
+                        {isEditingNote ? (
+                          <div
                             ref={noteEditorRef}
-                            initial={{ opacity: 0, scale: 0.95, y: -6 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -6 }}
-                            className="absolute left-0 top-full mt-2 z-40 w-72 sm:w-80 rounded-2xl bg-[#1e2538] border border-white/10 shadow-2xl p-4 space-y-3 backdrop-blur-xl text-left"
+                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-2xl border text-xs shadow-xl backdrop-blur-md transition-all ${
+                              isDarkMode
+                                ? 'bg-[#1e2538] border-emerald-500/70 ring-2 ring-emerald-500/25 text-slate-200'
+                                : 'bg-white border-emerald-500 ring-2 ring-emerald-500/25 text-slate-900 shadow-md'
+                            }`}
                           >
-                            <div className="flex items-center justify-between">
-                              <span className="text-[11px] font-black uppercase text-slate-300 tracking-wider flex items-center gap-1.5">
-                                <Smile size={13} className="text-amber-400" /> Share a Note with Friends
-                              </span>
-                              <button onClick={() => setIsNoteEditorOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">
-                                <X size={14} />
-                              </button>
-                            </div>
-
+                            <PlusCircle size={14} className="text-emerald-400 shrink-0" />
                             <input
                               type="text"
                               value={noteInput}
                               onChange={(e) => setNoteInput(e.target.value)}
-                              placeholder="Share your thoughts..."
+                              placeholder="Favorite NPC companion?"
                               maxLength={60}
                               autoFocus
-                              className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder:text-slate-500 outline-none focus:border-emerald-500"
+                              className={`bg-transparent italic font-medium text-xs outline-none w-[160px] sm:w-[220px] ${
+                                isDarkMode ? 'text-white placeholder:text-slate-500' : 'text-slate-900 placeholder:text-slate-400'
+                              }`}
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
-                                  updatePersonalInfo({ statusMessage: noteInput.trim() || undefined });
-                                  setIsNoteEditorOpen(false);
+                                  const trimmed = noteInput.trim();
+                                  updatePersonalInfo({ statusMessage: trimmed });
+                                  setIsEditingNote(false);
+                                } else if (e.key === 'Escape') {
+                                  setNoteInput(personal.statusMessage || '');
+                                  setIsEditingNote(false);
                                 }
                               }}
                             />
-
-                            {/* Quick suggestion pills */}
-                            <div className="space-y-1">
-                              <span className="text-[10px] font-bold text-slate-400">Quick ideas:</span>
-                              <div className="flex flex-wrap gap-1.5">
-                                {[
-                                  'Share your thoughts...',
-                                  'Favorite NPC companion?',
-                                  'Studying Korean Grammar 📚',
-                                  'Preparing for JLPT N3 🇯🇵',
-                                  'Practicing Dialogue with Kleo 🐱'
-                                ].map((prompt) => (
-                                  <button
-                                    key={prompt}
-                                    type="button"
-                                    onClick={() => {
-                                      const text = prompt === 'Share your thoughts...' ? '' : prompt;
-                                      setNoteInput(text);
-                                      updatePersonalInfo({ statusMessage: text });
-                                      setIsNoteEditorOpen(false);
-                                    }}
-                                    className="text-[10px] px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
-                                  >
-                                    {prompt}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div className="flex items-center justify-end gap-2 pt-1">
+                            <div className="flex items-center gap-1 shrink-0">
                               <button
                                 type="button"
                                 onClick={() => {
-                                  updatePersonalInfo({ statusMessage: '' });
-                                  setNoteInput('');
-                                  setIsNoteEditorOpen(false);
+                                  const trimmed = noteInput.trim();
+                                  updatePersonalInfo({ statusMessage: trimmed });
+                                  setIsEditingNote(false);
                                 }}
-                                className="px-3 py-1.5 rounded-lg text-rose-400 hover:bg-rose-500/10 text-xs font-bold cursor-pointer"
+                                className="p-1 rounded-md text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/20 transition-colors cursor-pointer"
+                                title="Save note (Enter)"
                               >
-                                Clear
+                                <Check size={13} />
                               </button>
                               <button
                                 type="button"
                                 onClick={() => {
-                                  updatePersonalInfo({ statusMessage: noteInput.trim() || undefined });
-                                  setIsNoteEditorOpen(false);
+                                  setNoteInput(personal.statusMessage || '');
+                                  setIsEditingNote(false);
                                 }}
-                                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md cursor-pointer"
+                                className="p-1 rounded-md text-slate-400 hover:text-rose-400 hover:bg-rose-500/20 transition-colors cursor-pointer"
+                                title="Cancel (Esc)"
                               >
-                                Save Note
+                                <X size={13} />
                               </button>
                             </div>
-                          </motion.div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setNoteInput(personal.statusMessage || '');
+                              setIsEditingNote(true);
+                            }}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-2xl border text-xs shadow-lg backdrop-blur-md transition-all cursor-pointer group ${
+                              isDarkMode
+                                ? 'bg-[#1e2538]/95 hover:bg-[#28324a] border-white/10 text-slate-200 hover:border-emerald-500/40'
+                                : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                            }`}
+                            title="Click to edit note directly"
+                          >
+                            <PlusCircle size={14} className="text-slate-400 group-hover:text-emerald-400 transition-colors shrink-0" />
+                            <span className="italic font-medium truncate max-w-[150px] sm:max-w-[230px]">
+                              {personal.statusMessage || "Favorite NPC companion?"}
+                            </span>
+                          </button>
                         )}
-                      </AnimatePresence>
+                      </div>
                     </div>
                   </div>
 

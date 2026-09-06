@@ -213,7 +213,7 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
           id: 'kanji-radicals',
           title: 'kanji radicals (部首)',
           subtitle: '/ essential radicals /',
-          gridColsClass: 'grid-cols-4 sm:grid-cols-6 md:grid-cols-8',
+          gridColsClass: 'grid-cols-2 sm:grid-cols-5 md:grid-cols-5',
           items: kanjiRadicals
         }
       ];
@@ -636,7 +636,7 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                       <div
                         key={item.char}
                         onClick={() => handleSelectCharacter(item.char, item.sound, item.name)}
-                        className={`py-3 sm:py-4 px-2 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer relative group ${
+                        className={`py-3 sm:py-4 px-2 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer relative group min-w-0 overflow-hidden ${
                           isSelected
                             ? isDarkMode
                               ? 'bg-sky-950 border-cyan-400 text-white ring-2 ring-cyan-400/50 shadow-xl scale-[1.03] z-10'
@@ -656,12 +656,15 @@ export const ScriptFoundations: React.FC<ScriptFoundationsProps> = ({
                         </span>
 
                         {/* Sound & Audio Icon */}
-                        <div className="flex items-center justify-center gap-1 mt-1">
-                          <span className={`text-[11px] sm:text-xs font-mono font-medium truncate ${
-                            isSelected
-                              ? isDarkMode ? 'text-cyan-300' : 'text-sky-700 font-bold'
-                              : isDarkMode ? 'text-cyan-400/80 group-hover:text-cyan-300' : 'text-sky-700 group-hover:text-sky-800'
-                          }`}>
+                        <div className="w-full max-w-full min-w-0 px-1 mt-1 flex items-center justify-center gap-1">
+                          <span
+                            title={`${item.char} — ${item.sound}${item.name ? ` (${item.name})` : ''}`}
+                            className={`text-[10px] sm:text-xs font-mono font-medium truncate min-w-0 text-center ${
+                              isSelected
+                                ? isDarkMode ? 'text-cyan-300 font-bold' : 'text-sky-700 font-bold'
+                                : isDarkMode ? 'text-cyan-400/80 group-hover:text-cyan-300' : 'text-sky-700 group-hover:text-sky-800'
+                            }`}
+                          >
                             {item.sound}
                           </span>
                           <Volume2 size={12} className={`shrink-0 opacity-40 group-hover:opacity-100 transition-opacity ${

@@ -1,6 +1,6 @@
 # CATALOGUE
 
-**CATALOGUE** is an AI-powered language learning platform inspired by gamified, habit-building applications like Duolingo. Guided by **Kleo**, your AI cat companion, CATALOGUE helps users master languages (Korean, Japanese, English) through interactive lessons, stroke tracing, spaced-repetition and real-time voice translation.
+**CATALOGUE** is an AI-powered language learning platform inspired by gamified, habit-building applications like Duolingo. Guided by **Kleo**, your AI cat companion, CATALOGUE helps users master languages (Korean, Japanese, English) through interactive lessons, stroke tracing, spaced-repetition and real-time word and voice translation.
 
 ---
 

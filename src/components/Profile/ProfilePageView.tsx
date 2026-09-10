@@ -109,7 +109,7 @@ export const ProfilePageView: React.FC = () => {
 
   const personal = profile.personalInfo || {
     fullName: profile.name || 'ALEXANDER MICHAEL TOLOSA',
-    statusMessage: "Favorite NPC companion?",
+    statusMessage: '',
     recentAvatars: [],
     studentId: '2020-09482',
     department: 'College of Liberal Arts, Sciences and Education (CLASE)',
@@ -128,6 +128,13 @@ export const ProfilePageView: React.FC = () => {
     joinedDate: 'Jun 24, 2021',
     lastActivity: '3 hours ago'
   };
+
+  const hasNote = Boolean(
+    personal.statusMessage &&
+    personal.statusMessage.trim() &&
+    personal.statusMessage.trim() !== 'Favorite NPC companion?' &&
+    personal.statusMessage.trim() !== "Food you're craving now?"
+  );
 
   // Accurate persistent registration date
   const registrationDate = (() => {
@@ -434,7 +441,9 @@ export const ProfilePageView: React.FC = () => {
                                 : 'bg-white border-emerald-500 ring-2 ring-emerald-500/25 text-slate-900 shadow-md'
                             }`}
                           >
-                            <PlusCircle size={14} className="text-emerald-400 shrink-0" />
+                            {!hasNote && (
+                              <PlusCircle size={14} className="text-emerald-400 shrink-0" />
+                            )}
                             <input
                               type="text"
                               value={noteInput}
@@ -495,9 +504,11 @@ export const ProfilePageView: React.FC = () => {
                             }`}
                             title="Click to edit note directly"
                           >
-                            <PlusCircle size={14} className="text-slate-400 group-hover:text-emerald-400 transition-colors shrink-0" />
+                            {!hasNote && (
+                              <PlusCircle size={14} className="text-slate-400 group-hover:text-emerald-400 transition-colors shrink-0" />
+                            )}
                             <span className="italic font-medium truncate max-w-[150px] sm:max-w-[230px]">
-                              {personal.statusMessage || "Favorite NPC companion?"}
+                              {hasNote ? personal.statusMessage : "Favorite NPC companion?"}
                             </span>
                           </button>
                         )}

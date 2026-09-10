@@ -64,7 +64,7 @@ const DEFAULT_PROFILE: UserProfile = {
   personalInfo: {
     fullName: 'ALEXANDER MICHAEL TOLOSA',
     username: 'xxsenxx9438',
-    statusMessage: "Food you're craving now?",
+    statusMessage: '',
     pronouns: "Iced Latte'",
     roleBadge: '⚡ GDev',
     privateNote: '',

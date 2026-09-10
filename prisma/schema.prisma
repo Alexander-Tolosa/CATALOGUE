@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
 }
 
 model User {
@@ -14,10 +13,90 @@ model User {
   createdAt    DateTime       @default(now())
   tracks       UserTrack[]
   progress     UserProgress[]
+  certificates Certificate[]
   reviewItems  ReviewItem[]
   streaks      Streak?
   kleoState    KleoState?
   chatMessages ChatMessage[]
+}
+
+model Language {
+  id           String        @id @default(uuid())
+  name         String
+  code         String        @unique // 'en' | 'ko' | 'ja'
+  levels       Level[]
+  certificates Certificate[]
+}
+
+model Level {
+  id           String         @id @default(uuid())
+  languageId   String
+  language     Language       @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  code         String         // e.g. 'A1', 'TOPIK_1', 'N5'
+  name         String         // e.g. 'Beginner', 'TOPIK I - Level 1', 'Basic (N5)'
+  order        Int            // 0, 1, 2, ...
+  description  String
+  lessons      Lesson[]
+  quizzes      Quiz[]
+  progress     UserProgress[]
+  certificates Certificate[]
+
+  @@unique([languageId, code])
+  @@unique([languageId, order])
+}
+
+model Lesson {
+  id      String @id @default(uuid())
+  levelId String
+  level   Level  @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  title   String
+  content String
+  order   Int
+}
+
+model Quiz {
+  id            String     @id @default(uuid())
+  levelId       String
+  level         Level      @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  passThreshold Float      @default(0.8)
+  questions     Question[]
+}
+
+model Question {
+  id            String @id @default(uuid())
+  quizId        String
+  quiz          Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  prompt        String
+  choices       String // JSON array string e.g. ["choice 1", "choice 2"]
+  correctAnswer String
+}
+
+model UserProgress {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  levelId     String
+  level       Level     @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  status      String    @default("locked") // 'locked' | 'in_progress' | 'passed'
+  bestScore   Float?
+  completedAt DateTime?
+
+  @@unique([userId, levelId])
+}
+
+model Certificate {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageId      String
+  language        Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  levelId         String
+  level           Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  issuedAt        DateTime @default(now())
+  certificateCode String   @unique
+  pdfUrl          String
+
+  @@unique([userId, levelId])
 }
 
 model UserTrack {
@@ -30,31 +109,6 @@ model UserTrack {
   updatedAt   DateTime @updatedAt
 
   @@unique([userId, language])
-}
-
-model Lesson {
-  id           String         @id @default(uuid())
-  language     String         // 'ko' | 'ja' | 'en'
-  unit         Int
-  order        Int
-  type         String         // 'letters' | 'words' | 'phrases' | 'sentences' | 'dialogue'
-  xpReward     Int            @default(20)
-  title        String
-  description  String
-  exercises    String         // JSON string of exercises
-  userProgress UserProgress[]
-}
-
-model UserProgress {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lessonId    String
-  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  status      String   // 'locked' | 'unlocked' | 'completed'
-  completedAt DateTime?
-
-  @@unique([userId, lessonId])
 }
 
 model Vocabulary {
@@ -79,22 +133,22 @@ model ReviewItem {
 }
 
 model Streak {
-  id             String    @id @default(uuid())
-  userId         String    @unique
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  currentStreak  Int       @default(1)
-  longestStreak  Int       @default(1)
-  lastActiveDate DateTime  @default(now())
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentStreak  Int      @default(1)
+  longestStreak  Int      @default(1)
+  lastActiveDate DateTime @default(now())
 }
 
 model KleoState {
-  id                String   @id @default(uuid())
-  userId            String   @unique
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bondXp            Int      @default(0)
-  mood              String   @default("happy") // 'happy' | 'curious' | 'encouraging' | 'nuzzling' | 'celebrating' | 'sleepy'
-  equippedCosmetics String   @default("{}") // JSON string of equipped cosmetics
-  unlockedCosmetics String   @default("[\"blue_beret\"]") // JSON array
+  id                String @id @default(uuid())
+  userId            String @unique
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bondXp            Int    @default(0)
+  mood              String @default("happy") // 'happy' | 'curious' | 'encouraging' | 'nuzzling' | 'celebrating' | 'sleepy'
+  equippedCosmetics String @default("{}") // JSON string of equipped cosmetics
+  unlockedCosmetics String @default("[\"blue_beret\"]") // JSON array
 }
 
 model ChatMessage {

@@ -1,7 +1,15 @@
-const express = require('express');
-const cors = require('cors');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+import express from 'express';
+import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { SEED_DATA } from './seedData.js';
+import { generateCertificatePdf } from './certificateService.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -10,16 +18,42 @@ const JWT_SECRET = process.env.JWT_SECRET || 'catalogue_million_dollar_secret';
 app.use(cors());
 app.use(express.json());
 
-// In-Memory Fallback Seed Database for instant E2E execution
+// Serve static uploads (certificates, assets)
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+const certsDir = path.join(uploadsDir, 'certificates');
+if (!fs.existsSync(certsDir)) {
+  fs.mkdirSync(certsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
+
+// In-Memory Database with Proficiency Levels, Lessons, Quizzes & Certificates
 const db = {
   users: [
     {
       id: 'usr-1',
+      name: 'Alexander Michael Tolosa',
       email: 'learner@catalogue.app',
       passwordHash: bcrypt.hashSync('password123', 10),
       createdAt: new Date().toISOString()
     }
   ],
+  languages: SEED_DATA.languages,
+  levels: SEED_DATA.levels,
+  userProgress: [
+    // Pre-pass Level 1 for Korean so user can see immediate unlock & progress
+    {
+      id: 'prog-ko-1',
+      userId: 'usr-1',
+      levelId: 'ko-lvl-1',
+      status: 'passed',
+      bestScore: 1.0,
+      completedAt: new Date(Date.now() - 86400000 * 2).toISOString()
+    }
+  ],
+  certificates: [],
   tracks: [
     { userId: 'usr-1', language: 'ko', currentUnit: 1, dailyGoal: 10 },
     { userId: 'usr-1', language: 'ja', currentUnit: 1, dailyGoal: 10 },
@@ -54,7 +88,35 @@ const db = {
   ]
 };
 
-// Middleware: Authenticate JWT Token
+// Seed an initial sample certificate for Alexander in Korean TOPIK I
+const initialCertCode = 'CAT-KO-L1-8821';
+const initialCertPath = path.join(certsDir, `${initialCertCode}.pdf`);
+generateCertificatePdf({
+  userName: 'Alexander Michael Tolosa',
+  languageName: 'Korean',
+  levelName: 'TOPIK I — Level 1 (Novice)',
+  levelCode: '1',
+  code: initialCertCode,
+  verifyUrl: `http://localhost:3000/verify/${initialCertCode}`,
+  outputPath: initialCertPath
+}).then(() => {
+  db.certificates.push({
+    id: 'cert-init-1',
+    userId: 'usr-1',
+    userName: 'Alexander Michael Tolosa',
+    languageId: 'lang-ko',
+    languageName: 'Korean',
+    languageCode: 'ko',
+    levelId: 'ko-lvl-1',
+    levelName: 'TOPIK I — Level 1 (Novice)',
+    levelCode: '1',
+    issuedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+    certificateCode: initialCertCode,
+    pdfUrl: `/uploads/certificates/${initialCertCode}.pdf`
+  });
+}).catch(console.error);
+
+// Middleware: Authenticate JWT Token (optional or strict)
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.status(401).json({ error: 'Unauthorized: missing token' });
@@ -68,9 +130,21 @@ const authenticate = (req, res, next) => {
   }
 };
 
+// Optional Auth resolver: extracts user id from header or defaults to 'usr-1'
+const resolveUserId = (req) => {
+  if (req.headers.authorization) {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, JWT_SECRET);
+      if (decoded && decoded.id) return decoded.id;
+    } catch {}
+  }
+  return req.query.userId || req.body?.userId || 'usr-1';
+};
+
 // --- Auth Routes ---
 app.post('/api/auth/register', (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
   const existing = db.users.find(u => u.email === email);
@@ -78,14 +152,15 @@ app.post('/api/auth/register', (req, res) => {
 
   const newUser = {
     id: 'usr-' + Date.now(),
+    name: name || email.split('@')[0],
     email,
     passwordHash: bcrypt.hashSync(password, 10),
     createdAt: new Date().toISOString()
   };
   db.users.push(newUser);
 
-  const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: '7d' });
-  res.json({ token, user: { id: newUser.id, email: newUser.email } });
+  const token = jwt.sign({ id: newUser.id, email: newUser.email, name: newUser.name }, JWT_SECRET, { expiresIn: '7d' });
+  res.json({ token, user: { id: newUser.id, email: newUser.email, name: newUser.name } });
 });
 
 app.post('/api/auth/login', (req, res) => {
@@ -94,17 +169,328 @@ app.post('/api/auth/login', (req, res) => {
   if (!user || !bcrypt.compareSync(password, user.passwordHash)) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
-  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-  res.json({ token, user: { id: user.id, email: user.email } });
+  const token = jwt.sign({ id: user.id, email: user.email, name: user.name || 'Learner' }, JWT_SECRET, { expiresIn: '7d' });
+  res.json({ token, user: { id: user.id, email: user.email, name: user.name } });
 });
 
 app.get('/api/auth/me', authenticate, (req, res) => {
   const user = db.users.find(u => u.id === req.user.id);
   if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json({ id: user.id, email: user.email });
+  res.json({ id: user.id, email: user.email, name: user.name });
 });
 
-// --- Lessons & Skill Tree Routes ---
+// ==========================================
+// 1 & 2. LANGUAGE PROFICIENCY & LEVEL ROUTES
+// ==========================================
+
+// GET /api/languages — list languages
+app.get('/api/languages', (req, res) => {
+  res.json({ languages: db.languages });
+});
+
+// GET /api/languages/:code/levels — levels in order, with current user's progress status merged in
+app.get('/api/languages/:code/levels', (req, res) => {
+  const { code } = req.params;
+  const userId = resolveUserId(req);
+
+  const language = db.languages.find(l => l.code.toLowerCase() === code.toLowerCase());
+  if (!language) {
+    return res.status(404).json({ error: `Language with code '${code}' not found` });
+  }
+
+  // Retrieve and sort all levels for this language by order
+  const langLevels = db.levels
+    .filter(lvl => lvl.languageId === language.id)
+    .sort((a, b) => a.order - b.order);
+
+  // Merge user progress and apply level-locking rules:
+  // Rule: Order = 0 is ALWAYS unlocked.
+  // Rule: Order = N is unlocked ONLY IF Order = N - 1 is 'passed'.
+  let previousPassed = true; // For order 0, this enables it automatically
+
+  const levelsWithProgress = langLevels.map((lvl) => {
+    const progress = db.userProgress.find(p => p.userId === userId && p.levelId === lvl.id);
+    const isPassed = progress ? progress.status === 'passed' : false;
+
+    let computedStatus = 'locked';
+    if (lvl.order === 0 || previousPassed) {
+      computedStatus = isPassed ? 'passed' : (progress ? progress.status : 'in_progress');
+    }
+
+    // Prepare next level's unlock condition
+    previousPassed = isPassed;
+
+    return {
+      id: lvl.id,
+      languageId: lvl.languageId,
+      code: lvl.code,
+      name: lvl.name,
+      order: lvl.order,
+      description: lvl.description,
+      lessonCount: lvl.lessons.length,
+      hasQuiz: Boolean(lvl.quiz),
+      status: computedStatus,
+      bestScore: progress?.bestScore ?? null,
+      completedAt: progress?.completedAt ?? null,
+      isFinalLevel: lvl.order === langLevels.length - 1
+    };
+  });
+
+  res.json({
+    language,
+    levels: levelsWithProgress
+  });
+});
+
+// GET /api/levels/:id — level detail with lessons + quiz
+app.get('/api/levels/:id', (req, res) => {
+  const { id } = req.params;
+  const level = db.levels.find(l => l.id === id);
+  if (!level) {
+    return res.status(404).json({ error: `Level '${id}' not found` });
+  }
+
+  const language = db.languages.find(l => l.id === level.languageId);
+
+  // Return quiz with prompt & choices, without exposing correctAnswer
+  const sanitizedQuiz = level.quiz
+    ? {
+        id: level.quiz.id,
+        levelId: level.id,
+        passThreshold: level.quiz.passThreshold,
+        questions: level.quiz.questions.map(q => ({
+          id: q.id,
+          prompt: q.prompt,
+          choices: q.choices
+        }))
+      }
+    : null;
+
+  res.json({
+    level: {
+      id: level.id,
+      languageId: level.languageId,
+      languageName: language?.name,
+      languageCode: language?.code,
+      code: level.code,
+      name: level.name,
+      order: level.order,
+      description: level.description,
+      lessons: level.lessons.sort((a, b) => a.order - b.order),
+      quiz: sanitizedQuiz
+    }
+  });
+});
+
+// POST /api/levels/:id/quiz/submit — grade submitted answers, update UserProgress,
+// unlock next level if passed, and if this was the FINAL level, issue certificate!
+app.post('/api/levels/:id/quiz/submit', async (req, res) => {
+  const { id } = req.params;
+  const { answers } = req.body; // Map: { [questionId: string]: string }
+  const userId = resolveUserId(req);
+
+  const level = db.levels.find(l => l.id === id);
+  if (!level) {
+    return res.status(404).json({ error: `Level '${id}' not found` });
+  }
+
+  if (!level.quiz || !level.quiz.questions || level.quiz.questions.length === 0) {
+    return res.status(400).json({ error: `Level '${id}' has no quiz associated` });
+  }
+
+  const language = db.languages.find(l => l.id === level.languageId);
+  const totalQuestions = level.quiz.questions.length;
+  let correctCount = 0;
+
+  const results = level.quiz.questions.map(q => {
+    const submitted = answers ? answers[q.id] : undefined;
+    const isCorrect = submitted === q.correctAnswer;
+    if (isCorrect) correctCount++;
+    return {
+      questionId: q.id,
+      submitted,
+      correctAnswer: q.correctAnswer,
+      isCorrect
+    };
+  });
+
+  const score = totalQuestions > 0 ? correctCount / totalQuestions : 0;
+  const passed = score >= level.quiz.passThreshold;
+
+  // Update or create UserProgress
+  let userProg = db.userProgress.find(p => p.userId === userId && p.levelId === level.id);
+  if (!userProg) {
+    userProg = {
+      id: 'prog-' + Date.now(),
+      userId,
+      levelId: level.id,
+      status: passed ? 'passed' : 'in_progress',
+      bestScore: score,
+      completedAt: passed ? new Date().toISOString() : null
+    };
+    db.userProgress.push(userProg);
+  } else {
+    if (passed) {
+      userProg.status = 'passed';
+      userProg.completedAt = new Date().toISOString();
+    }
+    userProg.bestScore = Math.max(userProg.bestScore || 0, score);
+  }
+
+  // Determine if this is the final level of the language
+  const allLanguageLevels = db.levels
+    .filter(lvl => lvl.languageId === level.languageId)
+    .sort((a, b) => a.order - b.order);
+  const maxOrder = allLanguageLevels[allLanguageLevels.length - 1]?.order;
+  const isFinalLevel = level.order === maxOrder;
+
+  let issuedCertificate = null;
+
+  // If passed and is final level (or level passed warrants certificate), trigger certificate issuance!
+  if (passed && isFinalLevel) {
+    // Check if certificate already exists
+    let existingCert = db.certificates.find(c => c.userId === userId && c.levelId === level.id);
+    if (!existingCert) {
+      const user = db.users.find(u => u.id === userId);
+      const userName = user?.name || req.body.userName || 'Alexander Michael Tolosa';
+      const cleanCode = level.code.replace(/[^A-Za-z0-9]/g, '');
+      const uniqueSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const certificateCode = `CAT-${(language?.code || 'GL').toUpperCase()}-${cleanCode}-${uniqueSuffix}`;
+      const certFilename = `${certificateCode}.pdf`;
+      const outputPath = path.join(certsDir, certFilename);
+
+      try {
+        await generateCertificatePdf({
+          userName,
+          languageName: language?.name || 'Language',
+          levelName: level.name,
+          levelCode: level.code,
+          code: certificateCode,
+          verifyUrl: `http://localhost:3000/verify/${certificateCode}`,
+          outputPath
+        });
+
+        existingCert = {
+          id: 'cert-' + Date.now(),
+          userId,
+          userName,
+          languageId: language?.id,
+          languageName: language?.name,
+          languageCode: language?.code,
+          levelId: level.id,
+          levelName: level.name,
+          levelCode: level.code,
+          issuedAt: new Date().toISOString(),
+          certificateCode,
+          pdfUrl: `/uploads/certificates/${certFilename}`
+        };
+        db.certificates.push(existingCert);
+      } catch (err) {
+        console.error('Error issuing certificate PDF:', err);
+      }
+    }
+    issuedCertificate = existingCert;
+  }
+
+  res.json({
+    passed,
+    score: Math.round(score * 100) / 100,
+    scorePercentage: Math.round(score * 100),
+    passThreshold: level.quiz.passThreshold,
+    correctCount,
+    totalQuestions,
+    results,
+    isFinalLevel,
+    certificate: issuedCertificate
+  });
+});
+
+// ==========================================
+// 3. CERTIFICATE API ROUTES
+// ==========================================
+
+// GET /api/certificates/:userId — list a user's earned certificates
+app.get('/api/certificates/user/:userId', (req, res) => {
+  const { userId } = req.params;
+  const userCerts = db.certificates.filter(c => c.userId === userId || userId === 'all');
+  res.json({ certificates: userCerts });
+});
+
+// Alias for backwards compatibility
+app.get('/api/certificates/:userId', (req, res, next) => {
+  // If param looks like a verify code (starts with CAT-), forward to verify
+  if (req.params.userId.startsWith('CAT-')) {
+    return next();
+  }
+  const { userId } = req.params;
+  const userCerts = db.certificates.filter(c => c.userId === userId || userId === 'all');
+  res.json({ certificates: userCerts });
+});
+
+// GET /api/certificates/:code/download — stream the certificate PDF
+app.get('/api/certificates/:code/download', (req, res) => {
+  const { code } = req.params;
+  const cert = db.certificates.find(c => c.certificateCode.toLowerCase() === code.toLowerCase());
+
+  const certFilename = `${code}.pdf`;
+  const filePath = path.join(certsDir, certFilename);
+
+  if (!fs.existsSync(filePath)) {
+    // If not on disk but cert record exists, generate on the fly
+    if (cert) {
+      generateCertificatePdf({
+        userName: cert.userName || 'Learner',
+        languageName: cert.languageName || 'Language',
+        levelName: cert.levelName || 'Proficiency Level',
+        levelCode: cert.levelCode || 'L1',
+        code: cert.certificateCode,
+        verifyUrl: `http://localhost:3000/verify/${cert.certificateCode}`,
+        outputPath: filePath
+      }).then(() => {
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${certFilename}"`);
+        fs.createReadStream(filePath).pipe(res);
+      }).catch(err => {
+        res.status(500).json({ error: 'Failed to generate PDF download' });
+      });
+      return;
+    }
+    return res.status(404).json({ error: `Certificate PDF '${code}' not found` });
+  }
+
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="${certFilename}"`);
+  fs.createReadStream(filePath).pipe(res);
+});
+
+// GET /api/certificates/verify/:code — public endpoint returning verification details
+app.get('/api/certificates/verify/:code', (req, res) => {
+  const { code } = req.params;
+  const cert = db.certificates.find(c => c.certificateCode.toLowerCase() === code.toLowerCase());
+
+  if (!cert) {
+    return res.status(404).json({
+      valid: false,
+      error: 'Certificate not found or verification code is invalid.'
+    });
+  }
+
+  res.json({
+    valid: true,
+    certificateCode: cert.certificateCode,
+    userName: cert.userName,
+    language: cert.languageName,
+    languageCode: cert.languageCode,
+    level: cert.levelName,
+    levelCode: cert.levelCode,
+    issuedAt: cert.issuedAt,
+    pdfUrl: cert.pdfUrl,
+    institution: 'CATALOUGE Language Academy',
+    verificationUrl: `http://localhost:3000/verify/${cert.certificateCode}`
+  });
+});
+
+// --- Existing Lessons & Complete Routes (Preserved) ---
 app.get('/api/lessons/:language', (req, res) => {
   const { language } = req.params;
   res.json({
@@ -150,7 +536,7 @@ app.post('/api/lessons/complete', (req, res) => {
   res.json({ success: true, xpEarned: xpReward || 20, bondXpEarned: 15 });
 });
 
-// --- Voice Translator Routes ---
+// --- Voice Translator Routes (Preserved) ---
 app.post('/api/translator/translate', (req, res) => {
   const { text, from, to } = req.body;
   let translatedText = text;
@@ -193,13 +579,13 @@ app.post('/api/translator/save', (req, res) => {
   res.json({ success: true, item: newItem });
 });
 
-// --- Spaced Repetition (SM-2) Flashcard Review Routes ---
+// --- Spaced Repetition (SM-2) Flashcard Review Routes (Preserved) ---
 app.get('/api/review/items', (req, res) => {
   res.json({ items: db.savedPhrases });
 });
 
 app.post('/api/review/rate', (req, res) => {
-  const { id, rating } = req.body; // rating: 'again' | 'hard' | 'good' | 'easy'
+  const { id, rating } = req.body;
   const item = db.savedPhrases.find(i => i.id === id);
   if (item) {
     if (rating === 'again') {
@@ -215,7 +601,7 @@ app.post('/api/review/rate', (req, res) => {
   res.json({ success: true, item });
 });
 
-// --- Kleo State & Wardrobe Routes ---
+// --- Kleo State & Wardrobe Routes (Preserved) ---
 app.get('/api/kleo/state', (req, res) => {
   res.json(db.kleoState['usr-1']);
 });
@@ -226,9 +612,9 @@ app.post('/api/kleo/equip', (req, res) => {
   res.json({ success: true, equippedCosmetics: db.kleoState['usr-1'].equippedCosmetics });
 });
 
-// --- Unified AI Service Route (Chatbot & Letter Feedback) ---
+// --- Unified AI Service Route (Chatbot & Letter Feedback) (Preserved) ---
 app.post('/api/ai/process', (req, res) => {
-  const { type, message, letterContent, scenario, language, userLevel, struggledVocab, letterType, ragContext } = req.body;
+  const { type, message, letterContent, scenario, language, userLevel, struggledVocab, letterType } = req.body;
 
   if (type === 'letter_feedback') {
     const text = letterContent || '';
@@ -309,7 +695,7 @@ app.post('/api/ai/process', (req, res) => {
   });
 });
 
-// --- Grounded Language Tool Chatbot Route ---
+// --- Grounded Language Tool Chatbot Route (Preserved) ---
 app.post('/api/chat', (req, res) => {
   const { messages, userLevel = "beginner", targetLanguage = "ja" } = req.body;
   const lastMsg = Array.isArray(messages) && messages.length > 0 ? messages[messages.length - 1] : null;
@@ -339,4 +725,3 @@ app.post('/api/chat', (req, res) => {
 app.listen(PORT, () => {
   console.log(`CATALOGUE Express API Server listening on port ${PORT}`);
 });
-

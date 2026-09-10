@@ -197,6 +197,7 @@ export interface CertificateAward {
   grade?: string;
   certificateNumber: string;
   skillsCovered: string[];
+  isApiCert?: boolean;
 }
 
 export interface BadgeAward {

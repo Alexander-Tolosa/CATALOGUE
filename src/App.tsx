@@ -7,7 +7,8 @@ import { AppView } from './types';
 import { TopAppBar } from './components/Dashboard/Header';
 import { SidebarNav } from './components/Navigation/SidebarNav';
 import { DashboardView } from './components/Dashboard/DashboardView';
-import { LearnView } from './components/Learn/LearnView';
+import { ProficiencyRoadmapView } from './components/Learn/ProficiencyRoadmapView';
+import { PublicVerifyPage } from './components/Certificates/PublicVerifyPage';
 import { ScriptModuleView } from './components/Script/ScriptModuleView';
 import { MatchingModuleView } from './components/Matching/MatchingModuleView';
 import { TranslatorView } from './components/Translator/TranslatorView';
@@ -77,6 +78,46 @@ export const App: React.FC = () => {
     window.addEventListener('catalogue:navigate-view', handleNav);
     return () => window.removeEventListener('catalogue:navigate-view', handleNav);
   }, []);
+
+  const [verifyCode, setVerifyCode] = useState<string | null>(() => {
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/verify/')) {
+      return window.location.pathname.replace('/verify/', '').split('/')[0] || null;
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      if (path.startsWith('/verify/')) {
+        const code = path.replace('/verify/', '').split('/')[0];
+        if (code) setVerifyCode(code);
+      } else if (path.startsWith('/learn')) {
+        setActiveView('learn');
+        if (path.includes('/en')) selectLanguageTrack('en');
+        else if (path.includes('/ja')) selectLanguageTrack('ja');
+        else if (path.includes('/ko')) selectLanguageTrack('ko');
+      } else if (path.startsWith('/profile')) {
+        setActiveView('profile');
+      }
+    }
+  }, [selectLanguageTrack]);
+
+  // Public Gateway: Public Certificate Verification (accessible without authentication)
+  if (verifyCode) {
+    return (
+      <PublicVerifyPage
+        code={verifyCode}
+        onNavigateHome={() => {
+          if (typeof window !== 'undefined') {
+            window.history.pushState({}, '', '/');
+          }
+          setVerifyCode(null);
+          setActiveView('dashboard');
+        }}
+      />
+    );
+  }
 
   // Unauthenticated Gate: Show Duolingo-style Landing Page (with Auth modal overlay)
   if (!isAuthenticated || !token) {
@@ -159,15 +200,7 @@ export const App: React.FC = () => {
               )}
 
               {activeView === 'learn' && (
-                <LearnView
-                  nodes={activeNodes}
-                  completedNodeIds={profile.completedNodeIds}
-                  userHearts={profile.hearts}
-                  selectedLanguage={profile.selectedLanguage}
-                  onDeductHeart={deductHeart}
-                  onCompleteNode={completeLessonNode}
-                  equippedCosmetics={equippedCosmetics}
-                />
+                <ProficiencyRoadmapView />
               )}
 
               {activeView === 'letters' && (

@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, ChevronRight, X, Printer, CheckCircle2, FileText, Download, ExternalLink, Sparkles } from 'lucide-react';
+import {
+  Award,
+  ChevronRight,
+  X,
+  Printer,
+  CheckCircle2,
+  FileText,
+  Download,
+  ExternalLink,
+  ShieldCheck,
+  Sparkles
+} from 'lucide-react';
 import { CertificateAward } from '../../types';
+import { EarnedCertificate } from '../../types/proficiency';
 import { useAppStore } from '../../store/useAppStore';
 
-export const CERTIFICATES_DATA: CertificateAward[] = [
+export const STATIC_CERTIFICATES: CertificateAward[] = [
   {
     id: 'cert-1',
     title: 'Certificate of completion',
@@ -14,16 +26,6 @@ export const CERTIFICATES_DATA: CertificateAward[] = [
     grade: '98.5% (High Honors)',
     certificateNumber: 'DEPED-AP-2020-09482',
     skillsCovered: ['Macroeconomics', 'Philippine Economic History', 'Social Research', 'Statistical Analysis']
-  },
-  {
-    id: 'cert-2',
-    title: 'Certificate of Excellence in Korean Hangul',
-    course: 'Korean Language & Cultural Foundations Level 1',
-    awardedDate: 'Nov 14, 2023',
-    issuer: 'CATALOGUE Language Academy & Global Polyglot Center',
-    grade: 'A+ (Distinction)',
-    certificateNumber: 'CAT-KO-2023-8821',
-    skillsCovered: ['Hangul Jamo Alphabet', 'Syllable Block Formation', 'Polite Banmal vs Jondaetmal', 'Basic Conversation']
   },
   {
     id: 'cert-3',
@@ -52,11 +54,64 @@ interface CertificationsSectionProps {
   showAll?: boolean;
 }
 
-export const CertificationsSection: React.FC<CertificationsSectionProps> = ({ onViewAll, showAll = false }) => {
+export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
+  onViewAll,
+  showAll = false
+}) => {
   const { isDarkMode, profile } = useAppStore();
-  const [selectedCert, setSelectedCert] = useState<CertificateAward | null>(null);
+  const [apiCertificates, setApiCertificates] = useState<EarnedCertificate[]>([]);
+  const [selectedCert, setSelectedCert] = useState<{
+    id: string;
+    title: string;
+    course: string;
+    awardedDate: string;
+    issuer: string;
+    grade?: string;
+    certificateNumber: string;
+    skillsCovered?: string[];
+    isApiCert?: boolean;
+  } | null>(null);
 
-  const certificates = showAll ? CERTIFICATES_DATA : CERTIFICATES_DATA.slice(0, 2);
+  // Fetch verified language certificates from API
+  useEffect(() => {
+    async function fetchUserCertificates() {
+      try {
+        const res = await fetch('/api/certificates/user/usr-1');
+        const data = await res.json();
+        if (data.certificates && Array.isArray(data.certificates)) {
+          setApiCertificates(data.certificates);
+        }
+      } catch (err) {
+        console.error('Failed to load certificates from API:', err);
+      }
+    }
+    fetchUserCertificates();
+  }, []);
+
+  // Map API certificates to display format
+  const mappedApiCerts = apiCertificates.map((ac) => ({
+    id: ac.id,
+    title: `Certificate of Proficiency in ${ac.languageName}`,
+    course: `${ac.levelName} (${ac.languageName})`,
+    awardedDate: new Date(ac.issuedAt).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }),
+    issuer: 'CATALOUGE Language Academy (Standardized Board)',
+    grade: 'Proficiency Exam Passed (Score ≥ 80%)',
+    certificateNumber: ac.certificateCode,
+    skillsCovered: [
+      `${ac.languageName} Grammar`,
+      'Spaced Repetition Vocabulary',
+      'Dialogue & Listening Comprehension',
+      'Standardized Proficiency Evaluation'
+    ],
+    isApiCert: true
+  }));
+
+  const allCombinedCerts = [...mappedApiCerts, ...STATIC_CERTIFICATES];
+  const displayedCerts = showAll ? allCombinedCerts : allCombinedCerts.slice(0, 3);
 
   return (
     <div className="space-y-4">
@@ -69,13 +124,13 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({ on
           }`}
         >
           <span className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-[#F06543]" />
-            <span>Certifications</span>
+            <Award className="w-5 h-5 text-amber-400" />
+            <span>Earned Language & Academic Certifications</span>
           </span>
           <span className={`px-2.5 py-0.5 rounded-full text-xs font-black ${
             isDarkMode ? 'bg-[#1b253b] text-slate-300' : 'bg-slate-200 text-slate-800'
           }`}>
-            {CERTIFICATES_DATA.length}
+            {allCombinedCerts.length}
           </span>
           {onViewAll && (
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
@@ -93,44 +148,75 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({ on
               <tr className={`border-b font-bold tracking-wider uppercase text-[11px] ${
                 isDarkMode ? 'bg-[#151c2e] border-[#1e293b] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'
               }`}>
-                <th className="py-3 px-4 sm:px-6 w-5/12">Certificate</th>
-                <th className="py-3 px-4 sm:px-6 w-5/12">Course</th>
-                <th className="py-3 px-4 sm:px-6 w-2/12 text-right sm:text-left">Awarded</th>
+                <th className="py-3 px-4 sm:px-6 w-5/12">Certificate & Identifier</th>
+                <th className="py-3 px-4 sm:px-6 w-4/12">Proficiency Standard</th>
+                <th className="py-3 px-4 sm:px-6 w-3/12 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/30">
-              {certificates.map((cert) => (
+              {displayedCerts.map((cert) => (
                 <tr
                   key={cert.id}
-                  onClick={() => setSelectedCert(cert)}
-                  className={`cursor-pointer transition-colors group ${
+                  className={`transition-colors group ${
                     isDarkMode ? 'hover:bg-[#182136]' : 'hover:bg-slate-50'
                   }`}
                 >
-                  <td className="py-3.5 px-4 sm:px-6">
+                  <td className="py-3.5 px-4 sm:px-6 cursor-pointer" onClick={() => setSelectedCert(cert)}>
                     <div className="flex items-center gap-3">
-                      {/* Certificate Document Icon */}
-                      <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 shadow-2xs ${
-                        isDarkMode ? 'bg-slate-800/70 border-slate-700 text-slate-300' : 'bg-orange-50 border-orange-200 text-[#F06543]'
+                      <div className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 shadow-xs ${
+                        cert.isApiCert
+                          ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
+                          : isDarkMode
+                          ? 'bg-slate-800/70 border-slate-700 text-slate-300'
+                          : 'bg-orange-50 border-orange-200 text-[#F06543]'
                       }`}>
-                        <FileText size={16} />
+                        <Award size={18} />
                       </div>
-                      <span className={`font-semibold text-xs transition-colors ${
-                        isDarkMode ? 'text-slate-200 group-hover:text-white' : 'text-slate-900 group-hover:text-[#F06543]'
-                      }`}>
-                        {cert.title}
-                      </span>
+                      <div>
+                        <span className={`font-bold text-xs block transition-colors ${
+                          isDarkMode ? 'text-slate-100 group-hover:text-sky-300' : 'text-slate-900 group-hover:text-[#F06543]'
+                        }`}>
+                          {cert.title}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          ID: {cert.certificateNumber}
+                        </span>
+                      </div>
                     </div>
                   </td>
-                  <td className="py-3.5 px-4 sm:px-6">
-                    <span className="font-semibold text-sky-400 hover:underline">
+
+                  <td className="py-3.5 px-4 sm:px-6 cursor-pointer" onClick={() => setSelectedCert(cert)}>
+                    <span className="font-semibold text-sky-400">
                       {cert.course}
                     </span>
+                    <span className="block text-[10px] text-slate-500">
+                      Awarded {cert.awardedDate}
+                    </span>
                   </td>
-                  <td className={`py-3.5 px-4 sm:px-6 text-xs whitespace-nowrap ${
-                    isDarkMode ? 'text-slate-400' : 'text-slate-600'
-                  }`}>
-                    {cert.awardedDate}
+
+                  <td className="py-3.5 px-4 sm:px-6 text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-2">
+                      <a
+                        href={`/api/certificates/${cert.certificateNumber}/download`}
+                        download
+                        className="px-3 py-1.5 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 border border-sky-500/30 text-[11px] font-bold inline-flex items-center gap-1 transition-colors"
+                        title="Download official landscape A4 PDF"
+                      >
+                        <Download size={13} />
+                        <span>PDF</span>
+                      </a>
+
+                      <a
+                        href={`/verify/${cert.certificateNumber}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-bold inline-flex items-center gap-1 border border-slate-700 transition-colors"
+                        title="Verify authentic credential online"
+                      >
+                        <ShieldCheck size={13} className="text-emerald-400" />
+                        <span>Verify</span>
+                      </a>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -158,8 +244,8 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({ on
                     <Award size={18} />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-sm">Verified Academic Certificate</h3>
-                    <p className="text-[11px] text-slate-400">ID: {selectedCert.certificateNumber}</p>
+                    <h3 className="font-extrabold text-sm">Verified Credential Preview</h3>
+                    <p className="text-[11px] text-slate-400 font-mono">ID: {selectedCert.certificateNumber}</p>
                   </div>
                 </div>
                 <button
@@ -178,7 +264,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({ on
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-black uppercase tracking-widest">
                     <CheckCircle2 size={13} /> Official Academic Credential
                   </div>
-                  <h2 className="font-display font-black text-xl sm:text-2xl text-amber-500">
+                  <h2 className="font-display font-black text-xl sm:text-2xl text-amber-400">
                     {selectedCert.title.toUpperCase()}
                   </h2>
                   <p className="text-xs text-slate-400">This certifies that</p>
@@ -203,35 +289,46 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({ on
                     </div>
                   </div>
 
-                  <div className="pt-2 text-left">
-                    <span className="text-[10px] text-slate-400 block font-semibold mb-1">Competencies & Skills:</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedCert.skillsCovered.map((skill, idx) => (
-                        <span key={idx} className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] font-semibold text-slate-300 border border-slate-700">
-                          {skill}
-                        </span>
-                      ))}
+                  {selectedCert.skillsCovered && (
+                    <div className="pt-2 text-left">
+                      <span className="text-[10px] text-slate-400 block font-semibold mb-1">Competencies & Skills:</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {selectedCert.skillsCovered.map((skill, idx) => (
+                          <span key={idx} className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] font-semibold text-slate-300 border border-slate-700">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-between pt-2">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                   <span className="text-[11px] text-slate-400 flex items-center gap-1.5">
-                    <CheckCircle2 size={14} className="text-emerald-400" /> Digitally signed by {selectedCert.issuer}
+                    <CheckCircle2 size={14} className="text-emerald-400" /> Digitally certified by {selectedCert.issuer}
                   </span>
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => window.print()}
-                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                    <a
+                      href={`/api/certificates/${selectedCert.certificateNumber}/download`}
+                      download
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-400 to-emerald-400 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 cursor-pointer shadow-md"
                     >
-                      <Printer size={14} /> Print
-                    </button>
+                      <Download size={14} /> Download PDF
+                    </a>
+                    <a
+                      href={`/verify/${selectedCert.certificateNumber}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer border border-slate-700 transition-colors"
+                    >
+                      <ShieldCheck size={14} className="text-emerald-400" /> Verify Online
+                    </a>
                     <button
                       onClick={() => setSelectedCert(null)}
-                      className="px-4 py-2 rounded-xl bg-[#F06543] hover:bg-[#E05432] text-white font-bold text-xs cursor-pointer transition-colors"
+                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer transition-colors"
                     >
-                      Done
+                      Close
                     </button>
                   </div>
                 </div>
@@ -244,5 +341,4 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({ on
   );
 };
 
-// Backward-compatible alias export
 export const AwardsSection = CertificationsSection;

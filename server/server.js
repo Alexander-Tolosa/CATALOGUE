@@ -42,6 +42,7 @@ const db = {
   ],
   languages: SEED_DATA.languages,
   levels: SEED_DATA.levels,
+  courses: SEED_DATA.courses || [],
   userProgress: [
     // Pre-pass Level 1 for Korean so user can see immediate unlock & progress
     {
@@ -220,6 +221,8 @@ app.get('/api/languages/:code/levels', (req, res) => {
     // Prepare next level's unlock condition
     previousPassed = isPassed;
 
+    const matchedCourses = (db.courses || []).filter(c => c.levelId === lvl.id);
+
     return {
       id: lvl.id,
       languageId: lvl.languageId,
@@ -228,6 +231,8 @@ app.get('/api/languages/:code/levels', (req, res) => {
       order: lvl.order,
       description: lvl.description,
       lessonCount: lvl.lessons.length,
+      courseCount: matchedCourses.length,
+      courses: matchedCourses,
       hasQuiz: Boolean(lvl.quiz),
       status: computedStatus,
       bestScore: progress?.bestScore ?? null,
@@ -242,7 +247,29 @@ app.get('/api/languages/:code/levels', (req, res) => {
   });
 });
 
-// GET /api/levels/:id — level detail with lessons + quiz
+// GET /api/languages/:code/courses — all matched online courses for a language track
+app.get('/api/languages/:code/courses', (req, res) => {
+  const { code } = req.params;
+  const { levelCode } = req.query;
+
+  let courses = (db.courses || []).filter(
+    c => c.languageCode.toLowerCase() === code.toLowerCase()
+  );
+
+  if (levelCode) {
+    courses = courses.filter(
+      c => c.levelCode.toLowerCase() === String(levelCode).toLowerCase()
+    );
+  }
+
+  res.json({
+    languageCode: code,
+    total: courses.length,
+    courses
+  });
+});
+
+// GET /api/levels/:id — level detail with lessons + quiz + matched online courses
 app.get('/api/levels/:id', (req, res) => {
   const { id } = req.params;
   const level = db.levels.find(l => l.id === id);
@@ -251,6 +278,7 @@ app.get('/api/levels/:id', (req, res) => {
   }
 
   const language = db.languages.find(l => l.id === level.languageId);
+  const levelCourses = (db.courses || []).filter(c => c.levelId === level.id);
 
   // Return quiz with prompt & choices, without exposing correctAnswer
   const sanitizedQuiz = level.quiz
@@ -277,8 +305,32 @@ app.get('/api/levels/:id', (req, res) => {
       order: level.order,
       description: level.description,
       lessons: level.lessons.sort((a, b) => a.order - b.order),
+      courses: levelCourses,
       quiz: sanitizedQuiz
     }
+  });
+});
+
+// GET /api/citations — Academic integrity, citations ledger & anti-plagiarism disclosure
+app.get('/api/citations', (req, res) => {
+  const citations = (db.courses || []).map(c => ({
+    courseId: c.id,
+    title: c.title,
+    language: c.languageCode,
+    levelCode: c.levelCode,
+    provider: c.provider,
+    institution: c.institution,
+    instructor: c.instructor,
+    sourceUrl: c.sourceUrl,
+    license: c.license,
+    attributionStatement: c.attributionStatement
+  }));
+
+  res.json({
+    policy: 'Academic Fair Use, Educational Attribution & Anti-Plagiarism Statement',
+    compliance: 'All external course curricula and frameworks are attributed directly to their copyright holders with genuine source links.',
+    totalCoursesIndexed: citations.length,
+    citations
   });
 });
 

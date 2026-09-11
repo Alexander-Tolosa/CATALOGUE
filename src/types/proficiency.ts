@@ -4,6 +4,47 @@ export interface Language {
   code: 'en' | 'ko' | 'ja' | string;
 }
 
+export interface CourseSyllabusModule {
+  weekOrUnit: string;
+  title: string;
+  topics: string[];
+}
+
+export interface OnlineCourse {
+  id: string;
+  levelId: string;
+  languageCode: 'en' | 'ko' | 'ja' | string;
+  levelCode: string;
+  levelName: string;
+  title: string;
+  provider: string; // e.g. 'Yonsei University (Coursera)', 'British Council'
+  institution: string; // e.g. 'Yonsei University Korean Language Institute'
+  instructor?: string; // e.g. 'Prof. Seung Hae Kang'
+  courseType: 'MOOC' | 'Accredited Standard' | 'Interactive Public Broadcast' | 'Open Educational Resource';
+  sourceUrl: string; // Original canonical website URL
+  thumbnail?: string;
+  duration: string; // e.g. '5 Weeks (12 Hours)'
+  rating: number; // e.g. 4.9
+  reviewCount: number;
+  description: string;
+  learningPoints: string[];
+  syllabus: CourseSyllabusModule[];
+  license: string; // e.g. 'Educational Fair Use Reference © Yonsei University'
+  attributionStatement: string; // Anti-plagiarism credibility credit
+}
+
+export interface LanguageCitationsSummary {
+  ownerName: string;
+  institution: string;
+  platform: string;
+  language: 'en' | 'ko' | 'ja' | string;
+  levelCodes: string[];
+  courseTitles: string[];
+  sourceUrl: string;
+  license: string;
+  plagiarismDisclosure: string;
+}
+
 export interface ProficiencyLevel {
   id: string;
   languageId: string;
@@ -12,6 +53,8 @@ export interface ProficiencyLevel {
   order: number;
   description: string;
   lessonCount: number;
+  courseCount?: number;
+  courses?: OnlineCourse[];
   hasQuiz: boolean;
   status: 'locked' | 'in_progress' | 'passed';
   bestScore: number | null;
@@ -50,6 +93,7 @@ export interface LevelDetail {
   order: number;
   description: string;
   lessons: LevelLesson[];
+  courses?: OnlineCourse[];
   quiz: LevelQuiz | null;
 }
 

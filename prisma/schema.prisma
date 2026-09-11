@@ -38,11 +38,35 @@ model Level {
   description  String
   lessons      Lesson[]
   quizzes      Quiz[]
+  courses      OnlineCourse[]
   progress     UserProgress[]
   certificates Certificate[]
 
   @@unique([languageId, code])
   @@unique([languageId, order])
+}
+
+model OnlineCourse {
+  id              String   @id @default(uuid())
+  levelId         String
+  level           Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  languageCode    String   // 'ko' | 'ja' | 'en'
+  title           String
+  provider        String   // e.g. 'Yonsei University (Coursera)', 'British Council'
+  institution     String   // e.g. 'Yonsei University KLI', 'British Council'
+  instructor      String?  // e.g. 'Prof. Seung Hae Kang'
+  courseType      String   // 'MOOC', 'Standard Curriculum', 'Open Educational Resource'
+  sourceUrl       String   // canonical source link to original owner site
+  thumbnail       String?
+  duration        String   // e.g. '5 Weeks (12 Hours)'
+  rating          Float?   // e.g. 4.9
+  reviewCount     Int?     // e.g. 48000
+  description     String
+  learningPoints  String   // JSON string of string[]
+  syllabus        String   // JSON string of module[]
+  license         String   // e.g. 'Educational Fair Use / All Rights Reserved to Yonsei University'
+  attributionText String   // Anti-plagiarism credibility statement
+  createdAt       DateTime @default(now())
 }
 
 model Lesson {

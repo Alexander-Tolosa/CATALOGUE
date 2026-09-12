@@ -4,6 +4,7 @@ import { Settings, Volume2, Type, Shield, User, Globe, Sun, Moon, Palette, Langu
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../lib/i18n/useTranslation';
 import { FlagIcon } from '../Common/FlagIcon';
+import { SiameseCatToggle } from './SiameseCatToggle';
 
 interface SettingsViewProps {
   profile: UserProfile;
@@ -37,73 +38,57 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
       </div>
 
       {/* 1. Theme & Appearance Settings (Light / Dark Mode) */}
-      <div className={`p-6 rounded-3xl border space-y-4 transition-colors ${
-        isDarkMode ? 'bg-[#131b2e] border-[#1e293b]' : 'bg-white border-slate-200 shadow-xs'
+      <div className={`p-6 md:p-7 rounded-3xl border transition-all duration-300 ${
+        isDarkMode
+          ? 'bg-gradient-to-br from-[#131b2e] to-[#0c1220] border-[#1e293b] shadow-xl'
+          : 'bg-gradient-to-br from-white to-[#faf6f0] border-slate-200 shadow-sm'
       }`}>
-        <h3 className={`font-display font-black text-sm flex items-center gap-2 ${
-          isDarkMode ? 'text-white' : 'text-slate-900'
-        }`}>
-          <Palette size={18} className="text-[#FF6B35]" /> {t.settings.appearance}
-        </h3>
-
-        <div className="grid grid-cols-2 gap-4">
-          {/* Light Mode Option Tile */}
-          <button
-            onClick={() => isDarkMode && toggleThemeMode()}
-            className={`p-5 rounded-2xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
-              !isDarkMode
-                ? 'bg-[#fff7ed] border-[#FF6B35] shadow-md ring-2 ring-[#FF6B35]/20'
-                : 'bg-[#0b0f19] border-[#1e293b] hover:border-slate-700'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 font-bold border border-amber-200">
-                <Sun size={20} />
+        {/* Header Row with Title, Badges & Siamese Cat Switcher */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-2xl bg-[#FF6B35]/15 flex items-center justify-center text-[#FF6B35] shadow-sm">
+                <Palette size={20} />
               </div>
-              {!isDarkMode && (
-                <span className="bg-[#FF6B35] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  Active
-                </span>
-              )}
-            </div>
-            <div>
-              <span className={`font-display text-sm font-black block ${!isDarkMode ? 'text-slate-900' : 'text-white'}`}>
-                {t.settings.lightMode} ☀️
-              </span>
-              <span className={`text-[11px] block mt-0.5 ${!isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>
-                {t.settings.appearanceDesc}
-              </span>
-            </div>
-          </button>
-
-          {/* Dark Mode Option Tile */}
-          <button
-            onClick={() => !isDarkMode && toggleThemeMode()}
-            className={`p-5 rounded-2xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
-              isDarkMode
-                ? 'bg-[#FF6B35]/15 border-[#FF6B35] shadow-md ring-2 ring-[#FF6B35]/20'
-                : 'bg-slate-50 border-slate-200 hover:border-slate-300'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-950 flex items-center justify-center text-indigo-400 font-bold border border-indigo-800">
-                <Moon size={20} />
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className={`font-display font-black text-base md:text-lg ${
+                    isDarkMode ? 'text-white' : 'text-slate-900'
+                  }`}>
+                    {t.settings.appearance}
+                  </h3>
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                    isDarkMode
+                      ? 'bg-sky-500/15 text-sky-400 border border-sky-500/30'
+                      : 'bg-amber-500/15 text-amber-700 border border-amber-500/30'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${isDarkMode ? 'bg-sky-400' : 'bg-amber-500'}`} />
+                    {isDarkMode ? t.settings.darkMode : t.settings.lightMode}
+                  </span>
+                </div>
+                <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  {t.settings.appearanceDesc}
+                </p>
               </div>
-              {isDarkMode && (
-                <span className="bg-[#FF6B35] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  Active
-                </span>
-              )}
             </div>
-            <div>
-              <span className={`font-display text-sm font-black block ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                {t.settings.darkMode} 🌙
+          </div>
+
+          {/* Interactive Siamese Cat Toggle */}
+          <div className="flex items-center gap-3 self-start sm:self-auto bg-slate-100/70 dark:bg-[#0a0e17]/80 p-1.5 pr-2 pl-3 rounded-full border border-slate-200/70 dark:border-slate-800">
+            <div className="text-right hidden sm:block">
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+                Siamese Toggle
               </span>
-              <span className={`text-[11px] block mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                {t.settings.appearanceDesc}
+              <span className="text-xs font-black text-[#FF6B35]">
+                {isDarkMode ? 'Dark' : 'Light'}
               </span>
             </div>
-          </button>
+            <SiameseCatToggle
+              isDarkMode={isDarkMode}
+              onToggle={toggleThemeMode}
+              size="md"
+            />
+          </div>
         </div>
       </div>
 

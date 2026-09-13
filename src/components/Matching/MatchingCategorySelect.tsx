@@ -16,45 +16,7 @@ interface MatchingCategorySelectProps {
   onChangePairCount: (count: number) => void;
 }
 
-const FlagIcon: React.FC<{ country: 'ja' | 'ko' | 'en'; className?: string }> = ({
-  country,
-  className = "w-5 h-3.5 rounded-xs shrink-0"
-}) => {
-  if (country === 'ja') {
-    return (
-      <svg viewBox="0 0 30 20" className={`${className} shadow-2xs border border-white/20 inline-block`} xmlns="http://www.w3.org/2000/svg">
-        <rect width="30" height="20" fill="#FFFFFF" />
-        <circle cx="15" cy="10" r="6" fill="#BC002D" />
-      </svg>
-    );
-  }
-  if (country === 'ko') {
-    return (
-      <svg viewBox="0 0 30 20" className={`${className} shadow-2xs border border-white/20 inline-block`} xmlns="http://www.w3.org/2000/svg">
-        <rect width="30" height="20" fill="#FFFFFF" />
-        <circle cx="15" cy="10" r="5" fill="#C60C30" />
-        <path d="M15 5a5 5 0 0 0 0 5 2.5 2.5 0 0 1 0 5 5 5 0 0 0 0-10z" fill="#003478" />
-        <circle cx="15" cy="7.5" r="2.5" fill="#C60C30" />
-        <rect x="3.5" y="3.5" width="4.5" height="1" transform="rotate(33 5.7 4)" fill="#000000" />
-        <rect x="4" y="5" width="4.5" height="1" transform="rotate(33 6.2 5.5)" fill="#000000" />
-        <rect x="22" y="14" width="4.5" height="1" transform="rotate(33 24.2 14.5)" fill="#000000" />
-        <rect x="22.5" y="15.5" width="4.5" height="1" transform="rotate(33 24.7 16)" fill="#000000" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 30 20" className={`${className} shadow-2xs border border-white/20 inline-block`} xmlns="http://www.w3.org/2000/svg">
-      <rect width="30" height="20" fill="#B22234" />
-      <rect y="1.54" width="30" height="1.54" fill="#FFFFFF" />
-      <rect y="4.62" width="30" height="1.54" fill="#FFFFFF" />
-      <rect y="7.69" width="30" height="1.54" fill="#FFFFFF" />
-      <rect y="10.77" width="30" height="1.54" fill="#FFFFFF" />
-      <rect y="13.85" width="30" height="1.54" fill="#FFFFFF" />
-      <rect y="16.92" width="30" height="1.54" fill="#FFFFFF" />
-      <rect width="12" height="10.77" fill="#3C3B6E" />
-    </svg>
-  );
-};
+import { FlagIcon } from '../Common/FlagIcon';
 
 export const MatchingCategorySelect: React.FC<MatchingCategorySelectProps> = ({
   currentLanguage,

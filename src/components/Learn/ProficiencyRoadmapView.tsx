@@ -14,6 +14,7 @@ import {
 import { Language, ProficiencyLevel, OnlineCourse } from '../../types/proficiency';
 import { CourseDetailModal } from './CourseDetailModal';
 import { CredibilityAttributionModal } from './CredibilityAttributionModal';
+import { FlagIcon } from '../Common/FlagIcon';
 import { useAppStore } from '../../store/useAppStore';
 import {
   getCoursesForLanguage,
@@ -103,12 +104,12 @@ export const ProficiencyRoadmapView: React.FC<ProficiencyRoadmapViewProps> = ({
   const getLanguageLabel = (code: string) => {
     switch (code) {
       case 'ko':
-        return { name: 'Korean', standard: 'TOPIK Standard (Level 1–6)', flag: '🇰🇷' };
+        return { name: 'Korean', standard: 'TOPIK Standard (Level 1–6)', flagCode: 'kr' as const };
       case 'ja':
-        return { name: 'Japanese', standard: 'JLPT Standard (N5–N1)', flag: '🇯🇵' };
+        return { name: 'Japanese', standard: 'JLPT Standard (N5–N1)', flagCode: 'jp' as const };
       case 'en':
       default:
-        return { name: 'English', standard: 'CEFR Standard (A1–C2)', flag: '🇬🇧' };
+        return { name: 'English', standard: 'CEFR Standard (A1–C2)', flagCode: 'gb' as const };
     }
   };
 
@@ -139,8 +140,8 @@ export const ProficiencyRoadmapView: React.FC<ProficiencyRoadmapViewProps> = ({
             <span className="text-[10px] font-black uppercase tracking-widest text-sky-400 block">
               Accredited Language Proficiency System
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2.5">
-              <span>{currentInfo.flag}</span>
+            <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-3">
+              <FlagIcon code={currentInfo.flagCode} size="md" className="rounded-xs shadow-sm" />
               <span>{currentInfo.name} Proficiency Track</span>
             </h1>
             <p className="text-xs text-slate-400">{currentInfo.standard}</p>
@@ -155,13 +156,13 @@ export const ProficiencyRoadmapView: React.FC<ProficiencyRoadmapViewProps> = ({
                 <button
                   key={lang}
                   onClick={() => selectLanguageTrack(lang)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 cursor-pointer ${
                     isActive
                       ? 'bg-sky-500 text-slate-950 shadow-md shadow-sky-500/20 scale-102'
                       : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
                   }`}
                 >
-                  <span>{info.flag}</span>
+                  <FlagIcon code={info.flagCode} size="sm" className="rounded-2xs shadow-2xs" />
                   <span>{info.name}</span>
                 </button>
               );

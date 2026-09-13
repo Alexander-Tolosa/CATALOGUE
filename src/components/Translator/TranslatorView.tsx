@@ -12,8 +12,8 @@ interface TranslatorViewProps {
 
 type LangOption = 'English' | 'Japanese' | 'Korean';
 
-const LANG_CODES: Record<LangOption, { code: 'us' | 'jp' | 'kr'; apiCode: string; bcp47: string }> = {
-  English: { code: 'us', apiCode: 'en', bcp47: 'en-US' },
+const LANG_CODES: Record<LangOption, { code: 'gb' | 'jp' | 'kr'; apiCode: string; bcp47: string }> = {
+  English: { code: 'gb', apiCode: 'en', bcp47: 'en-US' },
   Japanese: { code: 'jp', apiCode: 'ja', bcp47: 'ja-JP' },
   Korean: { code: 'kr', apiCode: 'ko', bcp47: 'ko-KR' }
 };

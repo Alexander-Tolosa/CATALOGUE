@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { CITATIONS_LEDGER } from '../../data/proficiencyCoursesData';
 import { LanguageCitationsSummary } from '../../types/proficiency';
+import { FlagIcon } from '../Common/FlagIcon';
 
 interface CredibilityAttributionModalProps {
   onClose: () => void;
@@ -59,24 +60,26 @@ export const CredibilityAttributionModal: React.FC<CredibilityAttributionModalPr
                 </span>
                 <span className="text-[10px] font-bold text-slate-400">Zero Plagiarism Policy</span>
               </div>
-              <h2 className="text-lg sm:text-xl font-black text-white mt-0.5">
-                Academic Credibility & Citations Ledger
+              <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
+                Accreditation & Sources Ledger
               </h2>
             </div>
           </div>
+
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-            aria-label="Close"
+            className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Anti-Plagiarism Policy Banner */}
-        <div className="px-6 py-4 bg-gradient-to-r from-sky-950/40 via-[#0f172a] to-emerald-950/30 border-b border-slate-800/80 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          <Info size={20} className="text-sky-400 shrink-0 mt-0.5 sm:mt-0" />
-          <p className="text-xs text-slate-300 leading-relaxed">
+        {/* Anti-Plagiarism Statement Box */}
+        <div className="p-5 bg-gradient-to-r from-emerald-950/40 via-slate-900/60 to-[#0b0f19] border-b border-slate-800 text-xs text-slate-300 leading-relaxed flex items-start gap-3">
+          <div className="mt-0.5 text-emerald-400 shrink-0">
+            <BookOpen size={16} />
+          </div>
+          <p>
             <strong>Plagiarism-Free Standard:</strong> CATALOGUE adheres to international academic fair use and open reference guidelines. All accredited online courses, curriculum frameworks, and external syllabi are explicitly attributed to their original universities, broadcasting authorities, and creators with direct verification links.
           </p>
         </div>
@@ -87,20 +90,23 @@ export const CredibilityAttributionModal: React.FC<CredibilityAttributionModalPr
           <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs">
             {[
               { id: 'all', label: 'All Languages' },
-              { id: 'ko', label: '🇰🇷 Korean' },
-              { id: 'ja', label: '🇯🇵 Japanese' },
-              { id: 'en', label: '🇬🇧 English' }
+              { id: 'ko', label: 'Korean', flagCode: 'kr' as const },
+              { id: 'ja', label: 'Japanese', flagCode: 'jp' as const },
+              { id: 'en', label: 'English', flagCode: 'gb' as const }
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setSelectedLanguage(tab.id)}
-                className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   selectedLanguage === tab.id
                     ? 'bg-sky-500 text-slate-950 shadow-sm shadow-sky-500/20'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                {tab.label}
+                {'flagCode' in tab && tab.flagCode && (
+                  <FlagIcon code={tab.flagCode} size="sm" className="w-4 h-3 rounded-2xs" />
+                )}
+                <span>{tab.label}</span>
               </button>
             ))}
           </div>
@@ -139,14 +145,21 @@ export const CredibilityAttributionModal: React.FC<CredibilityAttributionModalPr
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-[9px] font-black uppercase tracking-wider text-sky-400 block">
-                        {citation.language === 'ko'
-                          ? '🇰🇷 Korean TOPIK'
-                          : citation.language === 'ja'
-                          ? '🇯🇵 Japanese JLPT'
-                          : '🇬🇧 English CEFR'}
-                        {' • Levels: '}
-                        {citation.levelCodes.join(', ')}
+                      <span className="text-[9px] font-black uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+                        <FlagIcon
+                          code={citation.language === 'ko' ? 'kr' : citation.language === 'ja' ? 'jp' : 'gb'}
+                          size="sm"
+                          className="w-3.5 h-2.5 rounded-2xs inline-block"
+                        />
+                        <span>
+                          {citation.language === 'ko'
+                            ? 'Korean TOPIK'
+                            : citation.language === 'ja'
+                            ? 'Japanese JLPT'
+                            : 'English CEFR'}
+                          {' • Levels: '}
+                          {citation.levelCodes.join(', ')}
+                        </span>
                       </span>
                       <h3 className="text-sm font-black text-white mt-0.5">
                         {citation.ownerName}

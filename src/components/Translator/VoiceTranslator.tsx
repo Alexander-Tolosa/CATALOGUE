@@ -131,7 +131,7 @@ export const VoiceTranslator: React.FC<VoiceTranslatorProps> = ({
             }}
             className="bg-slate-900 text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 text-sm font-semibold"
           >
-            <option value="en">English 🇺🇸</option>
+            <option value="en">English 🇬🇧</option>
             <option value="ko">Korean 🇰🇷</option>
             <option value="ja">Japanese 🇯🇵</option>
           </select>
@@ -164,7 +164,7 @@ export const VoiceTranslator: React.FC<VoiceTranslatorProps> = ({
           >
             <option value="ko">Korean 🇰🇷</option>
             <option value="ja">Japanese 🇯🇵</option>
-            <option value="en">English 🇺🇸</option>
+            <option value="en">English 🇬🇧</option>
           </select>
         </div>
 

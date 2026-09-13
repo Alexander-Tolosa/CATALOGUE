@@ -32,8 +32,8 @@ interface ScannerViewProps {
 
 type LangOption = 'English' | 'Japanese' | 'Korean';
 
-const LANG_CONFIG: Record<LangOption, { code: 'us' | 'jp' | 'kr'; trackCode: LanguageTrack; apiCode: string; tesseractLang: string; bcp47: string }> = {
-  English: { code: 'us', trackCode: 'en', apiCode: 'en', tesseractLang: 'eng', bcp47: 'en-US' },
+const LANG_CONFIG: Record<LangOption, { code: 'gb' | 'jp' | 'kr'; trackCode: LanguageTrack; apiCode: string; tesseractLang: string; bcp47: string }> = {
+  English: { code: 'gb', trackCode: 'en', apiCode: 'en', tesseractLang: 'eng', bcp47: 'en-US' },
   Japanese: { code: 'jp', trackCode: 'ja', apiCode: 'ja', tesseractLang: 'jpn', bcp47: 'ja-JP' },
   Korean: { code: 'kr', trackCode: 'ko', apiCode: 'ko', tesseractLang: 'kor', bcp47: 'ko-KR' }
 };

@@ -119,7 +119,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
             }`}
           >
             <div className="flex items-center gap-3">
-              <FlagIcon code="us" size="md" />
+              <FlagIcon code="gb" size="md" />
               <div>
                 <div className="text-xs font-bold">{t.settings.englishTrack}</div>
                 <div className="text-[10px] text-slate-400">English UI</div>
@@ -224,7 +224,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ profile, onSelectLan
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <FlagIcon code="us" size="lg" className="mb-2" />
+            <FlagIcon code="gb" size="lg" className="mb-2" />
             <span className="text-xs">{t.settings.englishTrack}</span>
           </button>
         </div>

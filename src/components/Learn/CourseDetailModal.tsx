@@ -14,6 +14,7 @@ import {
   FileText
 } from 'lucide-react';
 import { OnlineCourse } from '../../types/proficiency';
+import { FlagIcon } from '../Common/FlagIcon';
 
 interface CourseDetailModalProps {
   course: OnlineCourse;
@@ -24,18 +25,6 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
   course,
   onClose
 }) => {
-  const getLangFlag = (code: string) => {
-    switch (code.toLowerCase()) {
-      case 'ko':
-        return '🇰🇷';
-      case 'ja':
-        return '🇯🇵';
-      case 'en':
-      default:
-        return '🇬🇧';
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
       <motion.div
@@ -48,8 +37,12 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
         <div className="p-6 border-b border-slate-800 bg-[#0f1523] flex items-start justify-between">
           <div className="space-y-1 pr-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center gap-1">
-                <span>{getLangFlag(course.languageCode)}</span>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center gap-1.5">
+                <FlagIcon
+                  code={course.languageCode === 'ko' ? 'kr' : course.languageCode === 'ja' ? 'jp' : 'gb'}
+                  size="sm"
+                  className="w-4 h-3 rounded-2xs"
+                />
                 <span>Level {course.levelCode} • {course.levelName}</span>
               </span>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-300">

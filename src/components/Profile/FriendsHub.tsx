@@ -117,7 +117,7 @@ export const FriendsHub: React.FC<FriendsHubProps> = ({ initialTab = 'my_friends
         return <span className="bg-amber-500/15 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">🇯🇵 Japanese</span>;
       case 'en':
       default:
-        return <span className="bg-sky-500/15 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">🇺🇸 English</span>;
+        return <span className="bg-sky-500/15 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">🇬🇧 English</span>;
     }
   };
 
@@ -233,7 +233,7 @@ export const FriendsHub: React.FC<FriendsHubProps> = ({ initialTab = 'my_friends
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                {lang === 'all' ? 'All' : lang === 'ko' ? '🇰🇷 KO' : lang === 'ja' ? '🇯🇵 JA' : '🇺🇸 EN'}
+                {lang === 'all' ? 'All' : lang === 'ko' ? '🇰🇷 KO' : lang === 'ja' ? '🇯🇵 JA' : '🇬🇧 EN'}
               </button>
             ))}
           </div>

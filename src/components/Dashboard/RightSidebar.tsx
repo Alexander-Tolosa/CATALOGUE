@@ -26,7 +26,7 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
         {/* Language Flag Selector Dropdown */}
         <div className="relative group">
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700/90 text-xs font-black text-slate-100 hover:bg-slate-800 transition-colors shadow-md">
-            <FlagIcon code={profile.selectedLanguage === 'ko' ? 'kr' : profile.selectedLanguage === 'ja' ? 'jp' : 'us'} size="sm" />
+            <FlagIcon code={profile.selectedLanguage === 'ko' ? 'kr' : profile.selectedLanguage === 'ja' ? 'jp' : 'gb'} size="sm" />
             <span className="font-mono">1</span>
             <ChevronDown size={14} className="text-slate-400" />
           </button>
@@ -49,7 +49,7 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
               onClick={() => onSelectLanguage('en')}
               className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800 flex items-center gap-2 cursor-pointer"
             >
-              <FlagIcon code="us" size="sm" /> English
+              <FlagIcon code="gb" size="sm" /> English
             </button>
           </div>
         </div>

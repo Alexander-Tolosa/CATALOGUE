@@ -233,7 +233,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
                         : 'text-slate-700 hover:bg-slate-50'
                     }`}
                   >
-                    <FlagIcon code="us" size="sm" />
+                    <FlagIcon code="gb" size="sm" />
                     <span>English (ENGLISH)</span>
                   </button>
 
@@ -350,7 +350,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onLogin 
             onClick={onGetStarted}
             className="flex items-center gap-3 px-6 py-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-[#F97316] hover:scale-105 transition-all cursor-pointer"
           >
-            <FlagIcon code="us" size="lg" />
+            <FlagIcon code="gb" size="lg" />
             <div className="text-left">
               <span className="font-display font-extrabold text-sm text-slate-900 block">{t.englishTrack}</span>
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{t.englishSubtitle}</span>

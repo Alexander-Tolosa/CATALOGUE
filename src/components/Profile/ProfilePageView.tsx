@@ -108,25 +108,25 @@ export const ProfilePageView: React.FC = () => {
   }, [isEditingNote, updatePersonalInfo]);
 
   const personal = profile.personalInfo || {
-    fullName: profile.name || 'ALEXANDER MICHAEL TOLOSA',
+    fullName: profile.name || 'Learner',
     statusMessage: '',
     recentAvatars: [],
-    studentId: '2020-09482',
-    department: 'College of Liberal Arts, Sciences and Education (CLASE)',
-    program: 'Information Technology (CLASE)',
-    yearLevel: 'BSIT 2nd Year (Section 2C)',
-    email: 'alexander.tolosa@clase.edu.ph',
-    phone: '+63 912 345 6789',
-    dateOfBirth: 'March 15, 2002',
-    address: 'Iloilo City, Philippines',
+    studentId: '',
+    department: 'Language Studies',
+    program: 'Global Polyglot Track',
+    yearLevel: '1st Year',
+    email: '',
+    phone: '',
+    dateOfBirth: '',
+    address: '',
     emergencyContact: {
-      name: 'Maria Teresa Tolosa',
-      relationship: 'Mother / Guardian',
-      phone: '+63 918 765 4321'
+      name: '',
+      relationship: '',
+      phone: ''
     },
     bio: 'Tell us a bit about you',
-    joinedDate: 'Jun 24, 2021',
-    lastActivity: '3 hours ago'
+    joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    lastActivity: 'Just now'
   };
 
   const hasNote = Boolean(

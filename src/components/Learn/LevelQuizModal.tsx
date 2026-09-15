@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { LevelDetail, QuizSubmissionResult } from '../../types/proficiency';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useAppStore } from '../../store/useAppStore';
 
 interface LevelQuizModalProps {
   levelDetail: LevelDetail;
@@ -26,6 +28,11 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
   onClose,
   onQuizCompleted
 }) => {
+  const { userId, googleUser } = useAuthStore();
+  const { profile } = useAppStore();
+  const activeUserId = userId || (googleUser?.googleSubId ? `usr-g-${googleUser.googleSubId.slice(-8)}` : 'usr-guest');
+  const activeUserName = profile.name || googleUser?.name || 'Learner';
+
   const quiz = levelDetail.quiz;
   const questions = quiz?.questions || [];
 
@@ -57,8 +64,8 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          userId: 'usr-1',
-          userName: 'Alexander Michael Tolosa',
+          userId: activeUserId,
+          userName: activeUserName,
           answers: selectedAnswers
         })
       });

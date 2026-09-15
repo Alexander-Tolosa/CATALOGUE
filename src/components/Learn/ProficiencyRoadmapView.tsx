@@ -16,6 +16,7 @@ import { CourseDetailModal } from './CourseDetailModal';
 import { CredibilityAttributionModal } from './CredibilityAttributionModal';
 import { FlagIcon } from '../Common/FlagIcon';
 import { useAppStore } from '../../store/useAppStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import {
   getCoursesForLanguage,
   getCoursesForLevel,
@@ -30,6 +31,8 @@ export const ProficiencyRoadmapView: React.FC<ProficiencyRoadmapViewProps> = ({
   initialLanguage
 }) => {
   const { profile, selectLanguageTrack } = useAppStore();
+  const { userId, googleUser } = useAuthStore();
+  const activeUserId = userId || (googleUser?.googleSubId ? `usr-g-${googleUser.googleSubId.slice(-8)}` : 'usr-guest');
   const currentLangCode = profile.selectedLanguage || initialLanguage || 'ko';
 
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -70,7 +73,7 @@ export const ProficiencyRoadmapView: React.FC<ProficiencyRoadmapViewProps> = ({
   const fetchLevels = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/languages/${currentLangCode}/levels?userId=usr-1`);
+      const res = await fetch(`/api/languages/${currentLangCode}/levels?userId=${activeUserId}`);
       const data = await res.json();
       if (data.levels && data.levels.length > 0) {
         // Ensure courses are populated on each level

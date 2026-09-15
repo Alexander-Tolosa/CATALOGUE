@@ -4,9 +4,9 @@ import { FriendUser, FriendRequest, FriendChatMessage } from '../types';
 export const INITIAL_FRIENDS: FriendUser[] = [
   {
     id: 'friend-1',
-    name: 'Paulo Miguel Tolosa',
+    name: 'Paulo Miguel Santos',
     avatarColor: 'from-amber-400 to-orange-500',
-    avatarInitials: 'PT',
+    avatarInitials: 'PS',
     department: 'College of Liberal Arts, Sciences and Education (CLASE)',
     program: 'Information Technology (CLASE)',
     status: 'online',

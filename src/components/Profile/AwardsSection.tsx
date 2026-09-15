@@ -15,6 +15,7 @@ import {
 import { CertificateAward } from '../../types';
 import { EarnedCertificate } from '../../types/proficiency';
 import { useAppStore } from '../../store/useAppStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export const STATIC_CERTIFICATES: CertificateAward[] = [
   {
@@ -24,7 +25,7 @@ export const STATIC_CERTIFICATES: CertificateAward[] = [
     awardedDate: 'Oct 5, 2020',
     issuer: 'Department of Education & CLASE Secondary Academic Board',
     grade: '98.5% (High Honors)',
-    certificateNumber: 'DEPED-AP-2020-09482',
+    certificateNumber: 'DEPED-AP-2024-1029',
     skillsCovered: ['Macroeconomics', 'Philippine Economic History', 'Social Research', 'Statistical Analysis']
   },
   {
@@ -59,6 +60,8 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
   showAll = false
 }) => {
   const { isDarkMode, profile } = useAppStore();
+  const { userId, googleUser } = useAuthStore();
+  const activeUserId = userId || (googleUser?.googleSubId ? `usr-g-${googleUser.googleSubId.slice(-8)}` : 'usr-guest');
   const [apiCertificates, setApiCertificates] = useState<EarnedCertificate[]>([]);
   const [selectedCert, setSelectedCert] = useState<{
     id: string;
@@ -76,7 +79,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
   useEffect(() => {
     async function fetchUserCertificates() {
       try {
-        const res = await fetch('/api/certificates/user/usr-1');
+        const res = await fetch(`/api/certificates/user/${activeUserId}`);
         const data = await res.json();
         if (data.certificates && Array.isArray(data.certificates)) {
           setApiCertificates(data.certificates);
@@ -86,7 +89,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
       }
     }
     fetchUserCertificates();
-  }, []);
+  }, [activeUserId]);
 
   // Map API certificates to display format
   const mappedApiCerts = apiCertificates.map((ac) => ({
@@ -269,7 +272,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                   </h2>
                   <p className="text-xs text-slate-400">This certifies that</p>
                   <p className="font-display font-extrabold text-lg sm:text-xl text-sky-400">
-                    {profile.name || 'ALEXANDER MICHAEL TOLOSA'}
+                    {profile.name || 'Learner'}
                   </p>
                   <p className="text-xs max-w-md mx-auto text-slate-300">
                     has successfully met all curriculum requirements and competencies for

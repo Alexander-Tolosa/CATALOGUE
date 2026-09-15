@@ -29,7 +29,7 @@ interface ActiveSessionItem {
 }
 
 export const SecuritySignInSection: React.FC = () => {
-  const { isDarkMode } = useAppStore();
+  const { isDarkMode, profile } = useAppStore();
   const { googleUser, logout } = useAuthStore();
 
   const [currentPassword, setCurrentPassword] = useState('');
@@ -254,26 +254,11 @@ export const SecuritySignInSection: React.FC = () => {
                   </div>
                   <div>
                     <span className="font-extrabold text-xs text-slate-200 block">Google OIDC</span>
-                    <span className="text-[10px] text-slate-400">{googleUser?.email || 'alexander.tolosa@clase.edu.ph'}</span>
+                    <span className="text-[10px] text-slate-400">{googleUser?.email || profile.personalInfo?.email || 'learner@catalogue.app'}</span>
                   </div>
                 </div>
                 <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                   Connected
-                </span>
-              </div>
-
-              <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-black text-xs">
-                    CLASE
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-xs text-slate-200 block">University CLASE Portal SSO</span>
-                    <span className="text-[10px] text-slate-400">Student ID: 2020-09482</span>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                  Verified
                 </span>
               </div>
             </div>

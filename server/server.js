@@ -34,7 +34,7 @@ const db = {
   users: [
     {
       id: 'usr-1',
-      name: 'Alexander Michael Tolosa',
+      name: 'Learner',
       email: 'learner@catalogue.app',
       passwordHash: bcrypt.hashSync('password123', 10),
       createdAt: new Date().toISOString()
@@ -89,11 +89,11 @@ const db = {
   ]
 };
 
-// Seed an initial sample certificate for Alexander in Korean TOPIK I
+// Seed an initial sample certificate for Learner in Korean TOPIK I
 const initialCertCode = 'CAT-KO-L1-8821';
 const initialCertPath = path.join(certsDir, `${initialCertCode}.pdf`);
 generateCertificatePdf({
-  userName: 'Alexander Michael Tolosa',
+  userName: 'Learner',
   languageName: 'Korean',
   levelName: 'TOPIK I — Level 1 (Novice)',
   levelCode: '1',
@@ -104,7 +104,7 @@ generateCertificatePdf({
   db.certificates.push({
     id: 'cert-init-1',
     userId: 'usr-1',
-    userName: 'Alexander Michael Tolosa',
+    userName: 'Learner',
     languageId: 'lang-ko',
     languageName: 'Korean',
     languageCode: 'ko',
@@ -131,7 +131,7 @@ const authenticate = (req, res, next) => {
   }
 };
 
-// Optional Auth resolver: extracts user id from header or defaults to 'usr-1'
+// Optional Auth resolver: extracts user id from header or defaults to 'usr-guest'
 const resolveUserId = (req) => {
   if (req.headers.authorization) {
     try {
@@ -140,7 +140,7 @@ const resolveUserId = (req) => {
       if (decoded && decoded.id) return decoded.id;
     } catch {}
   }
-  return req.query.userId || req.body?.userId || 'usr-1';
+  return req.query.userId || req.body?.userId || 'usr-guest';
 };
 
 // --- Auth Routes ---
@@ -404,7 +404,7 @@ app.post('/api/levels/:id/quiz/submit', async (req, res) => {
     let existingCert = db.certificates.find(c => c.userId === userId && c.levelId === level.id);
     if (!existingCert) {
       const user = db.users.find(u => u.id === userId);
-      const userName = user?.name || req.body.userName || 'Alexander Michael Tolosa';
+      const userName = req.body.userName || user?.name || 'Learner';
       const cleanCode = level.code.replace(/[^A-Za-z0-9]/g, '');
       const uniqueSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
       const certificateCode = `CAT-${(language?.code || 'GL').toUpperCase()}-${cleanCode}-${uniqueSuffix}`;

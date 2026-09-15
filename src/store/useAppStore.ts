@@ -13,20 +13,16 @@ export const COSMETIC_ITEMS: CosmeticItem[] = [
 ];
 
 const DEFAULT_PROFILE: UserProfile = {
-  name: 'ALEXANDER MICHAEL TOLOSA',
-  lifecycleState: 'returning',
+  name: 'Learner',
+  lifecycleState: 'new',
   selectedLanguage: 'ko',
   dailyGoalMinutes: 10,
-  minutesCompletedToday: 4,
-  xp: 140,
-  level: 2,
-  streakDays: 5,
+  minutesCompletedToday: 0,
+  xp: 0,
+  level: 1,
+  streakDays: 1,
   lastStudyDate: new Date().toISOString().split('T')[0],
   studyDatesHistory: [
-    new Date(Date.now() - 86400000 * 4).toISOString().split('T')[0],
-    new Date(Date.now() - 86400000 * 3).toISOString().split('T')[0],
-    new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
-    new Date(Date.now() - 86400000 * 1).toISOString().split('T')[0],
     new Date().toISOString().split('T')[0]
   ],
   hearts: 5,
@@ -44,50 +40,34 @@ const DEFAULT_PROFILE: UserProfile = {
       interval: 1,
       easeFactor: 2.5,
       nextReviewAt: new Date().toISOString().split('T')[0]
-    },
-    {
-      id: 'rev-2',
-      term: '猫 (Neko)',
-      translation: 'Cat',
-      language: 'ja',
-      phonetic: 'ne-ko',
-      interval: 1,
-      easeFactor: 2.5,
-      nextReviewAt: new Date().toISOString().split('T')[0]
     }
   ],
-  completedNodeIds: ['ko-node-1'],
-  struggledVocab: [
-    { word: '존댓말 (Honorifics)', language: 'ko', context: 'Used casual banmal with elder in chat', timestamp: new Date().toISOString() },
-    { word: 'です / ます (Polite Form)', language: 'ja', context: 'Omitted polite verb ending in roleplay', timestamp: new Date().toISOString() }
-  ],
+  completedNodeIds: [],
+  struggledVocab: [],
   personalInfo: {
-    fullName: 'ALEXANDER MICHAEL TOLOSA',
-    username: 'xxsenxx9438',
-    statusMessage: '',
-    pronouns: "Iced Latte'",
-    roleBadge: '⚡ GDev',
+    fullName: 'Learner',
+    username: 'learner',
+    statusMessage: 'Ready to learn!',
+    pronouns: '',
+    roleBadge: '🌱 Learner',
     privateNote: '',
-    connections: [
-      { id: 'c1', platform: 'github', username: 'alexander-tolosa' },
-      { id: 'c2', platform: 'discord', username: 'lexzunder#9438' }
-    ],
-    studentId: '2020-09482',
-    department: 'College of Liberal Arts, Sciences and Education (CLASE)',
-    program: 'Information Technology (CLASE)',
-    yearLevel: 'BSIT 2nd Year (Section 2C)',
-    email: 'alexander.tolosa@clase.edu.ph',
-    phone: '+63 912 345 6789',
-    dateOfBirth: 'March 15, 2002',
-    address: 'Iloilo City, Philippines',
+    connections: [],
+    studentId: '',
+    department: 'Language Studies',
+    program: 'Global Polyglot Track',
+    yearLevel: '1st Year',
+    email: '',
+    phone: '',
+    dateOfBirth: '',
+    address: '',
     emergencyContact: {
-      name: 'Maria Teresa Tolosa',
-      relationship: 'Mother / Guardian',
-      phone: '+63 918 765 4321'
+      name: '',
+      relationship: '',
+      phone: ''
     },
-    bio: 'Tell us a bit about you',
-    joinedDate: 'Jun 24, 2021',
-    lastActivity: '3 hours ago',
+    bio: 'Tell us a bit about yourself...',
+    joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    lastActivity: 'Just now',
     recentAvatars: [
       "data:image/svg+xml;utf8,<svg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='50' cy='50' r='50' fill='%2338BDF8'/><path d='M 22 92 C 22 75 35 68 50 68 C 65 68 78 75 78 92 Z' fill='%2310B981'/><rect x='44' y='52' width='12' height='18' fill='%238D5B4C'/><ellipse cx='50' cy='46' rx='16' ry='18' fill='%238D5B4C'/><path d='M 44 54 Q 50 60 56 54' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round' fill='none'/><path d='M 33 42 C 33 28 42 22 50 22 C 58 22 67 28 67 42 C 67 33 60 28 50 28 C 40 28 33 33 33 42 Z' fill='%231F2937'/></svg>",
       "data:image/svg+xml;utf8,<svg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='50' cy='50' r='50' fill='%2310B981'/><path d='M 20 92 C 20 74 35 66 50 66 C 65 66 80 74 80 92 Z' fill='%23064E3B'/><rect x='44' y='50' width='12' height='18' fill='%23C68642'/><ellipse cx='50' cy='44' rx='16' ry='18' fill='%23C68642'/><circle cx='43' cy='43' r='4' stroke='%23F59E0B' stroke-width='1.5' fill='none'/><circle cx='57' cy='43' r='4' stroke='%23F59E0B' stroke-width='1.5' fill='none'/><line x1='47' y1='43' x2='53' y2='43' stroke='%23F59E0B' stroke-width='1.5'/><path d='M 45 52 Q 50 56 55 52' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' fill='none'/><path d='M 32 38 C 32 24 42 18 50 18 C 58 18 68 24 68 38 C 68 30 60 25 50 25 C 40 25 32 30 32 38 Z' fill='%23451A03'/></svg>",
@@ -124,6 +104,7 @@ interface AppStoreState {
   equipCosmetic: (category: 'hat' | 'scarf' | 'glasses' | 'skin', cosmeticId?: string) => void;
   getActiveNodes: () => typeof KOREAN_NODES;
   updatePersonalInfo: (info: Partial<UserProfile['personalInfo']> & { name?: string }) => void;
+  syncWithAuthenticatedUser: (user: { id: string; name: string; email: string; picture?: string }) => void;
 }
 
 export const useAppStore = create<AppStoreState>((set, get) => ({
@@ -131,7 +112,12 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     const saved = localStorage.getItem('catalogue_user_profile') || localStorage.getItem('catalouge_user_profile');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Sanitize legacy hardcoded name if a genuine user hasn't customized it
+        if (parsed.name === 'ALEXANDER MICHAEL TOLOSA' && !localStorage.getItem('catalogue_google_user')) {
+          return DEFAULT_PROFILE;
+        }
+        return parsed;
       } catch (e) {
         console.error(e);
       }
@@ -363,6 +349,26 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
         console.error(e);
       }
 
+      return { profile: updatedProfile };
+    });
+  },
+
+  syncWithAuthenticatedUser: (user) => {
+    set((state) => {
+      const currentPersonalInfo = state.profile.personalInfo || DEFAULT_PROFILE.personalInfo!;
+      const updatedPersonalInfo = {
+        ...currentPersonalInfo,
+        fullName: user.name,
+        email: user.email,
+        avatarUrl: user.picture || currentPersonalInfo.avatarUrl
+      };
+      const updatedProfile: UserProfile = {
+        ...state.profile,
+        name: user.name,
+        avatarUrl: user.picture || state.profile.avatarUrl,
+        personalInfo: updatedPersonalInfo
+      };
+      localStorage.setItem('catalogue_user_profile', JSON.stringify(updatedProfile));
       return { profile: updatedProfile };
     });
   }

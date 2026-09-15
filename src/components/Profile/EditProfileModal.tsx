@@ -32,26 +32,26 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const [activeTab, setActiveTab] = useState<'visuals' | 'about' | 'info'>(initialTab);
 
   const personal = profile.personalInfo || {
-    fullName: profile.name || 'ALEXANDER MICHAEL TOLOSA',
-    studentId: '2020-09482',
-    department: 'College of Liberal Arts, Sciences and Education (CLASE)',
-    program: 'Information Technology (CLASE)',
-    yearLevel: 'BSIT 2nd Year (Section 2C)',
-    email: 'alexander.tolosa@clase.edu.ph',
-    phone: '+63 912 345 6789',
-    dateOfBirth: 'March 15, 2002',
-    address: 'Iloilo City, Philippines',
+    fullName: profile.name || 'Learner',
+    studentId: '',
+    department: 'Language Studies',
+    program: 'Global Polyglot Track',
+    yearLevel: '1st Year',
+    email: '',
+    phone: '',
+    dateOfBirth: '',
+    address: '',
     emergencyContact: {
-      name: 'Maria Teresa Tolosa',
-      relationship: 'Mother / Guardian',
-      phone: '+63 918 765 4321'
+      name: '',
+      relationship: '',
+      phone: ''
     },
     bio: 'Tell us a bit about you',
-    joinedDate: 'Jun 24, 2021',
-    lastActivity: '3 hours ago'
+    joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    lastActivity: 'Just now'
   };
 
-  const [displayName, setDisplayName] = useState(profile.name || personal.fullName || 'ALEXANDER MICHAEL TOLOSA');
+  const [displayName, setDisplayName] = useState(profile.name || personal.fullName || 'Learner');
   const [avatarUrl, setAvatarUrl] = useState<string>(profile.avatarUrl || personal.avatarUrl || '');
   const [bannerUrl, setBannerUrl] = useState<string>(profile.bannerUrl || personal.bannerUrl || '');
   const [bio, setBio] = useState<string>(personal.bio || 'Tell us a bit about you');
@@ -59,7 +59,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setActiveTab(initialTab);
-      setDisplayName(profile.name || personal.fullName || 'ALEXANDER MICHAEL TOLOSA');
+      setDisplayName(profile.name || personal.fullName || 'Learner');
       setAvatarUrl(profile.avatarUrl || personal.avatarUrl || '');
       setBannerUrl(profile.bannerUrl || personal.bannerUrl || '');
       setBio(personal.bio || 'Tell us a bit about you');
@@ -251,7 +251,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               {/* Display Name */}
               <div className="space-y-1">
                 <h4 className="font-display font-black text-lg sm:text-xl text-white tracking-wide uppercase">
-                  {displayName || 'ALEXANDER MICHAEL TOLOSA'}
+                  {displayName || 'Learner'}
                 </h4>
               </div>
 
@@ -288,7 +288,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="e.g. ALEXANDER MICHAEL TOLOSA"
+              placeholder="e.g. Alex Morgan"
               required
               className={`w-full px-4 py-2.5 rounded-xl border font-bold text-xs outline-none transition-all ${
                 isDarkMode ? 'bg-[#161f33] border-slate-700 text-white focus:border-[#F06543]' : 'bg-white border-slate-300 text-slate-900 focus:border-[#F06543]'

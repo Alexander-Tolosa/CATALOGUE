@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { LevelDetail, OnlineCourse } from '../../types/proficiency';
 import { getCoursesForLevel, FALLBACK_LEVELS_BY_LANG } from '../../data/proficiencyCoursesData';
+import { getLevelById, getLanguageForLevel } from '../../data/staticLevelData';
 import { CourseDetailModal } from './CourseDetailModal';
 
 interface LevelDetailModalProps {
@@ -39,102 +40,44 @@ export const LevelDetailModal: React.FC<LevelDetailModalProps> = ({
   const [selectedCourseForDetail, setSelectedCourseForDetail] = useState<OnlineCourse | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-    async function loadLevel() {
-      try {
-        const res = await fetch(`/api/levels/${levelId}`);
-        const data = await res.json();
-        if (isMounted && data.level) {
-          const courses = data.level.courses?.length > 0
-            ? data.level.courses
-            : getCoursesForLevel(levelId);
-          setLevelDetail({ ...data.level, courses });
-          if (data.level.lessons?.length > 0) {
-            setExpandedLessonId(data.level.lessons[0].id);
-          }
-          return;
-        }
-      } catch (err) {
-        console.warn('Backend level fetch failed, using local fallback:', err);
-      }
-
-      // Fallback from local data
-      if (isMounted) {
-        let foundLevel: any = null;
-        for (const lang of Object.keys(FALLBACK_LEVELS_BY_LANG)) {
-          const match = FALLBACK_LEVELS_BY_LANG[lang].find((l) => l.id === levelId);
-          if (match) {
-            foundLevel = match;
-            break;
-          }
-        }
-
-        if (foundLevel) {
-          const courses = getCoursesForLevel(levelId);
-          setLevelDetail({
-            id: foundLevel.id,
-            languageId: foundLevel.languageId,
-            languageName: foundLevel.id.startsWith('ko') ? 'Korean' : foundLevel.id.startsWith('ja') ? 'Japanese' : 'English',
-            languageCode: foundLevel.id.startsWith('ko') ? 'ko' : foundLevel.id.startsWith('ja') ? 'ja' : 'en',
-            code: foundLevel.code,
-            name: foundLevel.name,
-            order: foundLevel.order,
-            description: foundLevel.description,
-            lessons: [
-              {
-                id: `${foundLevel.id}-les-1`,
-                levelId: foundLevel.id,
-                title: `${foundLevel.code} Core Linguistic Framework`,
-                content: `Master foundational grammatical structures, core phonetics, and contextual discourse for ${foundLevel.name}. Review the accompanying accredited online courses below for supplementary practice.`,
-                order: 1
-              },
-              {
-                id: `${foundLevel.id}-les-2`,
-                levelId: foundLevel.id,
-                title: `${foundLevel.code} Practical Conversational Application`,
-                content: `Apply situational expressions, vocabulary expansions, and test-taking strategies required for official ${foundLevel.code} standard assessment.`,
-                order: 2
-              }
-            ],
-            courses,
-            quiz: {
-              id: `${foundLevel.id}-quiz`,
-              levelId: foundLevel.id,
-              passThreshold: 0.8,
-              questions: [
-                {
-                  id: `${foundLevel.id}-q1`,
-                  prompt: `Which approach best demonstrates mastery of ${foundLevel.name}?`,
-                  choices: [
-                    'Consistently applying standard grammatical patterns and vocabulary',
-                    'Ignoring formal and informal speech registers',
-                    'Relying solely on mechanical translation tools',
-                    'Skipping foundational phonetics and pronunciation'
-                  ]
-                },
-                {
-                  id: `${foundLevel.id}-q2`,
-                  prompt: `What is the primary academic standard benchmark for this ${foundLevel.code} level?`,
-                  choices: [
-                    'Standard accredited proficiency assessment criteria',
-                    'Informal colloquial slang exclusively',
-                    'Rote memorization without contextual comprehension',
-                    'Single-word disjointed vocabulary'
-                  ]
-                }
-              ]
-            }
-          });
-          setExpandedLessonId(`${foundLevel.id}-les-1`);
-        }
-        setLoading(false);
+    // Load level from static client-side data — no Express server needed
+    const level = getLevelById(levelId);
+    if (level) {
+      const courses = getCoursesForLevel(levelId);
+      const langInfo = getLanguageForLevel(levelId);
+      setLevelDetail({
+        id: level.id,
+        languageId: level.languageId,
+        languageName: langInfo.name,
+        languageCode: langInfo.code,
+        code: level.code,
+        name: level.name,
+        order: level.order,
+        description: level.description,
+        lessons: level.lessons.map(l => ({
+          id: l.id,
+          levelId: level.id,
+          title: l.title,
+          content: l.content,
+          order: l.order
+        })),
+        courses,
+        quiz: level.quiz ? {
+          id: level.quiz.id,
+          levelId: level.id,
+          passThreshold: level.quiz.passThreshold,
+          questions: level.quiz.questions.map(q => ({
+            id: q.id,
+            prompt: q.prompt,
+            choices: q.choices
+          }))
+        } : null
+      });
+      if (level.lessons.length > 0) {
+        setExpandedLessonId(level.lessons[0].id);
       }
     }
-
-    loadLevel();
-    return () => {
-      isMounted = false;
-    };
+    setLoading(false);
   }, [levelId]);
 
   const matchedCourses = levelDetail?.courses || getCoursesForLevel(levelId);

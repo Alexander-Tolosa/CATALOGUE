@@ -13,9 +13,12 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 import { LevelDetail, QuizSubmissionResult } from '../../types/proficiency';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useAppStore } from '../../store/useAppStore';
+import { gradeQuiz, isFinalLevel, getLanguageForLevel } from '../../data/staticLevelData';
 
 interface LevelQuizModalProps {
   levelDetail: LevelDetail;
@@ -32,6 +35,10 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
   const { profile } = useAppStore();
   const activeUserId = userId || (googleUser?.googleSubId ? `usr-g-${googleUser.googleSubId.slice(-8)}` : 'usr-guest');
   const activeUserName = profile.name || googleUser?.name || 'Learner';
+
+  // Convex mutations for persistence
+  const submitQuizResult = useMutation(api.progress.submitQuizResult);
+  const issueCertificate = useMutation(api.certificates.issueCertificate);
 
   const quiz = levelDetail.quiz;
   const questions = quiz?.questions || [];
@@ -58,21 +65,74 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const res = await fetch(`/api/levels/${levelDetail.id}/quiz/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userId: activeUserId,
-          userName: activeUserName,
-          answers: selectedAnswers
-        })
-      });
-      const data: QuizSubmissionResult = await res.json();
-      setSubmissionResult(data);
+      // Grade quiz entirely client-side using static answer keys
+      const gradeResult = gradeQuiz(levelDetail.id, selectedAnswers);
+      if (!gradeResult) {
+        console.error('Failed to grade quiz — level not found in static data');
+        setIsSubmitting(false);
+        return;
+      }
 
-      if (data.passed) {
+      // Build the full result (certificate will be null for now unless final level)
+      const langInfo = getLanguageForLevel(levelDetail.id);
+      const result: QuizSubmissionResult = {
+        ...gradeResult,
+        certificate: null
+      };
+
+      // Persist to Convex
+      try {
+        await submitQuizResult({
+          userId: activeUserId,
+          languageCode: langInfo.code,
+          levelId: levelDetail.id,
+          score: gradeResult.score,
+          passed: gradeResult.passed
+        });
+      } catch (err) {
+        console.warn('Convex quiz persistence deferred:', err);
+      }
+
+      // If passed final level, issue certificate via Convex
+      if (gradeResult.passed && gradeResult.isFinalLevel) {
+        const cleanCode = levelDetail.code.replace(/[^A-Za-z0-9]/g, '');
+        const uniqueSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+        const certificateCode = `CAT-${langInfo.code.toUpperCase()}-${cleanCode}-${uniqueSuffix}`;
+
+        try {
+          await issueCertificate({
+            userId: activeUserId,
+            userName: activeUserName,
+            languageName: langInfo.name,
+            languageCode: langInfo.code,
+            levelName: levelDetail.name,
+            levelCode: levelDetail.code,
+            certificateCode,
+            pdfUrl: `/certificates/${certificateCode}.pdf`
+          });
+
+          result.certificate = {
+            id: `cert-${Date.now()}`,
+            userId: activeUserId,
+            userName: activeUserName,
+            languageId: `lang-${langInfo.code}`,
+            languageName: langInfo.name,
+            languageCode: langInfo.code,
+            levelId: levelDetail.id,
+            levelName: levelDetail.name,
+            levelCode: levelDetail.code,
+            issuedAt: new Date().toISOString(),
+            certificateCode,
+            pdfUrl: `/certificates/${certificateCode}.pdf`
+          };
+        } catch (err) {
+          console.warn('Certificate issuance deferred:', err);
+        }
+      }
+
+      setSubmissionResult(result);
+
+      if (result.passed) {
         confetti({
           particleCount: 120,
           spread: 80,

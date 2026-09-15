@@ -47,26 +47,13 @@ export const ProficiencyRoadmapView: React.FC<ProficiencyRoadmapViewProps> = ({
   const [selectedCourseForDetail, setSelectedCourseForDetail] = useState<OnlineCourse | null>(null);
   const [isCredibilityModalOpen, setIsCredibilityModalOpen] = useState(false);
 
-  // Fetch languages list
+  // Load languages from static data (no Express dependency)
   useEffect(() => {
-    async function loadLanguages() {
-      try {
-        const res = await fetch('/api/languages');
-        const data = await res.json();
-        if (data.languages) {
-          setLanguages(data.languages);
-          return;
-        }
-      } catch (err) {
-        console.warn('API fetch languages failed, using local standard languages:', err);
-      }
-      setLanguages([
-        { id: 'lang-ko', name: 'Korean', code: 'ko' },
-        { id: 'lang-ja', name: 'Japanese', code: 'ja' },
-        { id: 'lang-en', name: 'English', code: 'en' }
-      ]);
-    }
-    loadLanguages();
+    setLanguages([
+      { id: 'lang-ko', name: 'Korean', code: 'ko' },
+      { id: 'lang-ja', name: 'Japanese', code: 'ja' },
+      { id: 'lang-en', name: 'English', code: 'en' }
+    ]);
   }, []);
 
   // Fetch levels with user progress for selected language

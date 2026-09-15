@@ -165,7 +165,7 @@ export const App: React.FC = () => {
           mass: 0.85
         }}
         className={`min-h-screen relative transition-colors duration-300 ${isDarkMode ? 'bg-[#0b0f17]' : 'bg-[#FAF6F0]'
-        }`}
+          }`}
       >
         {/* Top Header */}
         <TopAppBar

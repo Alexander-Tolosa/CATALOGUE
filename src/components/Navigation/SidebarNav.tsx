@@ -245,11 +245,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className={`hidden md:flex h-screen fixed left-0 top-0 border-r flex-col py-3.5 z-50 select-none overflow-hidden backdrop-blur-xl transition-colors duration-300 ${
-          isDarkMode
+        className={`hidden md:flex h-screen fixed left-0 top-0 border-r flex-col py-3.5 z-50 select-none overflow-hidden backdrop-blur-xl transition-colors duration-300 ${isDarkMode
             ? 'bg-[#0b0f17]/95 border-[#1e293b] text-white'
             : 'bg-[#FFFDF9]/95 border-[#EDE5DA] text-[#2B2725]'
-        }`}
+          }`}
       >
         {/* Centered Brand Mascot Logo (Clicking logo reloads/refreshes the dashboard) */}
         <div
@@ -286,13 +285,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 whileHover={{ scale: 1.02, x: 2 }}
                 whileTap={{ scale: 0.97 }}
                 title={!isExpanded ? item.label : undefined}
-                className={`relative overflow-visible w-full h-10.5 rounded-xl flex items-center transition-all duration-200 text-xs font-semibold cursor-pointer ${
-                  isActive
+                className={`relative overflow-visible w-full h-10.5 rounded-xl flex items-center transition-all duration-200 text-xs font-semibold cursor-pointer ${isActive
                     ? 'text-white bg-[#F06543] border border-[#F06543] shadow-[0_4px_16px_rgba(240,101,67,0.38)] font-bold'
                     : isDarkMode
-                    ? 'text-slate-300 hover:bg-[#151c2e] hover:text-white border border-transparent'
-                    : 'text-[#7A736E] hover:bg-[#FAF6F0] hover:text-[#2B2725] border border-transparent'
-                }`}
+                      ? 'text-slate-300 hover:bg-[#151c2e] hover:text-white border border-transparent'
+                      : 'text-[#7A736E] hover:bg-[#FAF6F0] hover:text-[#2B2725] border border-transparent'
+                  }`}
               >
                 {/* Active 3D Cat Paw */}
                 <AnimatePresence>
@@ -310,9 +308,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                         y: { repeat: Infinity, duration: 1.6, ease: 'easeInOut' },
                         scale: { type: 'spring', stiffness: 450, damping: 22 }
                       }}
-                      className={`absolute z-30 pointer-events-none ${
-                        isExpanded ? '-top-2 right-1.5' : '-top-2 right-0.5'
-                      }`}
+                      className={`absolute z-30 pointer-events-none ${isExpanded ? '-top-2 right-1.5' : '-top-2 right-0.5'
+                        }`}
                     >
                       <Cat3DPawIcon size={isExpanded ? 24 : 19} />
                     </motion.div>
@@ -322,9 +319,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 {/* Anchor Slot for Icon (Clean, centered icon) */}
                 <div className="w-[50px] flex items-center justify-center shrink-0">
                   <span
-                    className={`material-symbols-outlined text-xl ${
-                      isActive ? 'text-white' : 'text-slate-400'
-                    }`}
+                    className={`material-symbols-outlined text-xl ${isActive ? 'text-white' : 'text-slate-400'
+                      }`}
                     style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                   >
                     {item.icon}
@@ -361,13 +357,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
             title={!isExpanded ? t.sidebar.kleoTutor : undefined}
-            className={`relative overflow-visible w-full h-11 rounded-xl border flex items-center transition-all duration-200 shadow-md cursor-pointer ${
-              activeView === 'kleo'
+            className={`relative overflow-visible w-full h-11 rounded-xl border flex items-center transition-all duration-200 shadow-md cursor-pointer ${activeView === 'kleo'
                 ? 'bg-gradient-to-r from-[#f97316] to-[#ff7849] text-white border-[#f97316] shadow-[0_0_20px_rgba(249,115,22,0.45)]'
                 : isDarkMode
-                ? 'bg-[#111827] border-[#1e293b] text-slate-300 hover:border-[#f97316]/60 hover:bg-[#151d30]'
-                : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-[#f97316]/60 hover:bg-white'
-            }`}
+                  ? 'bg-[#111827] border-[#1e293b] text-slate-300 hover:border-[#f97316]/60 hover:bg-[#151d30]'
+                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-[#f97316]/60 hover:bg-white'
+              }`}
           >
             <div className="w-[50px] flex items-center justify-center shrink-0">
               <div className="w-7.5 h-7.5 rounded-full overflow-hidden shrink-0 border border-white/30 shadow-xs ring-1 ring-orange-500/20">
@@ -385,16 +380,14 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                   className="flex flex-col min-w-0 pr-2"
                 >
                   <span
-                    className={`text-xs font-bold leading-tight truncate ${
-                      activeView === 'kleo' ? 'text-white' : 'text-[#f97316]'
-                    }`}
+                    className={`text-xs font-bold leading-tight truncate ${activeView === 'kleo' ? 'text-white' : 'text-[#f97316]'
+                      }`}
                   >
                     {t.sidebar.kleoTutor}
                   </span>
                   <span
-                    className={`text-[10px] truncate ${
-                      activeView === 'kleo' ? 'text-white/85' : 'text-slate-500 dark:text-slate-400'
-                    }`}
+                    className={`text-[10px] truncate ${activeView === 'kleo' ? 'text-white/85' : 'text-slate-500 dark:text-slate-400'
+                      }`}
                   >
                     AI Companion
                   </span>
@@ -411,11 +404,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.95 }}
             title={!isExpanded ? t.sidebar.logout : undefined}
-            className={`cursor-pointer transition-all duration-200 flex items-center justify-center bg-[#f05252] hover:bg-[#e04141] text-white shadow-[0_4px_16px_rgba(240,82,82,0.45)] ring-4 ring-red-400/25 border border-red-300/40 rounded-full ${
-              isExpanded
+            className={`cursor-pointer transition-all duration-200 flex items-center justify-center bg-[#f05252] hover:bg-[#e04141] text-white shadow-[0_4px_16px_rgba(240,82,82,0.45)] ring-4 ring-red-400/25 border border-red-300/40 rounded-full ${isExpanded
                 ? 'w-full h-11 px-4 gap-2.5'
                 : 'w-11 h-11 p-0'
-            }`}
+              }`}
           >
             <LogoutPillIcon size={19} className="shrink-0" />
 
@@ -452,9 +444,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className={`md:hidden fixed top-0 left-0 bottom-0 w-72 z-[70] flex flex-col py-4 px-4 shadow-2xl ${
-                isDarkMode ? 'bg-[#0b0f17] text-white border-r border-[#1e293b]' : 'bg-[#FFFDF9] text-[#2B2725] border-r border-[#EDE5DA]'
-              }`}
+              className={`md:hidden fixed top-0 left-0 bottom-0 w-72 z-[70] flex flex-col py-4 px-4 shadow-2xl ${isDarkMode ? 'bg-[#0b0f17] text-white border-r border-[#1e293b]' : 'bg-[#FFFDF9] text-[#2B2725] border-r border-[#EDE5DA]'
+                }`}
             >
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-700/40">
                 <div className="flex items-center gap-2">
@@ -481,11 +472,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                         onSelectView(item.id);
                         setIsMobileDrawerOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                        isActive
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${isActive
                           ? 'bg-[#F06543] text-white shadow-md'
                           : isDarkMode ? 'text-slate-300 hover:bg-slate-900' : 'text-slate-700 hover:bg-slate-100'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <span className="material-symbols-outlined text-lg">{item.icon}</span>
@@ -529,18 +519,16 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
       </AnimatePresence>
 
       {/* Mobile Bottom Bar (< 768px) */}
-      <div className={`md:hidden fixed bottom-0 left-0 right-0 border-t p-2 z-50 flex items-center justify-around backdrop-blur-md ${
-        isDarkMode ? 'bg-[#0b0f17]/95 border-[#1e293b]' : 'bg-white/95 border-slate-200'
-      }`}>
+      <div className={`md:hidden fixed bottom-0 left-0 right-0 border-t p-2 z-50 flex items-center justify-around backdrop-blur-md ${isDarkMode ? 'bg-[#0b0f17]/95 border-[#1e293b]' : 'bg-white/95 border-slate-200'
+        }`}>
         {navItems.slice(0, 5).map((item) => {
           const isActive = activeView === item.id;
           return (
             <button
               key={item.id}
               onClick={() => onSelectView(item.id)}
-              className={`flex flex-col items-center p-1 rounded-md text-[10px] font-medium relative ${
-                isActive ? 'text-[#f97316]' : isDarkMode ? 'text-slate-400' : 'text-slate-500'
-              }`}
+              className={`flex flex-col items-center p-1 rounded-md text-[10px] font-medium relative ${isActive ? 'text-[#f97316]' : isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                }`}
             >
               {isActive && (
                 <span className="material-symbols-outlined text-xs text-[#f97316] absolute -top-2 right-0 animate-bounce" style={{ fontVariationSettings: "'FILL' 1" }}>

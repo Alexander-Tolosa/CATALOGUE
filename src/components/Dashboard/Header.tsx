@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { UserProfile, LanguageTrack, AppView } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -8,6 +8,7 @@ import {
   Mail,
   Bell,
   ChevronDown,
+  ChevronRight,
   Moon,
   Sun,
   HelpCircle,
@@ -203,25 +204,61 @@ export const TopAppBar: React.FC<HeaderProps> = ({
                   )}
                 </button>
 
-                {/* Overlaid Dark Round Badge with Chevron Down Icon (Toggles Menu) */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsProfileMenuOpen(!isProfileMenuOpen);
-                    setIsMailOpen(false);
-                    setIsBellOpen(false);
-                  }}
-                  className={`absolute -bottom-1 -right-1 w-4.5 h-4.5 rounded-full flex items-center justify-center border shadow-xs transition-transform duration-200 cursor-pointer ${
-                    isProfileMenuOpen ? 'rotate-180' : ''
-                  } ${
-                    isDarkMode
-                      ? 'bg-[#161a26] border-[#2b3145] text-slate-300 hover:text-white'
-                      : 'bg-white border-slate-300 text-slate-700 hover:text-slate-900'
-                  }`}
-                  title="Account Menu"
-                >
-                  <ChevronDown className="w-3 h-3 stroke-[2.5]" />
-                </button>
+                {/* Overlaid Round Badge with Chevron Down Icon (iPhone AirPlay Trigger) */}
+                <div className="absolute -bottom-1 -right-1">
+                  {/* AirPlay Expanding Broadcast Waves / Ping Rings */}
+                  <AnimatePresence>
+                    {isProfileMenuOpen && (
+                      <>
+                        <motion.span
+                          key="airplay-wave-outer"
+                          initial={{ scale: 0.8, opacity: 0.95 }}
+                          animate={{ scale: 2.3, opacity: 0 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                          className="absolute -inset-0.5 rounded-full border-2 border-sky-400 pointer-events-none"
+                        />
+                        <motion.span
+                          key="airplay-wave-inner"
+                          initial={{ scale: 0.8, opacity: 0.6 }}
+                          animate={{ scale: 1.7, opacity: 0 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+                          className="absolute -inset-0.5 rounded-full bg-sky-400/35 pointer-events-none"
+                        />
+                      </>
+                    )}
+                  </AnimatePresence>
+
+                  <motion.button
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.82 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsProfileMenuOpen(!isProfileMenuOpen);
+                      setIsMailOpen(false);
+                      setIsBellOpen(false);
+                    }}
+                    className={`relative w-5 h-5 rounded-full flex items-center justify-center border shadow-md cursor-pointer transition-all duration-200 ${
+                      isProfileMenuOpen
+                        ? 'ring-2 ring-sky-400/90 shadow-[0_0_12px_rgba(56,189,248,0.55)] scale-105'
+                        : ''
+                    } ${
+                      isDarkMode
+                        ? 'bg-[#181f33] border-white/20 text-slate-200 hover:text-white shadow-black/40'
+                        : 'bg-white border-slate-300 text-slate-700 hover:text-slate-900 shadow-slate-300/60'
+                    }`}
+                    title="Account Menu"
+                  >
+                    <motion.div
+                      animate={{ rotate: isProfileMenuOpen ? 180 : 0 }}
+                      transition={{ type: 'spring', stiffness: 480, damping: 22, mass: 0.5 }}
+                      className="flex items-center justify-center"
+                    >
+                      <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
+                    </motion.div>
+                  </motion.button>
+                </div>
               </div>
 
               {/* ONLY Username beside profile icon */}
@@ -242,266 +279,413 @@ export const TopAppBar: React.FC<HeaderProps> = ({
               </span>
             </div>
 
-            {/* Profile Dropdown Menu */}
-            {isProfileMenuOpen && (
-              <div
-                className={`absolute left-0 sm:left-auto sm:right-0 mt-2 w-60 rounded-2xl border shadow-2xl py-2 z-50 animate-fadeIn ${
-                  isDarkMode
-                    ? 'bg-[#131722] border-[#22283a] text-slate-100'
-                    : 'bg-white border-[#e2d9cd] text-slate-800'
-                }`}
-              >
-                {/* 1. Toggle Dark Mode */}
-                <button
-                  onClick={() => {
-                    toggleThemeMode();
+            {/* Profile Dropdown Menu with iPhone AirPlay Pop-Down Animation */}
+            <AnimatePresence>
+              {isProfileMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.65, y: -16, filter: 'blur(10px)' }}
+                  animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, scale: 0.76, y: -12, filter: 'blur(8px)' }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 440,
+                    damping: 24,
+                    mass: 0.62
                   }}
-                  className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                  style={{ transformOrigin: '28px 0px' }}
+                  className={`gpu-layer absolute left-0 sm:-left-2 mt-3 w-72 sm:w-80 rounded-[28px] border p-2.5 z-50 select-none backdrop-blur-3xl overflow-hidden ${
                     isDarkMode
-                      ? 'hover:bg-[#1a2032] text-slate-200'
-                      : 'hover:bg-[#f6f1e8] text-slate-800'
+                      ? 'bg-[#121727]/92 border-white/[0.14] text-slate-100 shadow-[0_24px_50px_-10px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.18)]'
+                      : 'bg-white/94 border-slate-200/80 text-slate-800 shadow-[0_24px_50px_-10px_rgba(15,23,42,0.14),inset_0_1px_0_0_rgba(255,255,255,0.9)]'
                   }`}
                 >
-                  <span>{t.header.toggleDarkMode}</span>
-                  {isDarkMode ? (
-                    <Sun className="w-4 h-4 text-amber-400" />
-                  ) : (
-                    <Moon className="w-4 h-4 text-slate-600" />
-                  )}
-                </button>
-
-                {/* 2. Interface Language Switcher (Displays only active language) */}
-                <div className="relative">
-                  <button
-                    onClick={() => {
-                      setIsInterfaceLangSubmenuOpen(!isInterfaceLangSubmenuOpen);
-                      setIsLangSubmenuOpen(false);
-                    }}
-                    className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                  {/* AirPlay Anchor Caret Pointer pointing to the Chevron button */}
+                  <div
+                    className={`absolute -top-1.5 left-7 w-3.5 h-3.5 rotate-45 border-t border-l pointer-events-none z-10 ${
                       isDarkMode
-                        ? 'hover:bg-[#1a2032] text-slate-200'
-                        : 'hover:bg-[#f6f1e8] text-slate-800'
+                        ? 'bg-[#121727] border-white/[0.14]'
+                        : 'bg-white border-slate-200/80'
                     }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <FlagIcon country={interfaceLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
-                      <span className="text-[#F06543]">{getLanguageName(interfaceLanguage)}</span>
-                    </span>
-                    <Globe className="w-4 h-4 text-[#F06543]" />
-                  </button>
+                  />
 
-                  {/* Interface Language Submenu */}
-                  {isInterfaceLangSubmenuOpen && (
-                    <div
-                      className={`mx-2 my-1 rounded-xl p-1 border space-y-1 ${
-                        isDarkMode
-                          ? 'bg-[#1a2032] border-[#28324a]'
-                          : 'bg-[#faf6f0] border-[#e8dfd3]'
-                      }`}
+                  {/* List of Controls */}
+                  <motion.div
+                    variants={{
+                      initial: {},
+                      animate: {
+                        transition: {
+                          staggerChildren: 0.025,
+                          delayChildren: 0.02
+                        }
+                      }
+                    }}
+                    initial="initial"
+                    animate="animate"
+                    className="space-y-0.5"
+                  >
+                    {/* 1. Toggle Dark Mode with iOS Switch */}
+                    <motion.div
+                      variants={{
+                        initial: { opacity: 0, y: -6, scale: 0.98 },
+                        animate: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 450, damping: 28 } }
+                      }}
+                      whileHover={{ x: 2, scale: 1.012, transition: { duration: 0.12 } }}
+                      whileTap={{ scale: 0.97 }}
                     >
                       <button
                         onClick={() => {
-                          setInterfaceLanguage('en');
-                          setIsInterfaceLangSubmenuOpen(false);
-                          setIsProfileMenuOpen(false);
+                          toggleThemeMode();
                         }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
-                          interfaceLanguage === 'en'
-                            ? 'bg-[#F06543] text-white shadow-xs'
-                            : isDarkMode
-                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
-                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                        className={`w-full px-3 py-2 rounded-2xl text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                          isDarkMode
+                            ? 'hover:bg-white/[0.06] text-slate-200'
+                            : 'hover:bg-black/[0.04] text-slate-800'
                         }`}
                       >
-                        <span className="flex items-center gap-2">
-                          <FlagIcon country="en" className="w-4 h-3 rounded-2xs" />
-                          <span>{t.header.english}</span>
-                        </span>
-                        {interfaceLanguage === 'en' && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                        )}
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-7 h-7 rounded-xl flex items-center justify-center border ${
+                            isDarkMode
+                              ? 'bg-amber-500/15 border-amber-500/25 text-amber-400'
+                              : 'bg-amber-500/10 border-amber-500/20 text-amber-600'
+                          }`}>
+                            {isDarkMode ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
+                          </div>
+                          <span>{t.header.toggleDarkMode}</span>
+                        </div>
+
+                        {/* iOS Animated Toggle Switch */}
+                        <div
+                          className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-200 ease-out flex items-center ${
+                            isDarkMode ? 'bg-[#38bdf8]' : 'bg-slate-300'
+                          }`}
+                        >
+                          <motion.div
+                            layout
+                            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                            className={`w-4 h-4 rounded-full bg-white shadow-sm transform ${
+                              isDarkMode ? 'translate-x-4' : 'translate-x-0'
+                            }`}
+                          />
+                        </div>
                       </button>
+                    </motion.div>
 
-                      <button
-                        onClick={() => {
-                          setInterfaceLanguage('ko');
-                          setIsInterfaceLangSubmenuOpen(false);
-                          setIsProfileMenuOpen(false);
-                        }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
-                          interfaceLanguage === 'ko'
-                            ? 'bg-[#F06543] text-white shadow-xs'
-                            : isDarkMode
-                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
-                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <FlagIcon country="ko" className="w-4 h-3 rounded-2xs" />
-                          <span>{t.header.korean}</span>
-                        </span>
-                        {interfaceLanguage === 'ko' && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                        )}
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setInterfaceLanguage('ja');
-                          setIsInterfaceLangSubmenuOpen(false);
-                          setIsProfileMenuOpen(false);
-                        }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
-                          interfaceLanguage === 'ja'
-                            ? 'bg-[#F06543] text-white shadow-xs'
-                            : isDarkMode
-                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
-                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <FlagIcon country="ja" className="w-4 h-3 rounded-2xs" />
-                          <span>{t.header.japanese}</span>
-                        </span>
-                        {interfaceLanguage === 'ja' && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* 3. Study Track Switcher (Displays only active learning language) */}
-                <div className="relative">
-                  <button
-                    onClick={() => {
-                      setIsLangSubmenuOpen(!isLangSubmenuOpen);
-                      setIsInterfaceLangSubmenuOpen(false);
-                    }}
-                    className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
-                      isDarkMode
-                        ? 'hover:bg-[#1a2032] text-slate-200'
-                        : 'hover:bg-[#f6f1e8] text-slate-800'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <FlagIcon country={profile.selectedLanguage as 'ja' | 'ko' | 'en'} className="w-4 h-3 rounded-2xs" />
-                      <span className="text-emerald-500">{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
-                    </span>
-                    <GraduationCap className="w-4 h-4 text-emerald-500" />
-                  </button>
-
-                  {/* Language Track Submenu */}
-                  {isLangSubmenuOpen && (
-                    <div
-                      className={`mx-2 my-1 rounded-xl p-1 border space-y-1 ${
-                        isDarkMode
-                          ? 'bg-[#1a2032] border-[#28324a]'
-                          : 'bg-[#faf6f0] border-[#e8dfd3]'
-                      }`}
+                    {/* 2. Interface Language Switcher */}
+                    <motion.div
+                      variants={{
+                        initial: { opacity: 0, y: -6, scale: 0.98 },
+                        animate: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 450, damping: 28 } }
+                      }}
+                      whileHover={{ x: 2, scale: 1.012, transition: { duration: 0.12 } }}
+                      whileTap={{ scale: 0.97 }}
+                      className="relative"
                     >
                       <button
                         onClick={() => {
-                          onSelectLanguage('en');
+                          setIsInterfaceLangSubmenuOpen(!isInterfaceLangSubmenuOpen);
                           setIsLangSubmenuOpen(false);
-                          setIsProfileMenuOpen(false);
                         }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
-                          profile.selectedLanguage === 'en'
-                            ? 'bg-emerald-600 text-white shadow-xs'
-                            : isDarkMode
-                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
-                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                        className={`w-full px-3 py-2 rounded-2xl text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                          isDarkMode
+                            ? 'hover:bg-white/[0.06] text-slate-200'
+                            : 'hover:bg-black/[0.04] text-slate-800'
                         }`}
                       >
-                        <span className="flex items-center gap-2">
-                          <FlagIcon country="en" className="w-4 h-3 rounded-2xs" />
-                          <span>{t.header.english}</span>
-                        </span>
-                        {profile.selectedLanguage === 'en' && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                        )}
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-xl flex items-center justify-center bg-[#F06543]/15 border border-[#F06543]/25 text-[#F06543]">
+                            <Globe className="w-3.5 h-3.5" />
+                          </div>
+                          <span>Interface Language</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#F06543]/10 text-[#F06543]">
+                            <FlagIcon country={interfaceLanguage as 'ja' | 'ko' | 'en'} className="w-3.5 h-2.5 rounded-2xs" />
+                            <span>{getLanguageName(interfaceLanguage)}</span>
+                          </span>
+                          <motion.div
+                            animate={{ rotate: isInterfaceLangSubmenuOpen ? 180 : 0 }}
+                            transition={{ type: 'spring', stiffness: 450, damping: 24 }}
+                          >
+                            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                          </motion.div>
+                        </div>
                       </button>
 
+                      {/* Interface Language Submenu */}
+                      <AnimatePresence>
+                        {isInterfaceLangSubmenuOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
+                            className={`mx-1 my-1 rounded-2xl p-1 border space-y-1 overflow-hidden ${
+                              isDarkMode
+                                ? 'bg-[#182033] border-white/10'
+                                : 'bg-[#faf6f0] border-[#e8dfd3]'
+                            }`}
+                          >
+                            <button
+                              onClick={() => {
+                                setInterfaceLanguage('en');
+                                setIsInterfaceLangSubmenuOpen(false);
+                                setIsProfileMenuOpen(false);
+                              }}
+                              className={`w-full px-3 py-1.5 rounded-xl text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                                interfaceLanguage === 'en'
+                                  ? 'bg-[#F06543] text-white shadow-xs'
+                                  : isDarkMode
+                                  ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                                  : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <FlagIcon country="en" className="w-4 h-3 rounded-2xs" />
+                                <span>{t.header.english}</span>
+                              </span>
+                              {interfaceLanguage === 'en' && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                              )}
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setInterfaceLanguage('ko');
+                                setIsInterfaceLangSubmenuOpen(false);
+                                setIsProfileMenuOpen(false);
+                              }}
+                              className={`w-full px-3 py-1.5 rounded-xl text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                                interfaceLanguage === 'ko'
+                                  ? 'bg-[#F06543] text-white shadow-xs'
+                                  : isDarkMode
+                                  ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                                  : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <FlagIcon country="ko" className="w-4 h-3 rounded-2xs" />
+                                <span>{t.header.korean}</span>
+                              </span>
+                              {interfaceLanguage === 'ko' && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                              )}
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setInterfaceLanguage('ja');
+                                setIsInterfaceLangSubmenuOpen(false);
+                                setIsProfileMenuOpen(false);
+                              }}
+                              className={`w-full px-3 py-1.5 rounded-xl text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                                interfaceLanguage === 'ja'
+                                  ? 'bg-[#F06543] text-white shadow-xs'
+                                  : isDarkMode
+                                  ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                                  : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <FlagIcon country="ja" className="w-4 h-3 rounded-2xs" />
+                                <span>{t.header.japanese}</span>
+                              </span>
+                              {interfaceLanguage === 'ja' && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                              )}
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+
+                    {/* 3. Study Track Switcher */}
+                    <motion.div
+                      variants={{
+                        initial: { opacity: 0, y: -6, scale: 0.98 },
+                        animate: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 450, damping: 28 } }
+                      }}
+                      whileHover={{ x: 2, scale: 1.012, transition: { duration: 0.12 } }}
+                      whileTap={{ scale: 0.97 }}
+                      className="relative"
+                    >
                       <button
                         onClick={() => {
-                          onSelectLanguage('ko');
-                          setIsLangSubmenuOpen(false);
-                          setIsProfileMenuOpen(false);
+                          setIsLangSubmenuOpen(!isLangSubmenuOpen);
+                          setIsInterfaceLangSubmenuOpen(false);
                         }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
-                          profile.selectedLanguage === 'ko'
-                            ? 'bg-emerald-600 text-white shadow-xs'
-                            : isDarkMode
-                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
-                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                        className={`w-full px-3 py-2 rounded-2xl text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                          isDarkMode
+                            ? 'hover:bg-white/[0.06] text-slate-200'
+                            : 'hover:bg-black/[0.04] text-slate-800'
                         }`}
                       >
-                        <span className="flex items-center gap-2">
-                          <FlagIcon country="ko" className="w-4 h-3 rounded-2xs" />
-                          <span>{t.header.korean}</span>
-                        </span>
-                        {profile.selectedLanguage === 'ko' && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                        )}
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-xl flex items-center justify-center bg-emerald-500/15 border border-emerald-500/25 text-emerald-400">
+                            <GraduationCap className="w-3.5 h-3.5" />
+                          </div>
+                          <span>Study Track</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+                            <FlagIcon country={profile.selectedLanguage as 'ja' | 'ko' | 'en'} className="w-3.5 h-2.5 rounded-2xs" />
+                            <span>{getLanguageName(profile.selectedLanguage as LanguageTrack)}</span>
+                          </span>
+                          <motion.div
+                            animate={{ rotate: isLangSubmenuOpen ? 180 : 0 }}
+                            transition={{ type: 'spring', stiffness: 450, damping: 24 }}
+                          >
+                            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                          </motion.div>
+                        </div>
                       </button>
 
+                      {/* Language Track Submenu */}
+                      <AnimatePresence>
+                        {isLangSubmenuOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
+                            className={`mx-1 my-1 rounded-2xl p-1 border space-y-1 overflow-hidden ${
+                              isDarkMode
+                                ? 'bg-[#182033] border-white/10'
+                                : 'bg-[#faf6f0] border-[#e8dfd3]'
+                            }`}
+                          >
+                            <button
+                              onClick={() => {
+                                onSelectLanguage('en');
+                                setIsLangSubmenuOpen(false);
+                                setIsProfileMenuOpen(false);
+                              }}
+                              className={`w-full px-3 py-1.5 rounded-xl text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                                profile.selectedLanguage === 'en'
+                                  ? 'bg-emerald-600 text-white shadow-xs'
+                                  : isDarkMode
+                                  ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                                  : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <FlagIcon country="en" className="w-4 h-3 rounded-2xs" />
+                                <span>{t.header.english}</span>
+                              </span>
+                              {profile.selectedLanguage === 'en' && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                              )}
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                onSelectLanguage('ko');
+                                setIsLangSubmenuOpen(false);
+                                setIsProfileMenuOpen(false);
+                              }}
+                              className={`w-full px-3 py-1.5 rounded-xl text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                                profile.selectedLanguage === 'ko'
+                                  ? 'bg-emerald-600 text-white shadow-xs'
+                                  : isDarkMode
+                                  ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                                  : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <FlagIcon country="ko" className="w-4 h-3 rounded-2xs" />
+                                <span>{t.header.korean}</span>
+                              </span>
+                              {profile.selectedLanguage === 'ko' && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                              )}
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                onSelectLanguage('ja');
+                                setIsLangSubmenuOpen(false);
+                                setIsProfileMenuOpen(false);
+                              }}
+                              className={`w-full px-3 py-1.5 rounded-xl text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
+                                profile.selectedLanguage === 'ja'
+                                  ? 'bg-emerald-600 text-white shadow-xs'
+                                  : isDarkMode
+                                  ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
+                                  : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <FlagIcon country="ja" className="w-4 h-3 rounded-2xs" />
+                                <span>{t.header.japanese}</span>
+                              </span>
+                              {profile.selectedLanguage === 'ja' && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                              )}
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+
+                    {/* 4. Help */}
+                    <motion.div
+                      variants={{
+                        initial: { opacity: 0, y: -6, scale: 0.98 },
+                        animate: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 450, damping: 28 } }
+                      }}
+                      whileHover={{ x: 2, scale: 1.012, transition: { duration: 0.12 } }}
+                      whileTap={{ scale: 0.97 }}
+                    >
                       <button
                         onClick={() => {
-                          onSelectLanguage('ja');
-                          setIsLangSubmenuOpen(false);
                           setIsProfileMenuOpen(false);
+                          setIsHelpModalOpen(true);
                         }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-left text-[11px] font-bold flex items-center justify-between cursor-pointer transition-all ${
-                          profile.selectedLanguage === 'ja'
-                            ? 'bg-emerald-600 text-white shadow-xs'
-                            : isDarkMode
-                            ? 'text-slate-300 hover:bg-slate-700/40 hover:text-white'
-                            : 'text-slate-800 hover:bg-[#eae1d4] hover:text-slate-950 font-bold'
+                        className={`w-full px-3 py-2 rounded-2xl text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                          isDarkMode
+                            ? 'hover:bg-white/[0.06] text-slate-200'
+                            : 'hover:bg-black/[0.04] text-slate-800'
                         }`}
                       >
-                        <span className="flex items-center gap-2">
-                          <FlagIcon country="ja" className="w-4 h-3 rounded-2xs" />
-                          <span>{t.header.japanese}</span>
-                        </span>
-                        {profile.selectedLanguage === 'ja' && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                        )}
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-xl flex items-center justify-center bg-sky-500/15 border border-sky-500/25 text-sky-400">
+                            <HelpCircle className="w-3.5 h-3.5" />
+                          </div>
+                          <span>{t.header.help}</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
                       </button>
-                    </div>
-                  )}
-                </div>
+                    </motion.div>
 
-                {/* 4. Help */}
-                <button
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    setIsHelpModalOpen(true);
-                  }}
-                  className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
-                    isDarkMode
-                      ? 'hover:bg-[#1a2032] text-slate-200'
-                      : 'hover:bg-[#f6f1e8] text-slate-800'
-                  }`}
-                >
-                  <span>{t.header.help}</span>
-                  <HelpCircle className="w-4 h-4 text-slate-400" />
-                </button>
-
-                {/* 5. Print this page */}
-                <button
-                  onClick={handlePrint}
-                  className={`w-full px-4 py-2.5 text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
-                    isDarkMode
-                      ? 'hover:bg-[#1a2032] text-slate-200'
-                      : 'hover:bg-[#f6f1e8] text-slate-800'
-                  }`}
-                >
-                  <span>{t.header.printPage}</span>
-                  <Printer className="w-4 h-4 text-slate-400" />
-                </button>
-              </div>
-            )}
+                    {/* 5. Print this page */}
+                    <motion.div
+                      variants={{
+                        initial: { opacity: 0, y: -6, scale: 0.98 },
+                        animate: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 450, damping: 28 } }
+                      }}
+                      whileHover={{ x: 2, scale: 1.012, transition: { duration: 0.12 } }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <button
+                        onClick={handlePrint}
+                        className={`w-full px-3 py-2 rounded-2xl text-left text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                          isDarkMode
+                            ? 'hover:bg-white/[0.06] text-slate-200'
+                            : 'hover:bg-black/[0.04] text-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-xl flex items-center justify-center bg-violet-500/15 border border-violet-500/25 text-violet-400">
+                            <Printer className="w-3.5 h-3.5" />
+                          </div>
+                          <span>{t.header.printPage}</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </button>
+                    </motion.div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* 2. Messages Icon with Red Badge (25) */}

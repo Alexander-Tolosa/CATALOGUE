@@ -89,6 +89,10 @@ export const ProfilePageView: React.FC = () => {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioDraft, setBioDraft] = useState(profile.personalInfo?.bio || 'Tell us a bit about you');
 
+  // Inline Display Name Editing State (Double-click feature)
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState('');
+
   // Close menus on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -516,11 +520,86 @@ export const ProfilePageView: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Display Name */}
-                  <div className="space-y-1">
-                    <h2 className={`font-display font-black text-2xl sm:text-3xl ${isDarkMode ? 'text-white' : 'text-slate-900'} tracking-wide uppercase`}>
-                      {displayName}
-                    </h2>
+                  {/* Display Name with Direct Interactive Double-Click Editing */}
+                  <div className="space-y-1 group relative">
+                    {isEditingName ? (
+                      <div className="space-y-2 py-1">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={nameDraft}
+                            onChange={(e) => setNameDraft(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                const trimmed = nameDraft.trim();
+                                if (trimmed) {
+                                  updatePersonalInfo({ fullName: trimmed, name: trimmed });
+                                }
+                                setIsEditingName(false);
+                              } else if (e.key === 'Escape') {
+                                setIsEditingName(false);
+                              }
+                            }}
+                            autoFocus
+                            placeholder="Enter display name..."
+                            className={`w-full max-w-sm px-3 py-1.5 rounded-xl border text-xl sm:text-2xl font-display font-black tracking-wide uppercase outline-none transition-all ${
+                              isDarkMode
+                                ? 'bg-[#181f33] border-emerald-500/80 text-white focus:border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
+                                : 'bg-white border-emerald-500 text-slate-900 shadow-sm'
+                            }`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const trimmed = nameDraft.trim();
+                              if (trimmed) {
+                                updatePersonalInfo({ fullName: trimmed, name: trimmed });
+                              }
+                              setIsEditingName(false);
+                            }}
+                            className="p-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md cursor-pointer transition-colors"
+                            title="Save display name"
+                          >
+                            <Check size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setIsEditingName(false)}
+                            className="p-2 rounded-xl border border-slate-700 text-slate-400 hover:text-white text-xs font-bold cursor-pointer transition-colors"
+                            title="Cancel"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                        <p className="text-[10px] text-slate-400 font-medium">Press Enter to save, Esc to cancel</p>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <h2
+                          onDoubleClick={() => {
+                            setNameDraft(displayName);
+                            setIsEditingName(true);
+                          }}
+                          className={`font-display font-black text-2xl sm:text-3xl ${
+                            isDarkMode ? 'text-white' : 'text-slate-900'
+                          } tracking-wide uppercase cursor-pointer hover:opacity-90 select-none transition-all rounded-xl py-0.5 px-1.5 -mx-1.5 hover:bg-white/5 border border-transparent hover:border-white/10`}
+                          title="Double-click to edit your display name"
+                        >
+                          {displayName}
+                        </h2>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setNameDraft(displayName);
+                            setIsEditingName(true);
+                          }}
+                          className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                          title="Edit display name"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Details: Bio & Member Since */}

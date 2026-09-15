@@ -62,11 +62,11 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({ isOpen, onClos
   };
 
   const handleSandboxLogin = () => {
-    // E2E Sandbox Google Identity Services (OIDC) authentication
+    // Immediate Google Identity Services authentication for local sandbox
     loginWithGoogle({
-      googleSubId: 'google-sub-1029384756',
-      email: 'sensei@google.com',
-      name: selectedDisplayName.trim() || 'Learner',
+      googleSubId: 'google-sub-alexander-001',
+      email: 'alexandertolosa45@gmail.com',
+      name: selectedDisplayName.trim() || 'Alexander Tolosa',
       picture: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDpsPyAmyFX0-x7YmO2F6V-HYUNSkQZ9y5ZwiGTPRDuKh7w8NLjQdcf1Q2MivuhQ4D9qxOYSRakIe57czlU0OETFOGpsghOsax81R8YeFIC_QKmFDJ6W4koSBPBvEruskA_MQyZ4RgLhVW1PM3kb-l4J8Xn4WkSprmlTkQlvaOABYQ0SKUWhiFcEmtyH6yhDEmNEgnsyQMttVVfCDSSXR6Gw_JKdDikoKAyDWZ2yHGXkiNggh5IEs39Zg'
     }, 'mock-google-oidc-jwt-token');
     onClose();

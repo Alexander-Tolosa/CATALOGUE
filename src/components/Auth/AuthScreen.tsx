@@ -25,13 +25,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onBack }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await signIn("google", { redirectTo: "/" });
-    } catch (err) {
-      console.warn("Convex Auth Google redirect deferred, opening direct GIS modal:", err);
-      setIsGoogleModalOpen(true);
-    }
+  const handleGoogleSignIn = () => {
+    setIsGoogleModalOpen(true);
   };
 
   const handleEmailSubmit = async (e: React.FormEvent) => {

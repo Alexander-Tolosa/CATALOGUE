@@ -26,8 +26,10 @@ import { AuthScreen } from './components/Auth/AuthScreen';
 import { LandingPage } from './components/Landing/LandingPage';
 import { EthicalAlertToast } from './components/Common/EthicalAlertToast';
 import { DashboardLoader } from './components/Dashboard/DashboardLoader';
+import { useConvexSync } from './hooks/useConvexSync';
 
 export const App: React.FC = () => {
+  useConvexSync();
   const { isAuthenticated, token } = useAuthStore();
   const {
     isDarkMode,

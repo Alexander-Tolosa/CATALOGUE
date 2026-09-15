@@ -1,14 +1,16 @@
 import { defineSchema, defineTable } from "convex/server";
+import { authTables } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  // Core user table
+  ...authTables,
+
+  // Core user table (extended with Convex Auth fields)
   users: defineTable({
-    email: v.string(),
-    name: v.string(),
+    ...authTables.users.validator.fields,
     picture: v.optional(v.string()),
     googleSubId: v.optional(v.string()),
-    createdAt: v.string()
+    createdAt: v.optional(v.string())
   }).index("by_googleSubId", ["googleSubId"])
     .index("by_email", ["email"]),
 

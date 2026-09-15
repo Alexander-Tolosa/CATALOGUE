@@ -11,16 +11,36 @@
 
 import { useEffect, useRef } from 'react';
 import { useQuery, useMutation } from 'convex/react';
+import { useConvexAuth } from '@convex-dev/auth/react';
 import { api } from '../../convex/_generated/api';
 import { useAuthStore } from '../store/useAuthStore';
 import { useAppStore } from '../store/useAppStore';
 
 export function useConvexSync() {
   const { userId, googleUser, isAuthenticated } = useAuthStore();
+  const { isAuthenticated: isConvexAuthActive } = useConvexAuth();
   const hasSynced = useRef(false);
 
+  // Check viewer from Convex Auth session
+  const convexViewer = useQuery(api.users.viewer);
+
   // Resolve the active user ID consistently
-  const activeUserId = userId || (googleUser?.googleSubId ? `usr-g-${googleUser.googleSubId.slice(-8)}` : null);
+  const activeUserId = convexViewer?.userId || userId || (googleUser?.googleSubId ? `usr-g-${googleUser.googleSubId.slice(-8)}` : null);
+
+  // Hydrate local auth if Convex Auth session is authenticated
+  useEffect(() => {
+    if (convexViewer?.user && !isAuthenticated) {
+      useAuthStore.getState().loginWithGoogle(
+        {
+          googleSubId: convexViewer.userId,
+          email: convexViewer.user.email || '',
+          name: convexViewer.user.name || 'Learner',
+          picture: convexViewer.user.image || convexViewer.profile?.avatarUrl || ''
+        },
+        convexViewer.userId
+      );
+    }
+  }, [convexViewer, isAuthenticated]);
 
   // Convex queries (reactive — auto-update when data changes)
   const convexProfile = useQuery(

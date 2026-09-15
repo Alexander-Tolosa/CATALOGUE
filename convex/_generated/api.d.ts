@@ -8,9 +8,11 @@
  * @module
  */
 
+import type * as auth from "../auth.js";
 import type * as certificates from "../certificates.js";
 import type * as chat from "../chat.js";
 import type * as friends from "../friends.js";
+import type * as http from "../http.js";
 import type * as kleo from "../kleo.js";
 import type * as languages from "../languages.js";
 import type * as progress from "../progress.js";
@@ -25,9 +27,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
   certificates: typeof certificates;
   chat: typeof chat;
   friends: typeof friends;
+  http: typeof http;
   kleo: typeof kleo;
   languages: typeof languages;
   progress: typeof progress;

@@ -1,4 +1,5 @@
 import { mutation, query } from "./_generated/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 
 // Store or sync user identity from Google Identity Services OIDC token
@@ -167,5 +168,27 @@ export const updateUserProfile = mutation({
         ...fieldsToUpdate
       });
     }
+  }
+});
+
+// Retrieve currently authenticated user and profile via Convex Auth session
+export const viewer = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) return null;
+    const user = await ctx.db.get(userId);
+    if (!user) return null;
+
+    const profile = await ctx.db
+      .query("profiles")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .first();
+
+    return {
+      userId,
+      user,
+      profile
+    };
   }
 });

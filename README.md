@@ -9,8 +9,7 @@
 -  **Kleo AI Companion**: An interactive cat mascot that provides real-time tutoring, grammar tips, customizable wardrobe, and mood reactions.
 -  **Interactive Skill Tree & Lessons**: Unit-based learning paths for letters, foundational vocabulary, short phrases, and script tracing.
 -  **Voice & Text Translator**: Real-time translation with phonetic breakdown and instant flashcard saving.
--  **Express & Convex Backends**: Full E2E support with in-memory fallbacks, JWT authentication, and Convex state sync.
-
+  
 ---
 
 ##  Tech Stack
